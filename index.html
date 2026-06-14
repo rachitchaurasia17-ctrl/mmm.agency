@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>MMM — A Different Kind of Marketing Agency</title>
+<meta name="description" content="MMM is a Gen-Z marketing agency. We don't push, promote or discount. We make trends. More reach. More sales. More money." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&family=Source+Serif+4:ital,wght@0,400;1,400&family=Caveat:wght@400..700&family=Material+Symbols+Outlined&display=swap" />
+
+<!-- Tailwind via CDN (matches your existing stack) -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+  tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        colors: {
+          primary: '#ffffff',
+          'mmm-bg': '#0C0C0C',
+          'mmm-ink': '#D7E2EA',
+          'mmm-muted': '#646973',
+          'mmm-purple': '#A855F7',
+        },
+        fontFamily: {
+          kanit: ['Kanit', 'sans-serif'],
+          display: ['Poppins', 'sans-serif'],
+          serif: ['"Source Serif 4"', 'serif'],
+          script: ['Caveat', 'cursive'],
+        },
+      },
+    },
+  };
+</script>
+
+<style>
+  /* ─────────────────────────────────────────────
+     BASE
+  ───────────────────────────────────────────── */
+  html, body { background: #0C0C0C; color: #fff; }
+  body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: rgba(168,85,247,.35); color: #fff; }
+
+  /* Smooth scroll for in-page anchors */
+  html { scroll-behavior: smooth; }
+
+  /* ─────────────────────────────────────────────
+     GLASS
+  ───────────────────────────────────────────── */
+  .liquid-glass {
+    background-color: hsla(0,0%,100%,0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    position: relative;
+  }
+  .liquid-glass-strong {
+    background-color: hsla(0,0%,100%,0.08);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
+    position: relative;
+  }
+  .liquid-glass::before,
+  .liquid-glass-strong::before {
+    content:'';
+    position:absolute; inset:0;
+    border-radius:inherit;
+    padding:1px;
+    background: linear-gradient(135deg, hsla(0,0%,100%,0.25), hsla(0,0%,100%,0));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events:none;
+  }
+
+  /* ─────────────────────────────────────────────
+     HERO TYPOGRAPHY
+  ───────────────────────────────────────────── */
+  .hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.06em;
+    line-height: 0.95;
+    background: linear-gradient(180deg,#ffffff 0%,#cdd3da 55%,#7d848c 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    filter: drop-shadow(0 12px 30px rgba(168,85,247,0.18));
+  }
+
+  /* ─────────────────────────────────────────────
+     INTRO TUNNEL (rebranded for MMM)
+  ───────────────────────────────────────────── */
+  .intro-tunnel{
+    position:fixed; inset:0; z-index:1000;
+    background:#0C0C0C; overflow:hidden;
+    transition: opacity .95s cubic-bezier(.7,0,.2,1),
+                transform .95s cubic-bezier(.7,0,.2,1),
+                filter .95s cubic-bezier(.7,0,.2,1);
+  }
+  .intro-tunnel.intro-fade{ opacity:0; transform:scale(1.22); filter:blur(6px); }
+  .intro-stage{ position:absolute; inset:0; perspective:900px; perspective-origin:50% 50%; }
+  .intro-room{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+  .face{
+    position:absolute; top:50%; left:50%;
+    background:#0C0C0C; overflow:hidden; display:flex;
+  }
+  .face-bottom{ width:100vw; height:var(--d); transform:translate(-50%,-50%) translateY(50vh) rotateX(90deg); }
+  .face-top   { width:100vw; height:var(--d); transform:translate(-50%,-50%) translateY(-50vh) rotateX(-90deg); }
+  .face-left  { width:var(--d); height:100vh; transform:translate(-50%,-50%) translateX(-50vw) rotateY(90deg); }
+  .face-right { width:var(--d); height:100vh; transform:translate(-50%,-50%) translateX(50vw) rotateY(-90deg); }
+  .face-top .t-rows{ transform:rotate(180deg); }
+  .t-rows{ display:flex; flex-direction:column; justify-content:space-between; width:100%; height:100%; }
+  .t-row{
+    font-family:'Kanit',sans-serif; font-weight:900;
+    font-size: clamp(180px, 24vmin, 400px);
+    line-height: 0.86; letter-spacing: -.04em;
+    white-space: nowrap; color:#D7E2EA;
+    opacity: 0.95;
+    text-transform: uppercase;
+    text-shadow: 0 0 60px rgba(168,85,247,0.25);
+  }
+  @media (max-width:768px){ .t-row{ font-size: clamp(130px,32vmin,260px); } }
+
+  .intro-core{
+    position:absolute; top:50%; left:50%;
+    width:60vmin; height:60vmin;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle, rgba(168,85,247,0.45) 0%, rgba(168,85,247,0) 70%);
+    filter:blur(18px); z-index:5; pointer-events:none;
+    animation: intro-core 3.4s ease-in-out forwards;
+  }
+  @keyframes intro-core{
+    0%{ transform:translate(-50%,-50%) scale(.3); opacity:.25; }
+    60%{ opacity:.85; }
+    100%{ transform:translate(-50%,-50%) scale(2.6); opacity:0; }
+  }
+  .intro-vignette{
+    position:absolute; inset:0; z-index:6; pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.7) 100%);
+  }
+  .intro-center{
+    position:absolute; inset:0; z-index:10;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:22px; opacity:0; pointer-events:none; padding:0 24px;
+  }
+  .intro-tunnel.intro-reveal .intro-center,
+  .intro-tunnel.intro-out .intro-center{ opacity:1; }
+  .intro-tunnel.intro-reveal .intro-center{
+    animation: intro-logo-in 650ms cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes intro-logo-in{ from{opacity:0; transform:scale(.94);} to{opacity:1; transform:scale(1);} }
+  .intro-logo{
+    font-family:'Kanit',sans-serif; font-weight:900;
+    font-size: clamp(56px, 14vw, 200px);
+    line-height:.92; letter-spacing:-.06em;
+    color:#ffffff; text-transform:uppercase;
+    text-align:center;
+    background: linear-gradient(180deg,#ffffff 0%,#D7E2EA 50%,#646973 100%);
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 50px rgba(168,85,247,0.35));
+  }
+  .intro-rule{
+    height:2px; width:0;
+    background:linear-gradient(90deg, transparent, #A855F7, transparent);
+  }
+  .intro-tunnel.intro-reveal .intro-rule,
+  .intro-tunnel.intro-out .intro-rule{
+    animation: intro-rule 700ms ease-out 200ms both;
+  }
+  @keyframes intro-rule{ from{width:0} to{width:340px} }
+  .intro-sub{
+    font-family:'Kanit',sans-serif; font-weight:500;
+    font-size:14px; letter-spacing:.55em; text-transform:uppercase;
+    color:#D7E2EA; padding-left:.55em;
+  }
+
+  /* ─────────────────────────────────────────────
+     VIDEO BACKGROUND
+  ───────────────────────────────────────────── */
+  .video-bg-container{
+    position:absolute; inset:0; overflow:hidden; z-index:0;
+  }
+  .video-bg-container video{
+    min-width:100%; min-height:100%;
+    width:auto; height:auto;
+    position:absolute; top:50%; left:50%;
+    transform: translate(-50%,-50%);
+    object-fit:cover;
+  }
+
+  /* ─────────────────────────────────────────────
+     APPROACH
+  ───────────────────────────────────────────── */
+  .neon-text-glow{
+    text-shadow: 0 0 14px rgba(168,85,247,0.85), 0 0 28px rgba(168,85,247,0.45);
+  }
+
+  /* ─────────────────────────────────────────────
+     STICKY STACKING CARDS
+  ───────────────────────────────────────────── */
+  .stack-wrap { position: relative; }
+  .stack-card-outer {
+    position: sticky;
+    height: 90vh;
+    /* top is set inline per-card to create the offset stack */
+    display: flex; align-items: flex-start; justify-content: center;
+  }
+  .stack-card {
+    width: 100%;
+    border-radius: 60px;
+    border: 2px solid #D7E2EA;
+    background: #0C0C0C;
+    transform-origin: top center;
+    will-change: transform;
+    box-shadow: 0 30px 80px rgba(0,0,0,.5);
+    overflow: hidden;
+  }
+  @media (max-width: 768px){
+    .stack-card { border-radius: 40px; }
+  }
+
+  /* ─────────────────────────────────────────────
+     CONTENT CALENDAR — redesigned
+  ───────────────────────────────────────────── */
+  .calendar-grid {
+    background-image:
+      linear-gradient(rgba(168,85,247,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(168,85,247,0.08) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+
+  /* shimmer for the orb */
+  @keyframes orb-pulse {
+    0%, 100% { transform: scale(1); filter: blur(60px); opacity: .55; }
+    50%      { transform: scale(1.15); filter: blur(80px); opacity: .8; }
+  }
+  .orb-purple { animation: orb-pulse 8s ease-in-out infinite; }
+
+  /* Marquee for the calendar dates */
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee-track { animation: marquee 60s linear infinite; }
+
+  /* dotted dividers */
+  .dotted-x {
+    background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+    background-size: 8px 8px;
+    background-repeat: repeat-x;
+    background-position: center;
+    height: 2px;
+  }
+
+  /* ─────────────────────────────────────────────
+     CHATBOT
+  ───────────────────────────────────────────── */
+  #mmm-chat {
+    position: fixed; right: 20px; bottom: 20px; z-index: 90;
+    font-family: 'Poppins', sans-serif;
+  }
+  #mmm-chat-toggle {
+    width: 64px; height: 64px; border-radius: 999px;
+    background: linear-gradient(135deg, #A855F7, #4f0fa5);
+    box-shadow: 0 14px 40px rgba(168,85,247,.55), inset 0 0 0 1px rgba(255,255,255,.2);
+    display: flex; align-items: center; justify-content: center;
+    color: white; cursor: pointer;
+    transition: transform .25s ease;
+  }
+  #mmm-chat-toggle:hover { transform: translateY(-2px) scale(1.04); }
+  #mmm-chat-panel {
+    position: absolute; right: 0; bottom: 80px;
+    width: min(380px, 92vw); height: min(560px, 70vh);
+    border-radius: 22px;
+    background: rgba(12,12,12,0.94);
+    border: 1px solid rgba(215,226,234,0.18);
+    backdrop-filter: blur(20px);
+    display: none; flex-direction: column; overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,.55);
+  }
+  #mmm-chat-panel.open { display: flex; }
+  .chat-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(215,226,234,0.12);
+    display: flex; align-items: center; gap: 10px;
+    background: linear-gradient(135deg, rgba(168,85,247,.18), transparent);
+  }
+  .chat-header .dot {
+    width: 8px; height: 8px; border-radius: 999px;
+    background: #22c55e; box-shadow: 0 0 12px #22c55e;
+  }
+  .chat-body {
+    flex: 1; padding: 16px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 10px;
+    font-size: 14px;
+  }
+  .chat-body::-webkit-scrollbar { width: 6px; }
+  .chat-body::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
+  .msg { padding: 10px 14px; border-radius: 16px; max-width: 86%; line-height: 1.45; word-wrap: break-word; white-space: pre-wrap; }
+  .msg.bot  { background: rgba(215,226,234,0.08); color: #E8EEF3; border: 1px solid rgba(215,226,234,0.12); align-self: flex-start; border-bottom-left-radius: 4px; }
+  .msg.user { background: linear-gradient(135deg,#A855F7,#7c3aed); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+  .msg.typing { color: #9ca3af; font-style: italic; }
+  .chat-input {
+    border-top: 1px solid rgba(215,226,234,0.12);
+    padding: 10px; display: flex; gap: 8px;
+    background: rgba(0,0,0,.4);
+  }
+  .chat-input input {
+    flex: 1; background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    color: white; padding: 10px 14px; border-radius: 12px;
+    outline: none; font-size: 14px;
+  }
+  .chat-input input:focus { border-color: rgba(168,85,247,.6); }
+  .chat-input button {
+    background: linear-gradient(135deg,#A855F7,#7c3aed);
+    color: white; border: 0; padding: 10px 16px; border-radius: 12px;
+    cursor: pointer; font-weight: 600; font-size: 14px;
+  }
+  .chat-input button:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* utility */
+  .no-scroll { overflow: hidden; }
+</style>
+</head>
+<body class="font-display antialiased">
+
+<!-- ════════════════════════════════════════════════════════════
+     INTRO TUNNEL (rebranded MMM)
+     ════════════════════════════════════════════════════════════ -->
+<div id="intro" class="intro-tunnel intro-flying">
+  <div class="intro-stage">
+    <div class="intro-room" id="intro-room" style="--d:2600px">
+      <div class="face face-bottom"><div class="t-rows"></div></div>
+      <div class="face face-top"><div class="t-rows"></div></div>
+      <div class="face face-left"><div class="t-rows"></div></div>
+      <div class="face face-right"><div class="t-rows"></div></div>
+    </div>
+  </div>
+  <div class="intro-core"></div>
+  <div class="intro-vignette"></div>
+  <div class="intro-center">
+    <div class="intro-logo">MMM</div>
+    <div class="intro-rule"></div>
+    <div class="intro-sub">More Reach · More Sales · More Money</div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     NAV (matches original Stitch design)
+     ════════════════════════════════════════════════════════════ -->
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl rounded-full bg-white/5 backdrop-blur-[12px] z-[80] flex justify-between items-center px-8 py-4 before:content-[''] before:absolute before:inset-0 before:rounded-full before:p-[1px] before:bg-gradient-to-br before:from-white/20 before:to-transparent">
+  <div class="font-display text-3xl font-bold tracking-tighter">MMM</div>
+  <div class="hidden md:flex gap-8">
+    <a href="#top" class="font-bold border-b-2 border-white pb-1">Home</a>
+    <a href="#offer" class="text-white/70 font-medium hover:text-white transition-opacity">Services</a>
+    <a href="#calendar" class="text-white/70 font-medium hover:text-white transition-opacity">Case Studies</a>
+    <a href="#approach" class="text-white/70 font-medium hover:text-white transition-opacity">Process</a>
+    <a href="#contact" class="text-white/70 font-medium hover:text-white transition-opacity">Contact</a>
+  </div>
+  <a href="#calendar" class="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-white/90 transition-all active:scale-95">Get Started</a>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO — original Stitch design, untouched
+     ════════════════════════════════════════════════════════════ -->
+<section id="top" class="relative w-full h-screen">
+  <div class="video-bg-container">
+    <video autoplay loop muted playsinline>
+      <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4" type="video/mp4" />
+    </video>
+    <div class="absolute inset-0 bg-black/30"></div>
+  </div>
+
+  <div class="relative z-10 flex w-full h-full max-w-[1440px] mx-auto">
+    <!-- Left Panel (52%) -->
+    <div class="flex flex-col justify-center h-full w-full lg:w-[52%] px-6 lg:px-16 pb-20 lg:py-0 pt-8">
+      <h1 class="tracking-tight mb-8"
+          style="font-size: clamp(4.5rem, 9vw, 9rem); letter-spacing: -0.06em; font-weight: 800; transform: perspective(1000px) rotateY(-5deg) skewY(-1deg); text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15); background: linear-gradient(white 20%, #e0e0e0 50%, #999 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 30px rgba(255,255,255,0.15)); line-height: 1.05;">
+        The Next Era Starts Here
+      </h1>
+      <div class="flex flex-wrap gap-4">
+        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Reach</div>
+        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Sales</div>
+        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Money</div>
+      </div>
+    </div>
+
+    <!-- Right Panel (48%, desktop only) -->
+    <div class="hidden lg:flex h-full py-16 pr-16 flex-col justify-between items-end w-[48%]">
+      <div class="w-full"></div>
+
+      <div class="w-full max-w-md rounded-2xl p-8 mt-auto mb-16">
+        <h3 class="text-lg font-bold text-mmm-ink uppercase tracking-widest mb-8">Our Principles</h3>
+        <div class="space-y-6">
+          <div class="border-b border-white/10 pb-4">
+            <p class="font-medium uppercase tracking-tight text-lg">Connecting Businesses With The World</p>
+          </div>
+          <div class="border-b border-white/10 pb-4">
+            <p class="font-medium uppercase tracking-tight text-lg">Help Customers Discover You</p>
+          </div>
+          <div class="pb-2">
+            <p class="font-medium uppercase tracking-tight text-lg">Craft Your Online Presence</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-full max-w-md">
+        <p class="text-xs text-mmm-ink uppercase mb-4 text-right tracking-widest">Our Operating System</p>
+        <div class="flex justify-end gap-3 flex-wrap">
+          <div class="liquid-glass rounded-full px-4 py-2 text-sm text-mmm-ink">Strategy</div>
+          <div class="liquid-glass rounded-full px-4 py-2 text-sm text-mmm-ink">Content</div>
+          <div class="liquid-glass rounded-full px-4 py-2 text-sm text-mmm-ink">Distribution</div>
+          <div class="liquid-glass rounded-full px-4 py-2 text-sm text-mmm-ink">Conversion</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     APPROACH — original Stitch design, untouched.
+     Static background image swapped for the 4K looping video.
+     ════════════════════════════════════════════════════════════ -->
+<section id="approach" class="relative w-full min-h-screen flex flex-col pt-24">
+  <!-- 4K looping video replaces the original static screenshot -->
+  <div class="absolute inset-0 z-0 overflow-hidden">
+    <video autoplay loop muted playsinline class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover">
+      <source src="assets/video_4k.mp4" type="video/mp4" />
+    </video>
+    <div class="absolute inset-0 bg-black/50"></div>
+  </div>
+
+  <div class="relative z-10 flex flex-col flex-1 h-full w-full">
+    <!-- Header -->
+    <div class="flex flex-col items-center mb-16">
+      <h2 class="text-4xl lg:text-6xl font-bold uppercase tracking-tight text-center">
+        OUR APPROACH IS
+        <span class="font-script text-purple-400 neon-text-glow normal-case text-5xl lg:text-7xl ml-2 inline-block -rotate-3 scale-110">Diff.</span>
+      </h2>
+    </div>
+
+    <!-- Cards -->
+    <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-16 flex-1 flex flex-col justify-end pb-16 lg:pb-24">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Create Trendy Reels</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">Crafting viral-ready content that captures attention instantly and drives massive engagement across all social platforms.</p>
+        </div>
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">Unique & Original Ideas</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
+        </div>
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer strip -->
+    <div class="w-full border-t border-purple-500/30 bg-black/40 backdrop-blur-md py-8">
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-16 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <h4 class="text-xl lg:text-2xl font-bold uppercase tracking-tight text-center lg:text-left">
+          We don't do marketing by asking people to buy.
+        </h4>
+        <div class="flex flex-wrap justify-center lg:justify-end gap-6 lg:gap-12 text-gray-400">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">block</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-white">No Promotions</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">money_off</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-white">No Discounts</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">front_hand</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-white">No Forcing</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">back_hand</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-white">No Pushing</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-purple-400">bolt</span>
+            <span class="text-sm font-medium uppercase tracking-wider text-white">GenZ Approach</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     WHAT WE OFFER — sticky stacking cards
+     ════════════════════════════════════════════════════════════ -->
+<section id="offer" class="relative w-full bg-mmm-bg font-kanit pt-32 sm:pt-40 pb-24 rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] -mt-10 sm:-mt-12 md:-mt-14 z-10">
+  <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+    <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5 text-center">— 03 / Services</p>
+    <h2 class="text-center uppercase font-black leading-none mb-24 sm:mb-32"
+        style="font-size: clamp(3rem, 12vw, 160px);
+               letter-spacing: -0.04em;
+               background: linear-gradient(180deg, #646973 0%, #BBCCD7 100%);
+               -webkit-background-clip: text; background-clip: text;
+               -webkit-text-fill-color: transparent;">
+      What We Offer
+    </h2>
+
+    <div id="stack" class="stack-wrap" data-total="3"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     CONTENT CALENDAR — world-class redesign
+     ════════════════════════════════════════════════════════════ -->
+<section id="calendar" class="relative w-full bg-mmm-bg py-32 overflow-hidden">
+  <!-- background grid + orb -->
+  <div class="absolute inset-0 calendar-grid opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-mmm-purple/15 orb-purple pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+    <!-- header -->
+    <div class="flex flex-col items-center text-center mb-16">
+      <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5">— 04 / Monthly Package</p>
+      <h2 class="font-kanit font-black uppercase text-[clamp(48px,9vw,140px)] leading-[0.9] tracking-tight"
+          style="background: linear-gradient(180deg,#ffffff 0%,#D7E2EA 50%,#646973 100%);
+                 -webkit-background-clip:text; background-clip:text;
+                 -webkit-text-fill-color:transparent;">
+        Content Calendar
+      </h2>
+      <p class="mt-5 max-w-2xl text-white/65 text-base sm:text-lg">
+        One package. Every channel. Engineered for compounding reach — month after month.
+      </p>
+    </div>
+
+    <!-- HERO PACKAGE CARD -->
+    <div class="relative liquid-glass-strong rounded-[40px] p-8 sm:p-12 md:p-16 mb-10 overflow-hidden border border-white/10">
+      <!-- inner gradient halo -->
+      <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-mmm-purple/30 blur-[120px] pointer-events-none"></div>
+      <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-500/20 blur-[120px] pointer-events-none"></div>
+
+      <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
+        <!-- LEFT: the offering -->
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-mmm-purple/40 bg-mmm-purple/10 text-mmm-purple text-xs uppercase tracking-widest font-semibold mb-6">
+            <span class="w-1.5 h-1.5 bg-mmm-purple rounded-full animate-pulse"></span>
+            Most Popular
+          </div>
+
+          <h3 class="font-kanit font-black uppercase text-[clamp(40px,6vw,72px)] leading-[0.95] tracking-tight mb-2">
+            The Growth<br/>Operating System
+          </h3>
+          <p class="text-white/60 text-base sm:text-lg max-w-md mt-4">
+            A done-for-you content engine — engineered, scheduled and shipped while you focus on running the business.
+          </p>
+
+          <div class="mt-10 flex flex-col sm:flex-row gap-3">
+            <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-white text-black font-semibold px-7 py-3.5 rounded-full hover:bg-mmm-ink transition-colors">
+              Book a Strategy Call
+              <span class="material-symbols-outlined text-base">arrow_forward</span>
+            </a>
+            <a href="#offer" class="inline-flex items-center justify-center gap-2 border border-white/25 px-7 py-3.5 rounded-full hover:bg-white/5 transition-colors">
+              See our work
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT: the big numbers -->
+        <div class="relative">
+          <div class="grid grid-cols-2 gap-4">
+            <div class="liquid-glass rounded-3xl p-7 text-center relative overflow-hidden group hover:bg-white/[0.07] transition-colors">
+              <span class="material-symbols-outlined absolute top-4 right-4 text-mmm-purple/40 text-2xl">movie</span>
+              <div class="font-kanit font-black text-[110px] sm:text-[120px] leading-none"
+                   style="background:linear-gradient(180deg,#fff,#A855F7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">15</div>
+              <p class="font-kanit uppercase tracking-[0.3em] text-mmm-ink mt-2 text-sm">Reels</p>
+            </div>
+            <div class="liquid-glass rounded-3xl p-7 text-center relative overflow-hidden group hover:bg-white/[0.07] transition-colors">
+              <span class="material-symbols-outlined absolute top-4 right-4 text-mmm-purple/40 text-2xl">image</span>
+              <div class="font-kanit font-black text-[110px] sm:text-[120px] leading-none"
+                   style="background:linear-gradient(180deg,#fff,#A855F7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">15</div>
+              <p class="font-kanit uppercase tracking-[0.3em] text-mmm-ink mt-2 text-sm">Posts</p>
+            </div>
+          </div>
+
+          <div class="mt-4 liquid-glass rounded-3xl p-6 flex items-center justify-between">
+            <div>
+              <p class="text-xs uppercase tracking-[0.3em] text-white/50 mb-1">Per Month</p>
+              <p class="font-kanit font-bold text-xl">30 deliverables, fully managed.</p>
+            </div>
+            <span class="material-symbols-outlined text-mmm-purple text-4xl">workspace_premium</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADDONS GRID -->
+    <div class="grid md:grid-cols-3 gap-5">
+      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-mmm-purple">tag</span>
+          </span>
+          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">Hashtags</h4>
+        </div>
+        <p class="text-white/60 text-sm leading-relaxed">Hand-tuned hashtag stacks built per niche — discovery without the dilution.</p>
+      </div>
+      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-mmm-purple">calendar_month</span>
+          </span>
+          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">Scheduling</h4>
+        </div>
+        <p class="text-white/60 text-sm leading-relaxed">Time-of-day posting windows trained on your audience — never a missed peak.</p>
+      </div>
+      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
+        <div class="flex items-center gap-4 mb-4">
+          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
+            <span class="material-symbols-outlined text-mmm-purple">check_circle</span>
+          </span>
+          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">And All</h4>
+        </div>
+        <p class="text-white/60 text-sm leading-relaxed">Editing, optimization, captions, analytics — fully managed, end-to-end.</p>
+      </div>
+    </div>
+
+    <!-- WEEKLY TIMELINE -->
+    <div class="mt-12 liquid-glass rounded-3xl p-6 sm:p-8 overflow-hidden">
+      <div class="flex items-center justify-between mb-6">
+        <h4 class="font-kanit font-bold uppercase tracking-widest text-mmm-ink">A Week In Your Calendar</h4>
+        <span class="text-xs text-white/50 uppercase tracking-widest">Live preview</span>
+      </div>
+
+      <div class="overflow-hidden -mx-8">
+        <div class="marquee-track flex gap-4 px-8 whitespace-nowrap">
+          <!-- one set -->
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+            <span class="font-mono text-xs text-white/60">MON 10:00</span>
+            <span class="text-sm">Trend Reel — Hook + product reveal</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
+            <span class="font-mono text-xs text-white/60">TUE 18:30</span>
+            <span class="text-sm">Carousel — Founder story</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
+            <span class="font-mono text-xs text-white/60">WED 12:00</span>
+            <span class="text-sm">UGC remix — community spotlight</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+            <span class="font-mono text-xs text-white/60">THU 19:00</span>
+            <span class="text-sm">Cinematic Reel — Behind the brand</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
+            <span class="font-mono text-xs text-white/60">FRI 11:00</span>
+            <span class="text-sm">Static — Quote design</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
+            <span class="font-mono text-xs text-white/60">SAT 21:00</span>
+            <span class="text-sm">Story sequence — Weekend drop</span>
+          </span>
+          <!-- duplicate set for seamless loop -->
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+            <span class="font-mono text-xs text-white/60">MON 10:00</span>
+            <span class="text-sm">Trend Reel — Hook + product reveal</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
+            <span class="font-mono text-xs text-white/60">TUE 18:30</span>
+            <span class="text-sm">Carousel — Founder story</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
+            <span class="font-mono text-xs text-white/60">WED 12:00</span>
+            <span class="text-sm">UGC remix — community spotlight</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+            <span class="font-mono text-xs text-white/60">THU 19:00</span>
+            <span class="text-sm">Cinematic Reel — Behind the brand</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
+            <span class="font-mono text-xs text-white/60">FRI 11:00</span>
+            <span class="text-sm">Static — Quote design</span>
+          </span>
+          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
+            <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
+            <span class="font-mono text-xs text-white/60">SAT 21:00</span>
+            <span class="text-sm">Story sequence — Weekend drop</span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- bottom line CTA -->
+    <div class="mt-12 liquid-glass-strong rounded-full px-6 sm:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/15">
+      <p class="font-kanit font-semibold uppercase tracking-[0.2em] text-sm sm:text-base text-center sm:text-left">
+        We handle it all, so you can focus on growing the business.
+      </p>
+      <a href="#contact" class="inline-flex items-center gap-2 bg-mmm-purple text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:brightness-110">
+        Start now
+        <span class="material-symbols-outlined text-base">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     CONTACT / FOOTER
+     ════════════════════════════════════════════════════════════ -->
+<section id="contact" class="relative w-full bg-mmm-bg pt-24 pb-12 border-t border-white/10">
+  <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
+    <div class="grid lg:grid-cols-2 gap-12 items-end">
+      <div>
+        <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5">— 05 / Let's Talk</p>
+        <h2 class="font-kanit font-black uppercase text-[clamp(40px,7vw,96px)] leading-[0.9] tracking-tight">
+          Build the<br/>Next Era.
+        </h2>
+      </div>
+      <div class="text-right">
+        <a href="mailto:hello@mmm.agency" class="font-kanit text-2xl sm:text-3xl underline decoration-mmm-purple decoration-2 underline-offset-8 hover:text-mmm-ink">hello@mmm.agency</a>
+        <p class="mt-5 text-white/50 text-sm uppercase tracking-widest">More Reach · More Sales · More Money</p>
+      </div>
+    </div>
+    <div class="mt-20 flex flex-col sm:flex-row items-center justify-between gap-4 text-white/40 text-xs uppercase tracking-widest border-t border-white/10 pt-6">
+      <span>© <span id="year"></span> MMM Agency. All rights reserved.</span>
+      <div class="flex gap-5">
+        <a href="#" class="hover:text-white">Instagram</a>
+        <a href="#" class="hover:text-white">TikTok</a>
+        <a href="#" class="hover:text-white">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     AI CHATBOT (Groq)
+     ════════════════════════════════════════════════════════════ -->
+<div id="mmm-chat">
+  <button id="mmm-chat-toggle" aria-label="Chat with MMM AI">
+    <span class="material-symbols-outlined" style="font-size:30px">smart_toy</span>
+  </button>
+  <div id="mmm-chat-panel" role="dialog" aria-label="MMM AI">
+    <div class="chat-header">
+      <span class="dot"></span>
+      <div class="flex-1">
+        <div class="font-kanit font-bold uppercase tracking-widest text-sm">MMM · AI Strategist</div>
+        <div class="text-[11px] text-white/60">Powered by Groq · Llama 3.3</div>
+      </div>
+      <button id="mmm-chat-close" class="text-white/50 hover:text-white" aria-label="Close">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="chat-body" id="chat-body">
+      <div class="msg bot">Hey 👋 I'm MMM's AI strategist. Ask me about content, growth, our packages, or how we'd build your brand's content engine.</div>
+    </div>
+    <form class="chat-input" id="chat-form">
+      <input id="chat-input" type="text" placeholder="Ask anything…" autocomplete="off" />
+      <button type="submit" id="chat-send">Send</button>
+    </form>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     SCRIPTS
+     ════════════════════════════════════════════════════════════ -->
+<!-- Local-only config (gitignored). Create config.js with:
+     window.MMM_GROQ_KEY = 'gsk_...';
+-->
+<script src="config.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ───────── INTRO TUNNEL ───────── */
+  (function () {
+    const PHRASE = 'MMM · MORE REACH · MORE SALES · MORE MONEY · ';
+    const ROWS = 8, REPEAT = 8, DURATION = 1900, REVEAL_HOLD = 1200;
+
+    document.querySelectorAll('#intro .t-rows').forEach(rows => {
+      let html = '';
+      for (let i = 0; i < ROWS; i++) html += `<div class="t-row">${PHRASE.repeat(REPEAT)}</div>`;
+      rows.innerHTML = html;
+    });
+
+    const intro = document.getElementById('intro');
+    const room  = document.getElementById('intro-room');
+    document.body.classList.add('no-scroll');
+
+    function easeInOutCubic(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+    const start = performance.now();
+    const DEPTH = 2600;
+    let revealed = false, done = false;
+
+    function teardown(){
+      if (done) return; done = true;
+      intro.classList.remove('intro-flying','intro-reveal');
+      intro.classList.add('intro-out','intro-fade');
+      document.body.classList.remove('no-scroll');
+      setTimeout(()=> intro.remove(), 950);
+    }
+    function beginReveal(){
+      if (revealed) return; revealed = true;
+      intro.classList.remove('intro-flying');
+      intro.classList.add('intro-reveal');
+      setTimeout(teardown, REVEAL_HOLD);
+    }
+    function loop(now){
+      const t = Math.min((now - start) / DURATION, 1);
+      const e = easeInOutCubic(t);
+      const z = -DEPTH/2 + e * (DEPTH + 300);
+      const roll = t * 2.5;
+      room.style.transform = `translateZ(${z}px) rotateZ(${roll}deg)`;
+      if (t >= 1){ beginReveal(); return; }
+      requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+    setTimeout(beginReveal, DURATION + 600); // safety
+
+    // Skip on click
+    intro.addEventListener('click', teardown);
+  })();
+
+  /* ───────── STICKY STACKING CARDS ─────────
+     Vanilla equivalent of the Framer Motion scroll-driven version.
+     - Each card sticks at top: 24 + index*28 px.
+     - Scale animates from 1 → targetScale across its scroll range,
+       where targetScale = 1 - (total - 1 - index) * 0.03.
+  ───────────────────────────────── */
+  (function () {
+    const CARDS = [
+      {
+        num: '01',
+        label: 'Social',
+        name: 'Posting Approach',
+        body: 'A monthly content engine built around your brand voice — every post engineered for the first three seconds.',
+        images: [
+          'assets/45b42bcc-8fcd-463e-a8e8-81e73762ae06.jpg',
+          'assets/64c46f62-0fdf-4fdb-ab25-dec66b67374d.jpg',
+          'assets/89953b7e-bb97-4aba-a23d-e7c0272348f6.jpg'
+        ],
+      },
+      {
+        num: '02',
+        label: 'Production',
+        name: 'Video Approach',
+        body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
+        images: [
+          'assets/aa3bdb0b-e53a-4b2b-ae42-596d99ba28aa.jpg',
+          'assets/b5eb435c-778a-4b60-b814-68b37a05ca42.jpg',
+          'assets/cdcbc8a7-7fe8-4517-9769-ee069724e976.jpg'
+        ],
+      },
+      {
+        num: '03',
+        label: 'Post-Production',
+        name: 'Editing Approach',
+        body: 'Hooks, sound design, color, captions — every frame tuned for retention and ranked for the algorithm.',
+        images: [
+          'assets/e3f20404-7ef1-4d73-ae76-9d1c260bbd56.jpg',
+          'assets/f4a18cfa-6009-4b31-8aac-050ed0360b3d.jpg',
+          'assets/fe003869-5a32-400e-8f48-c8b4dfe1faa9.jpg'
+        ],
+      },
+    ];
+
+    const wrap = document.getElementById('stack');
+    const total = CARDS.length;
+    const OFFSET_BASE = 24; // px from top
+    const OFFSET_STEP = 28; // px per card
+
+    wrap.innerHTML = CARDS.map((c, i) => `
+      <div class="stack-card-outer" style="top: ${OFFSET_BASE + i * OFFSET_STEP}px" data-index="${i}">
+        <div class="stack-card p-4 sm:p-6 md:p-10" data-card>
+          <!-- top row -->
+          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 md:mb-10">
+            <div class="flex items-center gap-5 sm:gap-7">
+              <span class="font-kanit font-black text-mmm-ink"
+                    style="font-size: clamp(3rem, 10vw, 140px); line-height:.9;">(${c.num})</span>
+              <div>
+                <p class="font-kanit text-mmm-ink/60 uppercase tracking-[0.4em] text-xs sm:text-sm font-semibold mb-2">${c.label}</p>
+                <h3 class="font-kanit font-medium uppercase text-mmm-ink leading-[1.05] tracking-tight"
+                    style="font-size: clamp(1.4rem, 3vw, 2.4rem);">${c.name}</h3>
+                <p class="hidden md:block mt-3 max-w-xl text-white/55 text-sm normal-case font-display">${c.body}</p>
+              </div>
+            </div>
+            <a href="#contact"
+               class="shrink-0 inline-flex items-center gap-2 rounded-full border-2 border-mmm-ink text-mmm-ink font-medium uppercase tracking-widest px-7 sm:px-10 py-3 sm:py-3.5 hover:bg-mmm-ink/10 transition-colors">
+              Learn More
+              <span class="material-symbols-outlined text-base">arrow_outward</span>
+            </a>
+          </div>
+
+          <!-- image grid -->
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-5">
+            <div class="md:col-span-2 flex flex-col gap-3 sm:gap-5">
+              <img src="${c.images[0]}" loading="lazy" alt=""
+                   class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
+                   style="height: clamp(130px, 16vw, 230px);" />
+              <img src="${c.images[1]}" loading="lazy" alt=""
+                   class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
+                   style="height: clamp(160px, 22vw, 340px);" />
+            </div>
+            <div class="md:col-span-3">
+              <img src="${c.images[2]}" loading="lazy" alt=""
+                   class="w-full h-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
+                   style="min-height: clamp(290px, 38vw, 580px);" />
+            </div>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    // Scroll-driven scale
+    const wrapRect = () => wrap.getBoundingClientRect();
+    const cardEls = Array.from(wrap.querySelectorAll('[data-card]'));
+
+    function update() {
+      const r = wrap.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // progress: 0 when wrap top hits viewport top, 1 when wrap bottom hits viewport bottom
+      const dist = (wrap.offsetHeight - vh);
+      const scrolled = Math.min(Math.max(-r.top, 0), dist);
+      const progress = dist > 0 ? scrolled / dist : 0;
+
+      cardEls.forEach((el, i) => {
+        const targetScale = 1 - (total - 1 - i) * 0.03;
+        const rangeStart = i * (1 / total);
+        const rangeEnd = 1;
+        let p = (progress - rangeStart) / (rangeEnd - rangeStart);
+        p = Math.min(Math.max(p, 0), 1);
+        const scale = 1 + (targetScale - 1) * p;
+        el.style.transform = `scale(${scale.toFixed(4)})`;
+      });
+    }
+    update();
+
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(() => { update(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+    window.addEventListener('resize', update);
+  })();
+
+  /* ───────── GROQ CHATBOT ─────────
+     WARNING: API key is exposed client-side. Rotate after testing
+     and move calls behind a server proxy before production.
+  ───────────────────────────────── */
+  (function () {
+    // Set window.MMM_GROQ_KEY in a local, gitignored config.js for testing.
+    // Production: move calls behind a server-side proxy (Cloudflare Worker / Vercel function).
+    const GROQ_KEY = (window.MMM_GROQ_KEY || '').trim();
+    const MODEL = 'llama-3.3-70b-versatile';
+    const SYSTEM = `You are MMM Agency's AI strategist.
+MMM is a Gen-Z marketing agency. Tone: sharp, confident, founder-style. Never push, never discount.
+Core package: 15 reels + 15 posts per month, hashtags, scheduling, full management.
+Principles: connect brands with the world; help customers discover them; craft their online presence.
+Keep responses tight (under 120 words), action-oriented, and on-brand. If asked for pricing specifics, say "let's get on a strategy call" and direct them to hello@mmm.agency.`;
+
+    const toggle = document.getElementById('mmm-chat-toggle');
+    const closeBtn = document.getElementById('mmm-chat-close');
+    const panel = document.getElementById('mmm-chat-panel');
+    const form  = document.getElementById('chat-form');
+    const input = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('chat-send');
+    const body  = document.getElementById('chat-body');
+
+    const history = [{ role: 'system', content: SYSTEM }];
+
+    function addMsg(role, text, cls = '') {
+      const el = document.createElement('div');
+      el.className = `msg ${role} ${cls}`.trim();
+      el.textContent = text;
+      body.appendChild(el);
+      body.scrollTop = body.scrollHeight;
+      return el;
+    }
+
+    toggle.addEventListener('click', () => panel.classList.toggle('open'));
+    closeBtn.addEventListener('click', () => panel.classList.remove('open'));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim();
+      if (!text) return;
+      addMsg('user', text);
+      history.push({ role: 'user', content: text });
+      input.value = '';
+      sendBtn.disabled = true;
+
+      if (!GROQ_KEY) {
+        addMsg('bot', 'Chatbot is not configured. Drop a Groq key into config.js (see README) and reload.');
+        sendBtn.disabled = false;
+        return;
+      }
+
+      const typing = addMsg('bot', 'Thinking…', 'typing');
+
+      try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${GROQ_KEY}`,
+          },
+          body: JSON.stringify({
+            model: MODEL,
+            messages: history,
+            temperature: 0.6,
+            max_tokens: 380,
+          }),
+        });
+        if (!res.ok) throw new Error(`Groq ${res.status}`);
+        const data = await res.json();
+        const reply = data.choices?.[0]?.message?.content?.trim() || '…';
+        typing.remove();
+        addMsg('bot', reply);
+        history.push({ role: 'assistant', content: reply });
+      } catch (err) {
+        typing.remove();
+        addMsg('bot', 'My circuits hit a snag. Try again in a moment — or email hello@mmm.agency.');
+        console.error(err);
+      } finally {
+        sendBtn.disabled = false;
+        input.focus();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>

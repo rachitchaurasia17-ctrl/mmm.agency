@@ -328,6 +328,40 @@
   }
   .chat-input button:disabled { opacity: .5; cursor: not-allowed; }
 
+  /* ─────────────────────────────────────────────
+     CALENDAR 30-DAY TILE SHINE
+  ───────────────────────────────────────────── */
+  .cal-tile {
+    box-shadow: 0 1px 0 rgba(255,255,255,.06) inset, 0 8px 22px rgba(0,0,0,.35);
+    transition: transform .35s cubic-bezier(.22,1,.36,1), filter .35s ease;
+  }
+  .cal-tile:hover { transform: translateY(-3px) scale(1.03); filter: brightness(1.12); z-index: 2; }
+  .cal-tile-shine {
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%);
+    transform: translateX(-120%);
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  .cal-tile-active .cal-tile-shine {
+    opacity: 1;
+    animation: cal-shine 1s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes cal-shine {
+    0%   { transform: translateX(-120%); }
+    100% { transform: translateX(120%); }
+  }
+
+  /* ─────────────────────────────────────────────
+     NAV — transparent at top, frosts on scroll
+  ───────────────────────────────────────────── */
+  #mmm-nav { background: transparent; transition: background .35s ease, backdrop-filter .35s ease, border-color .35s ease; border: 1px solid transparent; }
+  #mmm-nav.scrolled {
+    background: rgba(12,12,12,0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-color: rgba(255,255,255,0.08);
+  }
+
   /* utility */
   .no-scroll { overflow: hidden; }
 </style>
@@ -358,7 +392,7 @@
 <!-- ════════════════════════════════════════════════════════════
      NAV (matches original Stitch design)
      ════════════════════════════════════════════════════════════ -->
-<nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl rounded-full bg-white/5 backdrop-blur-[12px] z-[80] flex justify-between items-center px-8 py-4 before:content-[''] before:absolute before:inset-0 before:rounded-full before:p-[1px] before:bg-gradient-to-br before:from-white/20 before:to-transparent">
+<nav id="mmm-nav" class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl z-[80] flex justify-between items-center px-8 py-4 rounded-full">
   <div class="font-display text-3xl font-bold tracking-tighter">MMM</div>
   <div class="hidden md:flex gap-8">
     <a href="#top" class="font-bold border-b-2 border-white pb-1">Home</a>
@@ -384,9 +418,16 @@
   <div class="relative z-10 flex w-full h-full max-w-[1440px] mx-auto">
     <!-- Left Panel (52%) -->
     <div class="flex flex-col justify-center h-full w-full lg:w-[52%] px-6 lg:px-16 pb-20 lg:py-0 pt-8">
-      <h1 class="tracking-tight mb-8"
-          style="font-size: clamp(4.5rem, 9vw, 9rem); letter-spacing: -0.06em; font-weight: 800; transform: perspective(1000px) rotateY(-5deg) skewY(-1deg); text-shadow: 0 1px 0 #ccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaa, 0 6px 1px rgba(0,0,0,.1), 0 0 5px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.3), 0 3px 5px rgba(0,0,0,.2), 0 5px 10px rgba(0,0,0,.25), 0 10px 10px rgba(0,0,0,.2), 0 20px 20px rgba(0,0,0,.15); background: linear-gradient(white 20%, #e0e0e0 50%, #999 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 30px rgba(255,255,255,0.15)); line-height: 1.05;">
-        The Next Era Starts Here
+      <h1 class="font-kanit mb-8 uppercase"
+          style="font-size: clamp(3rem, 6.2vw, 6.4rem);
+                 font-weight: 600;
+                 letter-spacing: -0.045em;
+                 line-height: 0.95;
+                 background: linear-gradient(180deg, #ffffff 0%, #e8ecf0 55%, #8b9098 100%);
+                 -webkit-background-clip: text; background-clip: text;
+                 -webkit-text-fill-color: transparent;
+                 filter: drop-shadow(0 12px 30px rgba(0,0,0,.45));">
+        The Next Era<br/>Starts Here
       </h1>
       <div class="flex flex-wrap gap-4">
         <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Reach</div>
@@ -431,68 +472,77 @@
      APPROACH — original Stitch design, untouched.
      Static background image swapped for the 4K looping video.
      ════════════════════════════════════════════════════════════ -->
-<section id="approach" class="relative w-full min-h-screen flex flex-col pt-24">
-  <!-- 4K looping video replaces the original static screenshot -->
-  <div class="absolute inset-0 z-0 overflow-hidden">
-    <video autoplay loop muted playsinline class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 min-w-full min-h-full w-auto h-auto object-cover">
+<section id="approach" class="relative w-full min-h-[110vh] flex flex-col pt-24 overflow-hidden">
+  <!-- 4K looping video — letterboxed inside its own band so it is NOT cropped -->
+  <div class="absolute inset-0 z-0 bg-black">
+    <video autoplay loop muted playsinline preload="auto"
+           class="absolute inset-0 w-full h-full object-contain">
       <source src="assets/video_4k.mp4" type="video/mp4" />
     </video>
-    <div class="absolute inset-0 bg-black/50"></div>
+    <!-- subtle vignette so glass text stays legible without cropping the frame -->
+    <div class="absolute inset-0"
+         style="background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.85) 100%);"></div>
   </div>
 
-  <div class="relative z-10 flex flex-col flex-1 h-full w-full">
+  <div class="relative z-10 flex flex-col flex-1 w-full">
     <!-- Header -->
-    <div class="flex flex-col items-center mb-16">
+    <div class="flex flex-col items-center mb-12">
       <h2 class="text-4xl lg:text-6xl font-bold uppercase tracking-tight text-center">
         OUR APPROACH IS
         <span class="font-script text-purple-400 neon-text-glow normal-case text-5xl lg:text-7xl ml-2 inline-block -rotate-3 scale-110">Diff.</span>
       </h2>
     </div>
 
-    <!-- Cards -->
-    <div class="w-full max-w-[1600px] mx-auto px-6 lg:px-16 flex-1 flex flex-col justify-end pb-16 lg:pb-24">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
-          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Create Trendy Reels</h3>
-          <p class="text-gray-300 text-sm leading-relaxed">Crafting viral-ready content that captures attention instantly and drives massive engagement across all social platforms.</p>
-        </div>
-        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
-          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">Unique & Original Ideas</h3>
-          <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
-        </div>
-        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/20 backdrop-blur-sm">
-          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
-          <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
+    <!-- Spacer so video is visible above the bar -->
+    <div class="flex-1 min-h-[20vh]"></div>
+
+    <!-- COMBINED BAND: 3 cards + "we don't do marketing" strip live in the SAME container -->
+    <div class="relative w-full bg-black/55 backdrop-blur-md border-t border-purple-500/30 mt-8">
+      <!-- Cards — overlap the bar from above -->
+      <div class="max-w-[1600px] mx-auto px-6 lg:px-16 -mt-16 lg:-mt-20 mb-10">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
+            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Create Trendy Reels</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">Crafting viral-ready content that captures attention instantly and drives massive engagement across all social platforms.</p>
+          </div>
+          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
+            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">Unique &amp; Original Ideas</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
+          </div>
+          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
+            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
+            <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Footer strip -->
-    <div class="w-full border-t border-purple-500/30 bg-black/40 backdrop-blur-md py-8">
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-16 flex flex-col lg:flex-row items-center justify-between gap-6">
-        <h4 class="text-xl lg:text-2xl font-bold uppercase tracking-tight text-center lg:text-left">
-          We don't do marketing by asking people to buy.
-        </h4>
-        <div class="flex flex-wrap justify-center lg:justify-end gap-6 lg:gap-12 text-gray-400">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400">block</span>
-            <span class="text-sm font-medium uppercase tracking-wider text-white">No Promotions</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400">money_off</span>
-            <span class="text-sm font-medium uppercase tracking-wider text-white">No Discounts</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400">front_hand</span>
-            <span class="text-sm font-medium uppercase tracking-wider text-white">No Forcing</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400">back_hand</span>
-            <span class="text-sm font-medium uppercase tracking-wider text-white">No Pushing</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-purple-400">bolt</span>
-            <span class="text-sm font-medium uppercase tracking-wider text-white">GenZ Approach</span>
+      <!-- Marketing statement — pushed down to sit below the cards -->
+      <div class="max-w-[1440px] mx-auto px-6 lg:px-16 pb-14 pt-6">
+        <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+          <h4 class="text-xl lg:text-2xl font-bold uppercase tracking-tight text-center lg:text-left">
+            We don't do marketing by asking people to buy.
+          </h4>
+          <div class="flex flex-wrap justify-center lg:justify-end gap-6 lg:gap-10 text-gray-400">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400">block</span>
+              <span class="text-sm font-medium uppercase tracking-wider text-white">No Promotions</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400">money_off</span>
+              <span class="text-sm font-medium uppercase tracking-wider text-white">No Discounts</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400">front_hand</span>
+              <span class="text-sm font-medium uppercase tracking-wider text-white">No Forcing</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400">back_hand</span>
+              <span class="text-sm font-medium uppercase tracking-wider text-white">No Pushing</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-purple-400">bolt</span>
+              <span class="text-sm font-medium uppercase tracking-wider text-white">GenZ Approach</span>
+            </div>
           </div>
         </div>
       </div>
@@ -522,202 +572,320 @@
 <!-- ════════════════════════════════════════════════════════════
      CONTENT CALENDAR — world-class redesign
      ════════════════════════════════════════════════════════════ -->
-<section id="calendar" class="relative w-full bg-mmm-bg py-32 overflow-hidden">
-  <!-- background grid + orb -->
-  <div class="absolute inset-0 calendar-grid opacity-60 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]"></div>
-  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-mmm-purple/15 orb-purple pointer-events-none"></div>
+<!-- ════════════════════════════════════════════════════════════
+     CONTENT CALENDAR — Editorial / award-winning rebuild
+     ════════════════════════════════════════════════════════════ -->
+<section id="calendar" class="relative w-full bg-mmm-bg py-28 sm:py-36 overflow-hidden">
+  <!-- ambient layers -->
+  <div class="absolute inset-0 calendar-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"></div>
+  <div class="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-mmm-purple/20 blur-[140px] pointer-events-none orb-purple"></div>
+  <div class="absolute -bottom-40 -right-40 w-[700px] h-[700px] rounded-full bg-blue-500/15 blur-[140px] pointer-events-none"></div>
 
-  <div class="relative z-10 max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
-    <!-- header -->
-    <div class="flex flex-col items-center text-center mb-16">
-      <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5">— 04 / Monthly Package</p>
-      <h2 class="font-kanit font-black uppercase text-[clamp(48px,9vw,140px)] leading-[0.9] tracking-tight"
-          style="background: linear-gradient(180deg,#ffffff 0%,#D7E2EA 50%,#646973 100%);
-                 -webkit-background-clip:text; background-clip:text;
-                 -webkit-text-fill-color:transparent;">
-        Content Calendar
+  <!-- vertical edge marquee (left rail) -->
+  <div class="hidden lg:flex absolute top-0 left-0 h-full w-12 items-center justify-center overflow-hidden border-r border-white/5">
+    <div class="rotate-180 font-mono text-[10px] tracking-[0.6em] text-white/30 uppercase whitespace-nowrap" style="writing-mode: vertical-rl;">
+      MMM · CONTENT CALENDAR · 2026 · MORE REACH · MORE SALES · MORE MONEY · MMM · CONTENT CALENDAR · 2026
+    </div>
+  </div>
+
+  <div class="relative z-10 max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-20">
+
+    <!-- ── HEADER : editorial top bar ───────────────────────────── -->
+    <div class="flex items-end justify-between flex-wrap gap-6 mb-10">
+      <div class="flex items-center gap-4">
+        <span class="font-mono text-[11px] tracking-[0.4em] text-mmm-purple uppercase">04 / Monthly Package</span>
+        <span class="hidden sm:block w-12 h-px bg-mmm-purple/60"></span>
+        <span class="font-mono text-[11px] tracking-[0.4em] text-white/40 uppercase">Vol. 01 · Issue 26</span>
+      </div>
+      <div class="flex items-center gap-2 text-mmm-purple">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-mmm-purple opacity-60"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-mmm-purple"></span>
+        </span>
+        <span class="font-mono text-[11px] tracking-[0.4em] uppercase">Now Scheduling · June</span>
+      </div>
+    </div>
+
+    <!-- ── EDITORIAL TITLE ─────────────────────────────────────── -->
+    <div class="grid lg:grid-cols-12 gap-6 mb-16 items-end">
+      <h2 class="lg:col-span-9 font-kanit font-black uppercase leading-[0.82] tracking-[-0.04em]"
+          style="font-size: clamp(64px, 12vw, 200px);">
+        <span class="block"
+              style="background:linear-gradient(180deg,#ffffff 0%,#D7E2EA 55%,#646973 100%);
+                     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">
+          Content
+        </span>
+        <span class="block -mt-2 sm:-mt-4 italic font-serif font-normal normal-case"
+              style="font-style:italic;
+                     background:linear-gradient(90deg,#A855F7 0%,#ec4899 100%);
+                     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">
+          calendar.
+        </span>
       </h2>
-      <p class="mt-5 max-w-2xl text-white/65 text-base sm:text-lg">
-        One package. Every channel. Engineered for compounding reach — month after month.
+      <p class="lg:col-span-3 text-white/55 text-sm sm:text-base leading-relaxed border-l border-mmm-purple/40 pl-5">
+        Thirty deliverables. One ruthless system. Engineered for compounding reach — month after month, until the algorithm knows your name.
       </p>
     </div>
 
-    <!-- HERO PACKAGE CARD -->
-    <div class="relative liquid-glass-strong rounded-[40px] p-8 sm:p-12 md:p-16 mb-10 overflow-hidden border border-white/10">
-      <!-- inner gradient halo -->
-      <div class="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full bg-mmm-purple/30 blur-[120px] pointer-events-none"></div>
-      <div class="absolute -bottom-40 -left-40 w-[500px] h-[500px] rounded-full bg-blue-500/20 blur-[120px] pointer-events-none"></div>
+    <!-- ── SCOREBOARD : the headline numbers ────────────────────── -->
+    <div class="relative rounded-[40px] border border-white/10 overflow-hidden mb-6">
+      <!-- inner glow -->
+      <div class="absolute inset-0 bg-gradient-to-br from-mmm-purple/15 via-transparent to-blue-500/10 pointer-events-none"></div>
+      <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-mmm-purple/60 to-transparent"></div>
 
-      <div class="relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-        <!-- LEFT: the offering -->
-        <div>
-          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-mmm-purple/40 bg-mmm-purple/10 text-mmm-purple text-xs uppercase tracking-widest font-semibold mb-6">
-            <span class="w-1.5 h-1.5 bg-mmm-purple rounded-full animate-pulse"></span>
-            Most Popular
+      <div class="relative grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10 bg-black/40 backdrop-blur-md">
+        <!-- 15 Reels -->
+        <div class="p-7 sm:p-10 relative overflow-hidden group">
+          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">15</span>
+          <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
+            <span class="material-symbols-outlined text-sm">movie</span>Reels
           </div>
+          <div class="relative font-kanit font-black leading-none mt-3 mb-3"
+               style="font-size: clamp(72px, 8vw, 132px);
+                      background: linear-gradient(180deg,#ffffff 0%,#A855F7 100%);
+                      -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            15
+          </div>
+          <p class="text-white/55 text-sm">Trend-led, cinema-cut, hook-first.</p>
+        </div>
 
-          <h3 class="font-kanit font-black uppercase text-[clamp(40px,6vw,72px)] leading-[0.95] tracking-tight mb-2">
-            The Growth<br/>Operating System
-          </h3>
-          <p class="text-white/60 text-base sm:text-lg max-w-md mt-4">
-            A done-for-you content engine — engineered, scheduled and shipped while you focus on running the business.
+        <!-- 15 Posts -->
+        <div class="p-7 sm:p-10 relative overflow-hidden group">
+          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">15</span>
+          <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
+            <span class="material-symbols-outlined text-sm">grid_view</span>Posts
+          </div>
+          <div class="relative font-kanit font-black leading-none mt-3 mb-3"
+               style="font-size: clamp(72px, 8vw, 132px);
+                      background: linear-gradient(180deg,#ffffff 0%,#ec4899 100%);
+                      -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            15
+          </div>
+          <p class="text-white/55 text-sm">Carousels, statics, story drops.</p>
+        </div>
+
+        <!-- 30 Hashtags -->
+        <div class="p-7 sm:p-10 relative overflow-hidden">
+          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">∞</span>
+          <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
+            <span class="material-symbols-outlined text-sm">tag</span>Hashtag Stacks
+          </div>
+          <div class="relative font-kanit font-black leading-none mt-3 mb-3"
+               style="font-size: clamp(72px, 8vw, 132px);
+                      background: linear-gradient(180deg,#ffffff 0%,#22c55e 100%);
+                      -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            ∞
+          </div>
+          <p class="text-white/55 text-sm">Niche-tuned, never copy-pasted.</p>
+        </div>
+
+        <!-- 24/7 mgmt -->
+        <div class="p-7 sm:p-10 relative overflow-hidden">
+          <span class="absolute -top-6 -right-6 text-[120px] sm:text-[160px] leading-none font-kanit font-black text-white/[0.04] select-none">24/7</span>
+          <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
+            <span class="material-symbols-outlined text-sm">bolt</span>Management
+          </div>
+          <div class="relative font-kanit font-black leading-none mt-3 mb-3"
+               style="font-size: clamp(56px, 6vw, 100px);
+                      background: linear-gradient(180deg,#ffffff 0%,#f59e0b 100%);
+                      -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
+            24/7
+          </div>
+          <p class="text-white/55 text-sm">Scheduled, posted, optimized — by us.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRIMARY MODULE : 30-DAY GRID + STRATEGY PANEL ─────────── -->
+    <div class="grid lg:grid-cols-12 gap-6 mb-6">
+
+      <!-- 30-day grid (8 cols) -->
+      <div class="lg:col-span-8 relative rounded-[40px] border border-white/10 bg-black/40 backdrop-blur-md p-6 sm:p-8 overflow-hidden">
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <div>
+            <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase">Your Month, Engineered</p>
+            <h3 class="font-kanit font-black uppercase text-2xl sm:text-3xl tracking-tight mt-1">30 Deliverables · 30 Days</h3>
+          </div>
+          <div class="flex items-center gap-3 text-[11px] uppercase tracking-widest">
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-mmm-purple"></span>Reel</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-pink-500"></span>Post</span>
+            <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm border border-white/30"></span>Rest</span>
+          </div>
+        </div>
+
+        <!-- weekday header -->
+        <div class="grid grid-cols-7 gap-2 sm:gap-3 mb-3 text-[10px] sm:text-xs uppercase tracking-widest text-white/40 text-center font-mono">
+          <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+
+        <!-- the 30-day grid, generated by JS for animated reveal -->
+        <div id="cal-grid" class="grid grid-cols-7 gap-2 sm:gap-3"></div>
+
+        <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
+          <p class="text-xs text-white/45 font-mono uppercase tracking-widest">
+            <span class="text-mmm-purple">●</span> 15 Reels &nbsp; · &nbsp; <span class="text-pink-400">●</span> 15 Posts &nbsp; · &nbsp; Auto-scheduled
           </p>
+          <p class="text-xs text-white/40">Hover any tile →</p>
+        </div>
+      </div>
 
-          <div class="mt-10 flex flex-col sm:flex-row gap-3">
-            <a href="#contact" class="inline-flex items-center justify-center gap-2 bg-white text-black font-semibold px-7 py-3.5 rounded-full hover:bg-mmm-ink transition-colors">
-              Book a Strategy Call
-              <span class="material-symbols-outlined text-base">arrow_forward</span>
-            </a>
-            <a href="#offer" class="inline-flex items-center justify-center gap-2 border border-white/25 px-7 py-3.5 rounded-full hover:bg-white/5 transition-colors">
-              See our work
-            </a>
+      <!-- Strategy panel (4 cols) -->
+      <div class="lg:col-span-4 flex flex-col gap-6">
+        <!-- price card -->
+        <div class="relative rounded-[40px] p-7 sm:p-9 overflow-hidden border border-mmm-purple/40"
+             style="background: linear-gradient(160deg, rgba(168,85,247,0.18) 0%, rgba(12,12,12,0.95) 60%);">
+          <div class="absolute -top-20 -right-20 w-[260px] h-[260px] rounded-full bg-mmm-purple/40 blur-[80px] pointer-events-none"></div>
+          <div class="relative">
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-mmm-purple/50 bg-mmm-purple/10 text-mmm-purple text-[10px] uppercase tracking-[0.3em] font-semibold mb-5">
+              <span class="w-1.5 h-1.5 bg-mmm-purple rounded-full animate-pulse"></span>
+              Flagship Plan
+            </span>
+            <h4 class="font-kanit font-black uppercase leading-[0.9] tracking-tight text-3xl sm:text-4xl mb-3">
+              The Growth<br/>Operating System
+            </h4>
+            <p class="text-white/65 text-sm leading-relaxed">A done-for-you content engine — engineered, scheduled, and shipped while you focus on running the business.</p>
+
+            <div class="mt-6 pt-5 border-t border-white/10 flex items-end justify-between">
+              <div>
+                <p class="font-mono text-[10px] tracking-[0.3em] text-white/40 uppercase mb-1">Starting at</p>
+                <p class="font-kanit font-black text-4xl leading-none">Let's Talk</p>
+              </div>
+              <a href="#contact" class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-white text-black hover:bg-mmm-ink transition-colors">
+                <span class="material-symbols-outlined">arrow_outward</span>
+              </a>
+            </div>
           </div>
         </div>
 
-        <!-- RIGHT: the big numbers -->
-        <div class="relative">
-          <div class="grid grid-cols-2 gap-4">
-            <div class="liquid-glass rounded-3xl p-7 text-center relative overflow-hidden group hover:bg-white/[0.07] transition-colors">
-              <span class="material-symbols-outlined absolute top-4 right-4 text-mmm-purple/40 text-2xl">movie</span>
-              <div class="font-kanit font-black text-[110px] sm:text-[120px] leading-none"
-                   style="background:linear-gradient(180deg,#fff,#A855F7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">15</div>
-              <p class="font-kanit uppercase tracking-[0.3em] text-mmm-ink mt-2 text-sm">Reels</p>
-            </div>
-            <div class="liquid-glass rounded-3xl p-7 text-center relative overflow-hidden group hover:bg-white/[0.07] transition-colors">
-              <span class="material-symbols-outlined absolute top-4 right-4 text-mmm-purple/40 text-2xl">image</span>
-              <div class="font-kanit font-black text-[110px] sm:text-[120px] leading-none"
-                   style="background:linear-gradient(180deg,#fff,#A855F7); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">15</div>
-              <p class="font-kanit uppercase tracking-[0.3em] text-mmm-ink mt-2 text-sm">Posts</p>
-            </div>
-          </div>
-
-          <div class="mt-4 liquid-glass rounded-3xl p-6 flex items-center justify-between">
-            <div>
-              <p class="text-xs uppercase tracking-[0.3em] text-white/50 mb-1">Per Month</p>
-              <p class="font-kanit font-bold text-xl">30 deliverables, fully managed.</p>
-            </div>
-            <span class="material-symbols-outlined text-mmm-purple text-4xl">workspace_premium</span>
-          </div>
+        <!-- inclusions list -->
+        <div class="rounded-[40px] border border-white/10 bg-black/40 backdrop-blur-md p-7 sm:p-8">
+          <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase mb-4">Every plan ships with</p>
+          <ul class="space-y-3.5">
+            <li class="flex items-start gap-3 text-sm">
+              <span class="material-symbols-outlined text-mmm-purple text-base mt-0.5">check_circle</span>
+              <span><strong class="text-white">Hashtag stacks</strong> <span class="text-white/55">— niche-tuned for discovery</span></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="material-symbols-outlined text-mmm-purple text-base mt-0.5">check_circle</span>
+              <span><strong class="text-white">Scheduling</strong> <span class="text-white/55">— posted at your audience's peak</span></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="material-symbols-outlined text-mmm-purple text-base mt-0.5">check_circle</span>
+              <span><strong class="text-white">Caption + copy</strong> <span class="text-white/55">— conversion-coded</span></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="material-symbols-outlined text-mmm-purple text-base mt-0.5">check_circle</span>
+              <span><strong class="text-white">Edit, color, sound</strong> <span class="text-white/55">— end-to-end post</span></span>
+            </li>
+            <li class="flex items-start gap-3 text-sm">
+              <span class="material-symbols-outlined text-mmm-purple text-base mt-0.5">check_circle</span>
+              <span><strong class="text-white">Analytics & iteration</strong> <span class="text-white/55">— weekly tightening</span></span>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
 
-    <!-- ADDONS GRID -->
-    <div class="grid md:grid-cols-3 gap-5">
-      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
-        <div class="flex items-center gap-4 mb-4">
-          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
-            <span class="material-symbols-outlined text-mmm-purple">tag</span>
-          </span>
-          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">Hashtags</h4>
-        </div>
-        <p class="text-white/60 text-sm leading-relaxed">Hand-tuned hashtag stacks built per niche — discovery without the dilution.</p>
-      </div>
-      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
-        <div class="flex items-center gap-4 mb-4">
-          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
-            <span class="material-symbols-outlined text-mmm-purple">calendar_month</span>
-          </span>
-          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">Scheduling</h4>
-        </div>
-        <p class="text-white/60 text-sm leading-relaxed">Time-of-day posting windows trained on your audience — never a missed peak.</p>
-      </div>
-      <div class="liquid-glass rounded-3xl p-7 group hover:bg-white/[0.07] transition-colors">
-        <div class="flex items-center gap-4 mb-4">
-          <span class="w-12 h-12 rounded-2xl bg-mmm-purple/15 border border-mmm-purple/30 flex items-center justify-center">
-            <span class="material-symbols-outlined text-mmm-purple">check_circle</span>
-          </span>
-          <h4 class="font-kanit font-bold text-lg uppercase tracking-wide">And All</h4>
-        </div>
-        <p class="text-white/60 text-sm leading-relaxed">Editing, optimization, captions, analytics — fully managed, end-to-end.</p>
+    <!-- ── WEEKLY DRUMBEAT : marquee schedule ────────────────────── -->
+    <div class="relative rounded-[40px] border border-white/10 bg-black/40 backdrop-blur-md py-6 overflow-hidden mb-6">
+      <div class="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-mmm-bg to-transparent z-10 pointer-events-none"></div>
+      <div class="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-mmm-bg to-transparent z-10 pointer-events-none"></div>
+
+      <div class="marquee-track flex gap-3 whitespace-nowrap will-change-transform">
+        <!-- one set -->
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+          <span class="font-mono text-xs text-white/55">MON · 10:00</span>
+          <span class="text-sm">Trend Reel — hook + product reveal</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-pink-400 text-base">grid_view</span>
+          <span class="font-mono text-xs text-white/55">TUE · 18:30</span>
+          <span class="text-sm">Carousel — founder story</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
+          <span class="font-mono text-xs text-white/55">WED · 12:00</span>
+          <span class="text-sm">UGC remix — community spotlight</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+          <span class="font-mono text-xs text-white/55">THU · 19:00</span>
+          <span class="text-sm">Cinematic Reel — behind the brand</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-pink-400 text-base">image</span>
+          <span class="font-mono text-xs text-white/55">FRI · 11:00</span>
+          <span class="text-sm">Static — quote design</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
+          <span class="font-mono text-xs text-white/55">SAT · 21:00</span>
+          <span class="text-sm">Story sequence — weekend drop</span>
+        </span>
+        <!-- duplicate set for seamless loop -->
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+          <span class="font-mono text-xs text-white/55">MON · 10:00</span>
+          <span class="text-sm">Trend Reel — hook + product reveal</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-pink-400 text-base">grid_view</span>
+          <span class="font-mono text-xs text-white/55">TUE · 18:30</span>
+          <span class="text-sm">Carousel — founder story</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
+          <span class="font-mono text-xs text-white/55">WED · 12:00</span>
+          <span class="text-sm">UGC remix — community spotlight</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
+          <span class="font-mono text-xs text-white/55">THU · 19:00</span>
+          <span class="text-sm">Cinematic Reel — behind the brand</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-pink-400 text-base">image</span>
+          <span class="font-mono text-xs text-white/55">FRI · 11:00</span>
+          <span class="text-sm">Static — quote design</span>
+        </span>
+        <span class="inline-flex shrink-0 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-5 py-2.5">
+          <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
+          <span class="font-mono text-xs text-white/55">SAT · 21:00</span>
+          <span class="text-sm">Story sequence — weekend drop</span>
+        </span>
       </div>
     </div>
 
-    <!-- WEEKLY TIMELINE -->
-    <div class="mt-12 liquid-glass rounded-3xl p-6 sm:p-8 overflow-hidden">
-      <div class="flex items-center justify-between mb-6">
-        <h4 class="font-kanit font-bold uppercase tracking-widest text-mmm-ink">A Week In Your Calendar</h4>
-        <span class="text-xs text-white/50 uppercase tracking-widest">Live preview</span>
-      </div>
+    <!-- ── SIGNATURE CTA STRIP ─────────────────────────────────── -->
+    <div class="relative rounded-[40px] overflow-hidden border border-mmm-purple/40"
+         style="background: linear-gradient(110deg, rgba(168,85,247,0.18) 0%, rgba(12,12,12,0.85) 50%, rgba(236,72,153,0.15) 100%);">
+      <div class="absolute -top-32 left-1/3 w-[400px] h-[400px] rounded-full bg-mmm-purple/30 blur-[110px] pointer-events-none"></div>
 
-      <div class="overflow-hidden -mx-8">
-        <div class="marquee-track flex gap-4 px-8 whitespace-nowrap">
-          <!-- one set -->
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
-            <span class="font-mono text-xs text-white/60">MON 10:00</span>
-            <span class="text-sm">Trend Reel — Hook + product reveal</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
-            <span class="font-mono text-xs text-white/60">TUE 18:30</span>
-            <span class="text-sm">Carousel — Founder story</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
-            <span class="font-mono text-xs text-white/60">WED 12:00</span>
-            <span class="text-sm">UGC remix — community spotlight</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
-            <span class="font-mono text-xs text-white/60">THU 19:00</span>
-            <span class="text-sm">Cinematic Reel — Behind the brand</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
-            <span class="font-mono text-xs text-white/60">FRI 11:00</span>
-            <span class="text-sm">Static — Quote design</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
-            <span class="font-mono text-xs text-white/60">SAT 21:00</span>
-            <span class="text-sm">Story sequence — Weekend drop</span>
-          </span>
-          <!-- duplicate set for seamless loop -->
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
-            <span class="font-mono text-xs text-white/60">MON 10:00</span>
-            <span class="text-sm">Trend Reel — Hook + product reveal</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
-            <span class="font-mono text-xs text-white/60">TUE 18:30</span>
-            <span class="text-sm">Carousel — Founder story</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">auto_awesome</span>
-            <span class="font-mono text-xs text-white/60">WED 12:00</span>
-            <span class="text-sm">UGC remix — community spotlight</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">movie</span>
-            <span class="font-mono text-xs text-white/60">THU 19:00</span>
-            <span class="text-sm">Cinematic Reel — Behind the brand</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">image</span>
-            <span class="font-mono text-xs text-white/60">FRI 11:00</span>
-            <span class="text-sm">Static — Quote design</span>
-          </span>
-          <span class="inline-flex shrink-0 items-center gap-3 liquid-glass rounded-2xl px-5 py-3">
-            <span class="material-symbols-outlined text-mmm-purple text-base">bolt</span>
-            <span class="font-mono text-xs text-white/60">SAT 21:00</span>
-            <span class="text-sm">Story sequence — Weekend drop</span>
-          </span>
+      <div class="relative grid lg:grid-cols-[1.4fr_1fr] gap-6 p-7 sm:p-12 items-center">
+        <div>
+          <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase mb-3">Final word</p>
+          <h3 class="font-kanit font-black uppercase leading-[0.9] tracking-tight"
+              style="font-size: clamp(32px, 4.5vw, 60px);">
+            We handle <span class="italic font-serif font-normal normal-case text-pink-300">everything.</span><br/>
+            You handle <span class="italic font-serif font-normal normal-case text-mmm-purple">the wins.</span>
+          </h3>
+          <p class="mt-4 text-white/55 max-w-lg text-sm sm:text-base">Strategy, production, posting, analytics, iteration. One operating system. Zero churn cycles.</p>
+        </div>
+        <div class="flex flex-col gap-3">
+          <a href="#contact" class="group inline-flex items-center justify-between bg-white text-black font-semibold px-6 py-4 rounded-full hover:bg-mmm-ink transition-colors">
+            <span class="uppercase tracking-widest text-sm">Book a Strategy Call</span>
+            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_outward</span>
+          </a>
+          <a href="#offer" class="group inline-flex items-center justify-between border border-white/25 px-6 py-4 rounded-full hover:bg-white/5 transition-colors">
+            <span class="uppercase tracking-widest text-sm">See the work</span>
+            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_outward</span>
+          </a>
+          <p class="font-mono text-[10px] tracking-[0.4em] text-white/40 uppercase pt-1 text-center">More reach · More sales · More money</p>
         </div>
       </div>
     </div>
 
-    <!-- bottom line CTA -->
-    <div class="mt-12 liquid-glass-strong rounded-full px-6 sm:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-4 border border-white/15">
-      <p class="font-kanit font-semibold uppercase tracking-[0.2em] text-sm sm:text-base text-center sm:text-left">
-        We handle it all, so you can focus on growing the business.
-      </p>
-      <a href="#contact" class="inline-flex items-center gap-2 bg-mmm-purple text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:brightness-110">
-        Start now
-        <span class="material-symbols-outlined text-base">arrow_forward</span>
-      </a>
-    </div>
   </div>
 </section>
 
@@ -780,12 +948,118 @@
 <!-- ════════════════════════════════════════════════════════════
      SCRIPTS
      ════════════════════════════════════════════════════════════ -->
-<!-- Local-only config (gitignored). Create config.js with:
-     window.MMM_GROQ_KEY = 'gsk_...';
--->
 <script src="config.js"></script>
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ───────── NAV scroll frost ───────── */
+  (function () {
+    const nav = document.getElementById('mmm-nav');
+    if (!nav) return;
+    const onScroll = () => {
+      if (window.scrollY > 40) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  /* ───────── CALENDAR 30-DAY GRID ─────────
+     Generates a 7×N grid (Mon-start) of 30 deliverables.
+     Pattern: reel, post, reel, post... distributed across the month,
+     with strategic Sunday "rest" tiles for cadence.
+  ───────────────────────────────── */
+  (function () {
+    const grid = document.getElementById('cal-grid');
+    if (!grid) return;
+
+    // 30-day plan: 15 reels (R) + 15 posts (P) + 7 rest (-) sprinkled
+    // 6 weeks × 7 = 42 tiles; first 2 days = lead-in (gray), last few = lead-out.
+    const PLAN = [
+      // Week 1: lead-in (Mon = empty until day 1 falls on Mon)
+      'R','P','R','P','R','-','P',
+      'P','R','P','R','-','R','P',
+      'R','P','-','R','P','R','P',
+      'P','R','P','-','R','P','R',
+      'R','-','P','R','P','-','P',
+      // last row: trailing 1 day to fill
+      '-','-','-','-','-','-','-',
+    ];
+
+    const ICONS = {
+      R: { type: 'Reel',  icon: 'movie',     color: '#A855F7', sub: 'Hook + cinema cut' },
+      P: { type: 'Post',  icon: 'grid_view', color: '#ec4899', sub: 'Carousel · Static' },
+      '-': { type: 'Rest', icon: 'self_improvement', color: '#3a3a3a', sub: 'Algorithm breathes' },
+    };
+
+    let dayNum = 0;
+    const html = PLAN.map((kind, i) => {
+      const cfg = ICONS[kind];
+      const isRest = kind === '-';
+      // Stop numbering after 30
+      let label = '';
+      if (!isRest) { dayNum++; label = String(dayNum).padStart(2,'0'); }
+      else {
+        // Show day numbers on rest cells too for first 30 days
+        if (i < 30) { dayNum++; label = String(dayNum).padStart(2,'0'); }
+      }
+
+      const delay = (i * 22).toString();
+      const bg = kind === 'R'
+        ? 'background: linear-gradient(135deg, rgba(168,85,247,0.95) 0%, rgba(124,58,237,0.95) 100%);'
+        : kind === 'P'
+          ? 'background: linear-gradient(135deg, rgba(236,72,153,0.95) 0%, rgba(190,24,93,0.95) 100%);'
+          : 'background: rgba(255,255,255,0.025); border: 1px dashed rgba(255,255,255,0.12);';
+
+      const textCls = isRest ? 'text-white/30' : 'text-white';
+      const labelHtml = label
+        ? `<span class="font-mono text-[10px] tracking-widest ${textCls} opacity-80">${label}</span>`
+        : '';
+
+      return `
+        <div class="cal-tile relative aspect-square rounded-lg sm:rounded-xl p-2 sm:p-2.5 flex flex-col justify-between overflow-hidden ${isRest ? '' : 'cursor-pointer'}"
+             data-kind="${kind}" data-delay="${delay}" style="${bg}">
+          ${labelHtml}
+          <span class="material-symbols-outlined ${textCls} self-end" style="font-size: clamp(14px, 1.6vw, 22px); ${isRest ? 'opacity:.4' : ''}">${cfg.icon}</span>
+          ${!isRest ? `<div class="cal-tile-shine pointer-events-none absolute inset-0"></div>` : ''}
+        </div>`;
+    }).join('');
+
+    grid.innerHTML = html;
+
+    // Animated reveal on scroll into view
+    const tiles = grid.querySelectorAll('.cal-tile');
+    tiles.forEach(t => {
+      t.style.opacity = '0';
+      t.style.transform = 'translateY(8px) scale(.94)';
+      t.style.transition = 'opacity .55s cubic-bezier(.22,1,.36,1), transform .55s cubic-bezier(.22,1,.36,1)';
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          tiles.forEach(t => {
+            const d = parseInt(t.dataset.delay || '0', 10);
+            setTimeout(() => {
+              t.style.opacity = '1';
+              t.style.transform = 'translateY(0) scale(1)';
+            }, d);
+          });
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.2 });
+    io.observe(grid);
+
+    // Cycling shine on active tiles
+    let shineIdx = 0;
+    const activeTiles = Array.from(tiles).filter(t => t.dataset.kind !== '-');
+    setInterval(() => {
+      activeTiles.forEach(t => t.classList.remove('cal-tile-active'));
+      const cur = activeTiles[shineIdx % activeTiles.length];
+      if (cur) cur.classList.add('cal-tile-active');
+      shineIdx++;
+    }, 900);
+  })();
 
   /* ───────── INTRO TUNNEL ───────── */
   (function () {
@@ -966,8 +1240,6 @@
      and move calls behind a server proxy before production.
   ───────────────────────────────── */
   (function () {
-    // Set window.MMM_GROQ_KEY in a local, gitignored config.js for testing.
-    // Production: move calls behind a server-side proxy (Cloudflare Worker / Vercel function).
     const GROQ_KEY = (window.MMM_GROQ_KEY || '').trim();
     const MODEL = 'llama-3.3-70b-versatile';
     const SYSTEM = `You are MMM Agency's AI strategist.
@@ -1006,12 +1278,6 @@ Keep responses tight (under 120 words), action-oriented, and on-brand. If asked 
       history.push({ role: 'user', content: text });
       input.value = '';
       sendBtn.disabled = true;
-
-      if (!GROQ_KEY) {
-        addMsg('bot', 'Chatbot is not configured. Drop a Groq key into config.js (see README) and reload.');
-        sendBtn.disabled = false;
-        return;
-      }
 
       const typing = addMsg('bot', 'Thinking…', 'typing');
 

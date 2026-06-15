@@ -196,11 +196,15 @@
       radial-gradient(ellipse at 70% 50%, rgba(236,72,153,0.06) 0%, transparent 40%);
     mix-blend-mode: screen;
   }
-  /* During reveal: kill the tunnel completely — logo lands on pure black */
+  /* During reveal AND fade-out: kill the tunnel completely — logo lands on pure black */
   .intro-tunnel.intro-reveal .intro-stage,
   .intro-tunnel.intro-reveal .intro-core,
-  .intro-tunnel.intro-reveal .intro-vignette { display: none !important; }
-  .intro-tunnel.intro-reveal { background: #000 !important; }
+  .intro-tunnel.intro-reveal .intro-vignette,
+  .intro-tunnel.intro-out .intro-stage,
+  .intro-tunnel.intro-out .intro-core,
+  .intro-tunnel.intro-out .intro-vignette { display: none !important; }
+  .intro-tunnel.intro-reveal,
+  .intro-tunnel.intro-out { background: #000 !important; }
 
   .intro-center{
     position:absolute; inset:0; z-index:10;

@@ -266,20 +266,24 @@
   .stack-wrap { position: relative; }
   .stack-card-outer {
     position: sticky;
-    height: 90vh;
+    height: 120vh;
     /* top is set inline per-card to create the offset stack */
     display: flex; align-items: flex-start; justify-content: center;
   }
   .stack-card {
     width: 100%;
+    max-height: calc(100vh - 90px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     border-radius: 60px;
     border: 2px solid #D7E2EA;
     background: #0C0C0C;
     transform-origin: top center;
     will-change: transform;
     box-shadow: 0 30px 80px rgba(0,0,0,.5);
-    overflow: hidden;
   }
+  .stack-card::-webkit-scrollbar { display: none; }
   @media (max-width: 768px){
     .stack-card { border-radius: 40px; }
   }

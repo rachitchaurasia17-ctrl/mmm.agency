@@ -118,6 +118,14 @@
     backface-visibility: hidden;
     transform: translate3d(0,0,-1300px);
   }
+  /* CSS-driven flight — runs entirely on the compositor thread */
+  .intro-tunnel.intro-flying .intro-room{
+    animation: tunnelFly 2800ms cubic-bezier(0.45, 0, 0.25, 1) forwards;
+  }
+  @keyframes tunnelFly {
+    from { transform: translate3d(0,0,-1300px); }
+    to   { transform: translate3d(0,0,1450px); }
+  }
   .face{
     position:absolute; top:50%; left:50%;
     background:#0C0C0C; overflow:hidden; display:flex;
@@ -133,16 +141,16 @@
   .t-row{
     font-family: 'Kanit', system-ui, sans-serif;
     font-weight: 800;
-    font-size: clamp(160px, 22vmin, 360px);
+    font-size: clamp(110px, 16vmin, 230px);
     line-height: 0.86;
     letter-spacing: -.04em;
     white-space: nowrap;
     color: #D7E2EA;
-    opacity: 0.9;
+    opacity: 0.88;
     text-transform: uppercase;
-    will-change: transform;
+    text-rendering: optimizeSpeed;
   }
-  @media (max-width:768px){ .t-row{ font-size: clamp(120px,28vmin,240px); } }
+  @media (max-width:768px){ .t-row{ font-size: clamp(90px,22vmin,180px); } }
 
   .intro-core{
     position:absolute; top:50%; left:50%;
@@ -385,10 +393,22 @@
     background: transparent;
     box-shadow: 0 14px 50px rgba(0,0,0,0.35);
   }
-  .approach-card h3, .approach-card p {
-    text-shadow: 0 2px 14px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.9);
+  .approach-card h3 {
+    /* solid white, NOT gradient — gradient fill kills text-shadow */
+    color: #ffffff !important;
+    background: none !important;
+    -webkit-text-fill-color: #ffffff !important;
+    text-shadow:
+      0 2px 0 rgba(0,0,0,0.55),
+      0 4px 16px rgba(0,0,0,0.9),
+      0 0 28px rgba(0,0,0,0.7);
   }
-  .approach-card p { color: #ffffff; }
+  .approach-card p {
+    color: #ffffff;
+    text-shadow:
+      0 1px 0 rgba(0,0,0,0.55),
+      0 2px 12px rgba(0,0,0,0.9);
+  }
   /* gradient hairline border */
   .approach-card::before {
     content: '';
@@ -1077,12 +1097,12 @@
     }, 900);
   })();
 
-  /* ───────── INTRO TUNNEL ───────── */
+  /* ───────── INTRO TUNNEL (CSS-driven, JS orchestrates only) ───────── */
   (function () {
     const PHRASE = 'MMM · MORE REACH · MORE SALES · MORE MONEY · ';
-    // Lighter DOM (~80 rows total) + longer duration = smoother
-    const ROWS = 5, REPEAT = 5, DURATION = 2800, REVEAL_HOLD = 1200;
-    const DEPTH = 2600;
+    const ROWS = 4, REPEAT = 4;          // tiny DOM (~64 long lines total → cheap to paint)
+    const DURATION = 2800;               // matches CSS @keyframes tunnelFly
+    const REVEAL_HOLD = 1100;
 
     document.querySelectorAll('#intro .t-rows').forEach(rows => {
       let html = '';
@@ -1094,18 +1114,10 @@
     const room  = document.getElementById('intro-room');
     document.body.classList.add('no-scroll');
 
-    // Start positioned at GPU layer so the first frame doesn't snap
-    room.style.transform = `translate3d(0,0,${-DEPTH/2}px)`;
-
-    // Smooth, broad easing — flatter middle, gentle ends
-    const ease = (t) => 1 - Math.pow(1 - t, 2.4);
-
-    let start = null, raf = 0;
     let revealed = false, done = false;
 
     function teardown(){
       if (done) return; done = true;
-      cancelAnimationFrame(raf);
       intro.classList.remove('intro-flying','intro-reveal');
       intro.classList.add('intro-out','intro-fade');
       document.body.classList.remove('no-scroll');
@@ -1113,28 +1125,17 @@
     }
     function beginReveal(){
       if (revealed) return; revealed = true;
-      cancelAnimationFrame(raf);
       intro.classList.remove('intro-flying');
       intro.classList.add('intro-reveal');
       setTimeout(teardown, REVEAL_HOLD);
     }
-    function loop(now){
-      if (start === null) start = now;
-      const t = Math.min((now - start) / DURATION, 1);
-      const e = ease(t);
-      const z = -DEPTH/2 + e * (DEPTH + 300);
-      // translate3d only — no rotateZ; rotation compounds float error during translateZ and causes the jitter
-      room.style.transform = `translate3d(0,0,${z.toFixed(2)}px)`;
-      if (t >= 1){ beginReveal(); return; }
-      raf = requestAnimationFrame(loop);
-    }
 
-    // Wait for the next frame so layout settles before we drive transforms
-    requestAnimationFrame(() => { raf = requestAnimationFrame(loop); });
-    // Safety in case rAF is throttled
-    setTimeout(beginReveal, DURATION + 800);
+    // CSS keyframes handle the flight. Reveal fires when the animation ends —
+    // or after a timer as a safety net if animationend never lands (background tab).
+    room.addEventListener('animationend', beginReveal, { once: true });
+    setTimeout(beginReveal, DURATION + 250);
 
-    // Skip on click anywhere
+    // Click anywhere to skip
     intro.addEventListener('click', teardown);
   })();
 

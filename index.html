@@ -654,9 +654,51 @@
      CONTENT CALENDAR — world-class redesign
      ════════════════════════════════════════════════════════════ -->
 <!-- ════════════════════════════════════════════════════════════
+     SECTION BREAK — Editing Approach → Content Calendar
+     ════════════════════════════════════════════════════════════ -->
+<div class="relative w-full bg-mmm-bg pt-32 pb-12 overflow-hidden">
+  <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-20">
+    <!-- chapter break: hairline + chapter badge + horizontal rule -->
+    <div class="flex items-center gap-6 mb-10">
+      <span class="font-mono text-[10px] tracking-[0.6em] text-mmm-purple uppercase whitespace-nowrap">End · Chapter 03</span>
+      <span class="flex-1 h-px bg-gradient-to-r from-mmm-purple/40 via-white/15 to-transparent"></span>
+    </div>
+
+    <!-- giant transition typography -->
+    <div class="flex items-center justify-between flex-wrap gap-6">
+      <div class="flex items-center gap-5 sm:gap-8">
+        <span class="font-kanit font-black text-mmm-ink/15 leading-none select-none"
+              style="font-size: clamp(80px, 14vw, 220px); letter-spacing: -0.04em;">04</span>
+        <div>
+          <p class="font-mono text-[11px] tracking-[0.5em] text-mmm-purple uppercase mb-2">Next</p>
+          <h3 class="font-kanit font-black uppercase leading-[0.9] tracking-tight"
+              style="font-size: clamp(28px, 4vw, 52px);">
+            Your<br/><span class="italic font-serif font-normal normal-case text-mmm-purple">monthly</span> engine.
+          </h3>
+        </div>
+      </div>
+      <a href="#contact" class="hidden sm:inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-xs uppercase tracking-widest hover:bg-white/5 transition-colors">
+        Skip to plan
+        <span class="material-symbols-outlined text-base">arrow_downward</span>
+      </a>
+    </div>
+
+    <!-- closing hairline -->
+    <div class="flex items-center gap-6 mt-10">
+      <span class="flex-1 h-px bg-gradient-to-l from-mmm-purple/40 via-white/15 to-transparent"></span>
+      <span class="font-mono text-[10px] tracking-[0.6em] text-mmm-purple uppercase whitespace-nowrap">Start · Chapter 04</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
      CONTENT CALENDAR — Editorial / award-winning rebuild
      ════════════════════════════════════════════════════════════ -->
-<section id="calendar" class="relative w-full bg-mmm-bg py-28 sm:py-36 overflow-hidden">
+<section id="calendar" class="relative w-full overflow-hidden"
+         style="background: linear-gradient(180deg, #0C0C0C 0%, #0a0612 30%, #0C0C0C 100%);">
+  <!-- top frame edge -->
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-mmm-purple/60 to-transparent"></div>
+  <div class="pt-20 sm:pt-28 pb-28 sm:pb-36 relative">
   <!-- ambient layers -->
   <div class="absolute inset-0 calendar-grid opacity-40 [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]"></div>
   <div class="absolute -top-40 -left-40 w-[700px] h-[700px] rounded-full bg-mmm-purple/20 blur-[140px] pointer-events-none orb-purple"></div>
@@ -968,6 +1010,7 @@
     </div>
 
   </div>
+  </div>
 </section>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -1042,55 +1085,62 @@
     const grid = document.getElementById('cal-grid');
     if (!grid) return;
 
-    // 30-day plan: 15 reels (R) + 15 posts (P) + 7 rest (-) sprinkled
-    // 6 weeks × 7 = 42 tiles; first 2 days = lead-in (gray), last few = lead-out.
+    // 31-day plan: 15 reels (R) + 15 posts (P) + 1 rest (-) + 4 trailing empty (.)
+    // 5 weeks × 7 = 35 tiles total. Trailing cells are blank (no label, no icon).
     const PLAN = [
-      // Week 1: lead-in (Mon = empty until day 1 falls on Mon)
-      'R','P','R','P','R','-','P',
-      'P','R','P','R','-','R','P',
-      'R','P','-','R','P','R','P',
-      'P','R','P','-','R','P','R',
-      'R','-','P','R','P','-','P',
-      // last row: trailing 1 day to fill
-      '-','-','-','-','-','-','-',
+      // Mon Tue Wed Thu Fri Sat Sun
+      'R','P','R','P','R','P','-',   // Week 1 — days 1-7  (rest on Sunday)
+      'R','P','R','P','R','P','R',   // Week 2 — days 8-14
+      'P','R','P','R','P','R','P',   // Week 3 — days 15-21
+      'R','P','R','P','R','P','R',   // Week 4 — days 22-28
+      'P','R','P','.','.','.','.',   // Week 5 — days 29-31 + 4 blank trailing
     ];
 
     const ICONS = {
-      R: { type: 'Reel',  icon: 'movie',     color: '#A855F7', sub: 'Hook + cinema cut' },
-      P: { type: 'Post',  icon: 'grid_view', color: '#ec4899', sub: 'Carousel · Static' },
-      '-': { type: 'Rest', icon: 'self_improvement', color: '#3a3a3a', sub: 'Algorithm breathes' },
+      R: { icon: 'movie' },
+      P: { icon: 'grid_view' },
+      '-': { icon: 'self_improvement' },
+      '.': { icon: '' },
     };
 
     let dayNum = 0;
     const html = PLAN.map((kind, i) => {
       const cfg = ICONS[kind];
       const isRest = kind === '-';
-      // Stop numbering after 30
+      const isBlank = kind === '.';
+
+      // Number every day from 1 to 31 (active + rest); blanks get no number.
       let label = '';
-      if (!isRest) { dayNum++; label = String(dayNum).padStart(2,'0'); }
-      else {
-        // Show day numbers on rest cells too for first 30 days
-        if (i < 30) { dayNum++; label = String(dayNum).padStart(2,'0'); }
+      if (!isBlank && dayNum < 31) {
+        dayNum++;
+        label = String(dayNum).padStart(2,'0');
       }
 
       const delay = (i * 22).toString();
-      const bg = kind === 'R'
-        ? 'background: linear-gradient(135deg, rgba(168,85,247,0.95) 0%, rgba(124,58,237,0.95) 100%);'
-        : kind === 'P'
-          ? 'background: linear-gradient(135deg, rgba(236,72,153,0.95) 0%, rgba(190,24,93,0.95) 100%);'
-          : 'background: rgba(255,255,255,0.025); border: 1px dashed rgba(255,255,255,0.12);';
 
-      const textCls = isRest ? 'text-white/30' : 'text-white';
+      let bg;
+      if (kind === 'R')      bg = 'background: linear-gradient(135deg, rgba(168,85,247,0.95) 0%, rgba(124,58,237,0.95) 100%);';
+      else if (kind === 'P') bg = 'background: linear-gradient(135deg, rgba(236,72,153,0.95) 0%, rgba(190,24,93,0.95) 100%);';
+      else if (isRest)       bg = 'background: rgba(255,255,255,0.025); border: 1px dashed rgba(255,255,255,0.12);';
+      else                   bg = 'background: transparent; border: 1px dashed rgba(255,255,255,0.04);';  // blank trailing
+
+      const textCls = (isRest || isBlank) ? 'text-white/30' : 'text-white';
       const labelHtml = label
         ? `<span class="font-mono text-[10px] tracking-widest ${textCls} opacity-80">${label}</span>`
-        : '';
+        : '<span></span>';
+
+      const iconHtml = cfg.icon
+        ? `<span class="material-symbols-outlined ${textCls} self-end" style="font-size: clamp(14px, 1.6vw, 22px); ${isRest ? 'opacity:.4' : ''}">${cfg.icon}</span>`
+        : '<span></span>';
+
+      const interactive = (kind === 'R' || kind === 'P') ? 'cursor-pointer' : '';
 
       return `
-        <div class="cal-tile relative aspect-square rounded-lg sm:rounded-xl p-2 sm:p-2.5 flex flex-col justify-between overflow-hidden ${isRest ? '' : 'cursor-pointer'}"
+        <div class="cal-tile relative aspect-square rounded-lg sm:rounded-xl p-2 sm:p-2.5 flex flex-col justify-between overflow-hidden ${interactive}"
              data-kind="${kind}" data-delay="${delay}" style="${bg}">
           ${labelHtml}
-          <span class="material-symbols-outlined ${textCls} self-end" style="font-size: clamp(14px, 1.6vw, 22px); ${isRest ? 'opacity:.4' : ''}">${cfg.icon}</span>
-          ${!isRest ? `<div class="cal-tile-shine pointer-events-none absolute inset-0"></div>` : ''}
+          ${iconHtml}
+          ${(kind === 'R' || kind === 'P') ? `<div class="cal-tile-shine pointer-events-none absolute inset-0"></div>` : ''}
         </div>`;
     }).join('');
 

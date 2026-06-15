@@ -101,33 +101,48 @@
   .intro-tunnel{
     position:fixed; inset:0; z-index:1000;
     background:#0C0C0C; overflow:hidden;
-    transition: opacity .95s cubic-bezier(.7,0,.2,1),
-                transform .95s cubic-bezier(.7,0,.2,1),
-                filter .95s cubic-bezier(.7,0,.2,1);
+    transition: opacity .9s cubic-bezier(.65,0,.35,1),
+                transform .9s cubic-bezier(.65,0,.35,1),
+                filter .9s cubic-bezier(.65,0,.35,1);
   }
-  .intro-tunnel.intro-fade{ opacity:0; transform:scale(1.22); filter:blur(6px); }
-  .intro-stage{ position:absolute; inset:0; perspective:900px; perspective-origin:50% 50%; }
-  .intro-room{ position:absolute; inset:0; transform-style:preserve-3d; will-change:transform; }
+  .intro-tunnel.intro-fade{ opacity:0; transform:scale(1.18); filter:blur(6px); }
+  .intro-stage{
+    position:absolute; inset:0;
+    perspective:1100px; perspective-origin:50% 50%;
+    contain: layout paint;
+  }
+  .intro-room{
+    position:absolute; inset:0;
+    transform-style:preserve-3d;
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translate3d(0,0,-1300px);
+  }
   .face{
     position:absolute; top:50%; left:50%;
     background:#0C0C0C; overflow:hidden; display:flex;
+    backface-visibility: hidden;
+    contain: paint;
   }
-  .face-bottom{ width:100vw; height:var(--d); transform:translate(-50%,-50%) translateY(50vh) rotateX(90deg); }
-  .face-top   { width:100vw; height:var(--d); transform:translate(-50%,-50%) translateY(-50vh) rotateX(-90deg); }
-  .face-left  { width:var(--d); height:100vh; transform:translate(-50%,-50%) translateX(-50vw) rotateY(90deg); }
-  .face-right { width:var(--d); height:100vh; transform:translate(-50%,-50%) translateX(50vw) rotateY(-90deg); }
+  .face-bottom{ width:100vw; height:var(--d); transform:translate3d(-50%,-50%,0) translateY(50vh) rotateX(90deg); }
+  .face-top   { width:100vw; height:var(--d); transform:translate3d(-50%,-50%,0) translateY(-50vh) rotateX(-90deg); }
+  .face-left  { width:var(--d); height:100vh; transform:translate3d(-50%,-50%,0) translateX(-50vw) rotateY(90deg); }
+  .face-right { width:var(--d); height:100vh; transform:translate3d(-50%,-50%,0) translateX(50vw) rotateY(-90deg); }
   .face-top .t-rows{ transform:rotate(180deg); }
   .t-rows{ display:flex; flex-direction:column; justify-content:space-between; width:100%; height:100%; }
   .t-row{
-    font-family:'Kanit',sans-serif; font-weight:900;
-    font-size: clamp(180px, 24vmin, 400px);
-    line-height: 0.86; letter-spacing: -.04em;
-    white-space: nowrap; color:#D7E2EA;
-    opacity: 0.95;
+    font-family: 'Kanit', system-ui, sans-serif;
+    font-weight: 800;
+    font-size: clamp(160px, 22vmin, 360px);
+    line-height: 0.86;
+    letter-spacing: -.04em;
+    white-space: nowrap;
+    color: #D7E2EA;
+    opacity: 0.9;
     text-transform: uppercase;
-    text-shadow: 0 0 60px rgba(168,85,247,0.25);
+    will-change: transform;
   }
-  @media (max-width:768px){ .t-row{ font-size: clamp(130px,32vmin,260px); } }
+  @media (max-width:768px){ .t-row{ font-size: clamp(120px,28vmin,240px); } }
 
   .intro-core{
     position:absolute; top:50%; left:50%;
@@ -355,19 +370,25 @@
      NAV — fully transparent across the site
   ───────────────────────────────────────────── */
   #mmm-nav { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid transparent; }
+  .mmm-nav-text {
+    text-shadow:
+      0 1px 0 rgba(0,0,0,0.4),
+      0 2px 12px rgba(0,0,0,0.85),
+      0 0 22px rgba(0,0,0,0.55);
+  }
 
   /* ─────────────────────────────────────────────
      APPROACH CARDS — premium glass, gradient stroke
   ───────────────────────────────────────────── */
   .approach-card {
     position: relative;
-    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.015) 100%);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 12px 40px rgba(0,0,0,0.35);
+    background: transparent;
+    box-shadow: 0 14px 50px rgba(0,0,0,0.35);
   }
+  .approach-card h3, .approach-card p {
+    text-shadow: 0 2px 14px rgba(0,0,0,0.85), 0 1px 3px rgba(0,0,0,0.9);
+  }
+  .approach-card p { color: #ffffff; }
   /* gradient hairline border */
   .approach-card::before {
     content: '';
@@ -434,15 +455,15 @@
      NAV (matches original Stitch design)
      ════════════════════════════════════════════════════════════ -->
 <nav id="mmm-nav" class="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-7xl z-[80] flex justify-between items-center px-8 py-4 rounded-full">
-  <div class="font-display text-3xl font-bold tracking-tighter">MMM</div>
-  <div class="hidden md:flex gap-8">
-    <a href="#top" class="font-bold border-b-2 border-white pb-1">Home</a>
-    <a href="#offer" class="text-white/70 font-medium hover:text-white transition-opacity">Services</a>
-    <a href="#calendar" class="text-white/70 font-medium hover:text-white transition-opacity">Case Studies</a>
-    <a href="#approach" class="text-white/70 font-medium hover:text-white transition-opacity">Process</a>
-    <a href="#contact" class="text-white/70 font-medium hover:text-white transition-opacity">Contact</a>
+  <div class="font-kanit text-3xl font-black tracking-tighter text-white mmm-nav-text">MMM</div>
+  <div class="hidden md:flex gap-8 text-sm uppercase tracking-[0.18em]">
+    <a href="#top" class="font-bold text-white mmm-nav-text border-b-2 border-white pb-1">Home</a>
+    <a href="#offer" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Services</a>
+    <a href="#calendar" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Case Studies</a>
+    <a href="#approach" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Process</a>
+    <a href="#contact" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Contact</a>
   </div>
-  <a href="#calendar" class="bg-white text-black px-6 py-2 rounded-full font-medium hover:bg-white/90 transition-all active:scale-95">Get Started</a>
+  <a href="#calendar" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-mmm-ink transition-all active:scale-95 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">Get Started</a>
 </nav>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -1059,7 +1080,9 @@
   /* ───────── INTRO TUNNEL ───────── */
   (function () {
     const PHRASE = 'MMM · MORE REACH · MORE SALES · MORE MONEY · ';
-    const ROWS = 8, REPEAT = 8, DURATION = 1900, REVEAL_HOLD = 1200;
+    // Lighter DOM (~80 rows total) + longer duration = smoother
+    const ROWS = 5, REPEAT = 5, DURATION = 2800, REVEAL_HOLD = 1200;
+    const DEPTH = 2600;
 
     document.querySelectorAll('#intro .t-rows').forEach(rows => {
       let html = '';
@@ -1071,38 +1094,47 @@
     const room  = document.getElementById('intro-room');
     document.body.classList.add('no-scroll');
 
-    function easeInOutCubic(t){ return t<.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+    // Start positioned at GPU layer so the first frame doesn't snap
+    room.style.transform = `translate3d(0,0,${-DEPTH/2}px)`;
 
-    const start = performance.now();
-    const DEPTH = 2600;
+    // Smooth, broad easing — flatter middle, gentle ends
+    const ease = (t) => 1 - Math.pow(1 - t, 2.4);
+
+    let start = null, raf = 0;
     let revealed = false, done = false;
 
     function teardown(){
       if (done) return; done = true;
+      cancelAnimationFrame(raf);
       intro.classList.remove('intro-flying','intro-reveal');
       intro.classList.add('intro-out','intro-fade');
       document.body.classList.remove('no-scroll');
-      setTimeout(()=> intro.remove(), 950);
+      setTimeout(()=> intro.remove(), 900);
     }
     function beginReveal(){
       if (revealed) return; revealed = true;
+      cancelAnimationFrame(raf);
       intro.classList.remove('intro-flying');
       intro.classList.add('intro-reveal');
       setTimeout(teardown, REVEAL_HOLD);
     }
     function loop(now){
+      if (start === null) start = now;
       const t = Math.min((now - start) / DURATION, 1);
-      const e = easeInOutCubic(t);
+      const e = ease(t);
       const z = -DEPTH/2 + e * (DEPTH + 300);
-      const roll = t * 2.5;
-      room.style.transform = `translateZ(${z}px) rotateZ(${roll}deg)`;
+      // translate3d only — no rotateZ; rotation compounds float error during translateZ and causes the jitter
+      room.style.transform = `translate3d(0,0,${z.toFixed(2)}px)`;
       if (t >= 1){ beginReveal(); return; }
-      requestAnimationFrame(loop);
+      raf = requestAnimationFrame(loop);
     }
-    requestAnimationFrame(loop);
-    setTimeout(beginReveal, DURATION + 600); // safety
 
-    // Skip on click
+    // Wait for the next frame so layout settles before we drive transforms
+    requestAnimationFrame(() => { raf = requestAnimationFrame(loop); });
+    // Safety in case rAF is throttled
+    setTimeout(beginReveal, DURATION + 800);
+
+    // Skip on click anywhere
     intro.addEventListener('click', teardown);
   })();
 

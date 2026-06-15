@@ -385,41 +385,83 @@
   .chat-input button:disabled { opacity: .5; cursor: not-allowed; }
 
   /* ─────────────────────────────────────────────
-     CALENDAR — editorial monochrome tiles
+     CALENDAR — premium editorial tiles
   ───────────────────────────────────────────── */
   .cal-tile {
-    background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, rgba(255,255,255,0.005) 100%);
-    border: 1px solid rgba(255,255,255,0.07);
+    position: relative;
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, #131316 0%, #0d0d10 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.06),
+      inset 0 -1px 0 rgba(0,0,0,0.4),
+      0 6px 18px rgba(0,0,0,0.25);
     transition: transform .35s cubic-bezier(.22,1,.36,1),
-                border-color .35s ease,
+                box-shadow .35s ease,
                 background .35s ease;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
   }
-  .cal-tile--R { border-color: rgba(168,85,247,0.25); }
-  .cal-tile--P { border-color: rgba(236,72,153,0.22); }
+  /* gradient hairline ring around each tile */
+  .cal-tile::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none;
+  }
+  .cal-tile--R::before {
+    background: linear-gradient(160deg, rgba(168,85,247,0.55) 0%, rgba(168,85,247,0.05) 50%, rgba(255,255,255,0.04) 100%);
+  }
+  .cal-tile--P::before {
+    background: linear-gradient(160deg, rgba(236,72,153,0.5) 0%, rgba(236,72,153,0.05) 50%, rgba(255,255,255,0.04) 100%);
+  }
   .cal-tile--rest {
     background: transparent;
-    border-style: dashed;
-    border-color: rgba(255,255,255,0.08);
+    box-shadow: none;
   }
-  .cal-tile--blank { background: transparent; border: none; }
+  .cal-tile--rest::before {
+    background: none;
+    border: 1px dashed rgba(255,255,255,0.1);
+    border-radius: inherit;
+    -webkit-mask: none; mask: none;
+  }
+  .cal-tile--blank { background: transparent; box-shadow: none; }
+  .cal-tile--blank::before { display: none; }
+
   .cal-tile:hover:not(.cal-tile--blank):not(.cal-tile--rest) {
-    transform: translateY(-2px);
-    background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(168,85,247,0.06) 100%);
-    border-color: rgba(255,255,255,0.18);
+    transform: translateY(-3px);
+    background:
+      radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 60%),
+      linear-gradient(180deg, #1a1a1f 0%, #111114 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.1),
+      0 14px 30px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(168,85,247,0.12);
   }
 
   .cal-dot {
     display: inline-block;
-    width: 6px; height: 6px;
+    width: 5px; height: 5px;
     border-radius: 999px;
     flex-shrink: 0;
   }
   .cal-dot--rest { background: rgba(255,255,255,0.18); box-shadow: none; }
 
-  /* gentle shine sweep on the live tile */
+  /* serif numerals give the grid an editorial print feel */
+  .cal-num {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-variant-numeric: tabular-nums;
+    font-style: italic;
+    font-weight: 600;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+  }
+
+  /* shine sweep on the live tile */
   .cal-tile-shine {
-    background: linear-gradient(120deg, transparent 35%, rgba(255,255,255,.16) 50%, transparent 65%);
+    background: linear-gradient(120deg, transparent 38%, rgba(255,255,255,.12) 50%, transparent 62%);
     transform: translateX(-120%);
     opacity: 0;
   }
@@ -659,7 +701,7 @@
 <!-- ════════════════════════════════════════════════════════════
      WHAT WE OFFER — sticky stacking cards
      ════════════════════════════════════════════════════════════ -->
-<section id="offer" class="relative w-full bg-mmm-bg font-kanit pt-32 sm:pt-40 pb-24 rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] -mt-10 sm:-mt-12 md:-mt-14 z-10">
+<section id="offer" class="relative w-full bg-mmm-bg font-kanit pt-32 sm:pt-40 pb-48 sm:pb-56 rounded-t-[40px] sm:rounded-t-[50px] md:rounded-t-[60px] -mt-10 sm:-mt-12 md:-mt-14 z-10">
   <div class="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16">
     <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5 text-center">— 03 / Services</p>
     <h2 class="text-center uppercase font-black leading-none mb-24 sm:mb-32"
@@ -810,8 +852,10 @@
     <!-- ── PRIMARY MODULE : 30-DAY GRID + STRATEGY PANEL ─────────── -->
     <div class="grid lg:grid-cols-12 gap-6 mb-6">
 
-      <!-- 30-day grid (8 cols) -->
-      <div class="lg:col-span-8 relative rounded-[40px] border border-white/10 bg-black/40 backdrop-blur-md p-6 sm:p-8 overflow-hidden">
+      <!-- 31-day grid (7 cols on lg) -->
+      <div class="lg:col-span-7 relative rounded-[32px] border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-md p-5 sm:p-7 overflow-hidden">
+        <!-- inner top sheen -->
+        <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
         <div class="flex items-center justify-between mb-7 flex-wrap gap-3">
           <div>
             <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase">Your Month, Engineered</p>
@@ -841,7 +885,7 @@
       </div>
 
       <!-- Strategy panel (4 cols) -->
-      <div class="lg:col-span-4 flex flex-col gap-6">
+      <div class="lg:col-span-5 flex flex-col gap-6">
         <!-- price card -->
         <div class="relative rounded-[40px] p-7 sm:p-9 overflow-hidden border border-mmm-purple/40"
              style="background: linear-gradient(160deg, rgba(168,85,247,0.18) 0%, rgba(12,12,12,0.95) 60%);">
@@ -1125,23 +1169,24 @@
       }
 
       const dotHtml = dotColor
-        ? `<span class="cal-dot" style="background:${dotColor}; box-shadow: 0 0 8px ${dotColor}80;"></span>`
+        ? `<span class="cal-dot" style="background:${dotColor}; box-shadow: 0 0 10px ${dotColor};"></span>`
         : `<span class="cal-dot cal-dot--rest"></span>`;
 
+      // Premium editorial layout: serif italic day number top-left,
+      // glowing accent dot top-right, tiny icon bottom-right. No bottom text label.
       return `
-        <div class="cal-tile ${tileExtra} ${interactive} relative aspect-square rounded-lg sm:rounded-xl overflow-hidden"
+        <div class="cal-tile ${tileExtra} ${interactive} relative aspect-square rounded-xl overflow-hidden"
              data-kind="${kind}" data-delay="${delay}">
-          <div class="cal-tile-inner h-full w-full p-2.5 sm:p-3 flex flex-col justify-between">
+          <div class="cal-tile-inner relative z-[1] h-full w-full p-2.5 sm:p-3 flex flex-col justify-between">
             <div class="flex items-start justify-between">
-              <span class="font-mono text-[10px] sm:text-[11px] tracking-wider text-white/60">${label}</span>
+              <span class="cal-num leading-none" style="font-size: clamp(18px, 1.8vw, 26px);">${label}</span>
               ${dotHtml}
             </div>
-            <div class="flex items-end justify-between">
-              <span class="font-mono text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-white/35">${typeLabel}</span>
-              <span class="material-symbols-outlined text-white/45" style="font-size: clamp(14px, 1.4vw, 18px);">${cfg.icon}</span>
+            <div class="flex items-end justify-end">
+              <span class="material-symbols-outlined text-white/40" style="font-size: clamp(14px, 1.3vw, 18px);">${cfg.icon}</span>
             </div>
           </div>
-          <div class="cal-tile-shine pointer-events-none absolute inset-0"></div>
+          <div class="cal-tile-shine pointer-events-none absolute inset-0 z-[2]"></div>
         </div>`;
     }).join('');
 

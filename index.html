@@ -117,9 +117,10 @@
     backface-visibility: hidden;
     transform: translate3d(0,0,-1300px);
   }
-  /* CSS-driven flight — buttery, on the compositor */
-  .intro-tunnel.intro-flying .intro-room{
-    animation: tunnelFly 2600ms cubic-bezier(0.35, 0.05, 0.25, 1) forwards;
+  /* CSS-driven flight — runs on the compositor.
+     We start it via .intro-go after the first paint settles, NOT on initial load. */
+  .intro-tunnel.intro-go .intro-room{
+    animation: tunnelFly 2600ms cubic-bezier(0.33, 0.05, 0.25, 1) forwards;
   }
   @keyframes tunnelFly {
     0%   { transform: translate3d(0,0,-1300px); }
@@ -130,6 +131,8 @@
     background: linear-gradient(180deg, #0a0a0a 0%, #050505 100%);
     overflow:hidden; display:flex;
     backface-visibility: hidden;
+    will-change: transform;
+    transform-style: flat;
   }
   .face-bottom{ width:100vw; height:var(--d); transform:translate3d(-50%,-50%,0) translateY(50vh) rotateX(90deg); }
   .face-top   { width:100vw; height:var(--d); transform:translate3d(-50%,-50%,0) translateY(-50vh) rotateX(-90deg); }
@@ -137,64 +140,55 @@
   .face-right { width:var(--d); height:100vh; transform:translate3d(-50%,-50%,0) translateX(50vw) rotateY(-90deg); }
   .face-top .t-rows{ transform:rotate(180deg); }
   .t-rows{ display:flex; flex-direction:column; justify-content:space-between; width:100%; height:100%; }
+  /* Solid fill (cheap to paint). Alternating opacity gives the layered feel
+     without -webkit-text-stroke, which is very expensive at huge sizes
+     and was a major cause of first-paint stall. */
   .t-row{
     font-family: 'Kanit', system-ui, sans-serif;
     font-weight: 900;
-    font-size: clamp(180px, 22vmin, 380px);
+    font-size: clamp(160px, 20vmin, 320px);
     line-height: 0.86;
     letter-spacing: -.045em;
     white-space: nowrap;
-    color: transparent;
-    -webkit-text-stroke: 1.6px #ffffff;
-    text-stroke: 1.6px #ffffff;
-    opacity: 0.85;
-    text-transform: uppercase;
-  }
-  .t-row:nth-child(even){
     color: #ffffff;
-    -webkit-text-stroke: 0;
-    opacity: 0.95;
+    opacity: 0.18;
+    text-transform: uppercase;
+    text-rendering: optimizeSpeed;
   }
-  @media (max-width:768px){ .t-row{ font-size: clamp(130px,28vmin,260px); } }
+  .t-row:nth-child(even){ opacity: 0.92; }
+  @media (max-width:768px){ .t-row{ font-size: clamp(120px,26vmin,230px); } }
 
-  /* Portal glow at the vanishing point — drives the cinematic feel */
+  /* Portal glow at the vanishing point.
+     Pre-blurred radial gradient (no runtime filter:blur, no mix-blend-mode —
+     both forced expensive layer flattening during the flight). */
   .intro-core{
     position:absolute; top:50%; left:50%;
-    width:70vmin; height:70vmin;
-    transform:translate3d(-50%,-50%,0);
+    width:80vmin; height:80vmin;
+    border-radius: 50%;
+    transform: translate3d(-50%,-50%,0) scale(.18);
     background:
-      radial-gradient(circle, rgba(255,255,255,0.85) 0%, rgba(168,85,247,0.55) 18%, rgba(168,85,247,0) 60%);
-    filter: blur(20px);
+      radial-gradient(circle,
+        rgba(255,255,255,0.95) 0%,
+        rgba(216,180,254,0.85) 8%,
+        rgba(168,85,247,0.55) 22%,
+        rgba(168,85,247,0.15) 45%,
+        rgba(168,85,247,0) 65%);
     z-index:5; pointer-events:none;
-    animation: intro-core 2.6s cubic-bezier(.45,0,.55,1) forwards;
-    mix-blend-mode: screen;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  .intro-tunnel.intro-go .intro-core{
+    animation: intro-core 2600ms cubic-bezier(.45,0,.55,1) forwards;
   }
   @keyframes intro-core{
-    0%   { transform:translate3d(-50%,-50%,0) scale(.18); opacity:0.5; }
-    55%  { transform:translate3d(-50%,-50%,0) scale(1.4);  opacity:.95; }
-    100% { transform:translate3d(-50%,-50%,0) scale(3.6);  opacity:0; }
-  }
-  /* Second glow ring — adds depth */
-  .intro-core::before{
-    content:'';
-    position:absolute; inset:25%;
-    border-radius:50%;
-    background: radial-gradient(circle, rgba(168,85,247,0.6) 0%, transparent 70%);
-    filter: blur(40px);
+    0%   { transform: translate3d(-50%,-50%,0) scale(.18); opacity: .5; }
+    55%  { transform: translate3d(-50%,-50%,0) scale(1.4); opacity: .95; }
+    100% { transform: translate3d(-50%,-50%,0) scale(3.6); opacity: 0; }
   }
   .intro-vignette{
     position:absolute; inset:0; z-index:6; pointer-events:none;
     background:
       radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.55) 75%, rgba(0,0,0,0.9) 100%);
-  }
-  /* lens scratches / chromatic edge for cinema feel */
-  .intro-vignette::after{
-    content:'';
-    position:absolute; inset:0;
-    background:
-      radial-gradient(ellipse at 30% 50%, rgba(168,85,247,0.08) 0%, transparent 40%),
-      radial-gradient(ellipse at 70% 50%, rgba(236,72,153,0.06) 0%, transparent 40%);
-    mix-blend-mode: screen;
   }
   /* During reveal AND fade-out: kill the tunnel completely — logo lands on pure black */
   .intro-tunnel.intro-reveal .intro-stage,
@@ -1136,13 +1130,17 @@
     }, 900);
   })();
 
-  /* ───────── INTRO TUNNEL (CSS-driven, JS orchestrates only) ───────── */
+  /* ───────── INTRO TUNNEL (CSS-driven, JS orchestrates only) ─────────
+     Key smoothness tactic: do NOT start the animation on initial load.
+     The first paint (tunnel walls + page below) is heavy; if the keyframes
+     kick off in the same frame, the camera stalls for 200-500ms.
+     Pattern: mount → wait for fonts → 2× rAF (one frame to commit layout,
+     one to commit the GPU layer) → add .intro-go to trigger keyframes.
+  ───────────────────────────────── */
   (function () {
     const PHRASE = 'MMM · MORE REACH · MORE SALES · MORE MONEY · ';
-    // Dense walls — what made the realtor tunnel cinematic. CSS animation runs on
-    // the compositor so this DOM cost is amortized.
-    const ROWS = 8, REPEAT = 7;
-    const DURATION = 2600;               // matches CSS @keyframes tunnelFly
+    const ROWS = 7, REPEAT = 6;          // dense enough to feel cinematic, light enough to paint fast
+    const DURATION = 2600;               // matches @keyframes tunnelFly
     const REVEAL_HOLD = 1100;
 
     document.querySelectorAll('#intro .t-rows').forEach(rows => {
@@ -1159,7 +1157,7 @@
 
     function teardown(){
       if (done) return; done = true;
-      intro.classList.remove('intro-flying','intro-reveal');
+      intro.classList.remove('intro-flying','intro-reveal','intro-go');
       intro.classList.add('intro-out','intro-fade');
       document.body.classList.remove('no-scroll');
       setTimeout(()=> intro.remove(), 900);
@@ -1170,11 +1168,30 @@
       intro.classList.add('intro-reveal');
       setTimeout(teardown, REVEAL_HOLD);
     }
+    function startFlight(){
+      // Two rAF passes: one to commit layout, one to commit the composited layer.
+      // Then add .intro-go to trigger the keyframes. This is what kills the entry stall.
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          intro.classList.add('intro-go');
+        });
+      });
+    }
+
+    // Wait for Kanit to be ready so we don't reflow giant glyphs mid-flight.
+    // Bail after 600ms either way so a slow font network never blocks the intro.
+    let started = false;
+    const start = () => { if (started) return; started = true; startFlight(); };
+    if (document.fonts && document.fonts.ready) {
+      Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 600))]).then(start);
+    } else {
+      setTimeout(start, 80);
+    }
 
     // CSS keyframes handle the flight. Reveal fires when the animation ends —
-    // or after a timer as a safety net if animationend never lands (background tab).
+    // or after a timer as a safety net if animationend never lands.
     room.addEventListener('animationend', beginReveal, { once: true });
-    setTimeout(beginReveal, DURATION + 250);
+    setTimeout(beginReveal, DURATION + 900); // safety, padded for the font wait
 
     // Click anywhere to skip
     intro.addEventListener('click', teardown);

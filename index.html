@@ -724,7 +724,7 @@
      CONTENT CALENDAR — Editorial monochrome rebuild
      Clean handoff: a single hairline + section number, no chapter wrapper.
      ════════════════════════════════════════════════════════════ -->
-<section id="calendar" class="relative w-full overflow-hidden bg-mmm-bg">
+<section id="calendar" class="relative z-20 w-full overflow-hidden bg-mmm-bg">
   <!-- seamless top divider: hairline + subtle radial glow that visually owns the new chapter -->
   <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/15 to-transparent z-10"></div>
   <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] rounded-full bg-mmm-purple/12 blur-[120px] pointer-events-none"></div>
@@ -1330,8 +1330,7 @@
         body: 'Hooks, sound design, color, captions — every frame tuned for retention and ranked for the algorithm.',
         images: [
           'assets/e3f20404-7ef1-4d73-ae76-9d1c260bbd56.jpg',
-          'assets/f4a18cfa-6009-4b31-8aac-050ed0360b3d.jpg',
-          'assets/fe003869-5a32-400e-8f48-c8b4dfe1faa9.jpg'
+          'assets/f4a18cfa-6009-4b31-8aac-050ed0360b3d.jpg'
         ],
       },
     ];
@@ -1365,19 +1364,21 @@
 
           <!-- image grid -->
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-5">
-            <div class="md:col-span-2 flex flex-col gap-3 sm:gap-5">
+            <div class="${c.images[2] ? 'md:col-span-2 flex flex-col' : 'md:col-span-5 grid grid-cols-1 md:grid-cols-2'} gap-3 sm:gap-5">
               <img src="${c.images[0]}" loading="lazy" alt=""
                    class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
-                   style="height: clamp(130px, 16vw, 230px);" />
+                   style="${c.images[2] ? 'height: clamp(130px, 16vw, 230px);' : 'min-height: clamp(290px, 38vw, 580px); height: 100%;'}" />
               <img src="${c.images[1]}" loading="lazy" alt=""
                    class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
-                   style="height: clamp(160px, 22vw, 340px);" />
+                   style="${c.images[2] ? 'height: clamp(160px, 22vw, 340px);' : 'min-height: clamp(290px, 38vw, 580px); height: 100%;'}" />
             </div>
+            ${c.images[2] ? `
             <div class="md:col-span-3">
               <img src="${c.images[2]}" loading="lazy" alt=""
                    class="w-full h-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
                    style="min-height: clamp(290px, 38vw, 580px);" />
             </div>
+            ` : ''}
           </div>
         </div>
       </div>

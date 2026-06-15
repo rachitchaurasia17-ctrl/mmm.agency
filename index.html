@@ -352,15 +352,9 @@
   }
 
   /* ─────────────────────────────────────────────
-     NAV — transparent at top, frosts on scroll
+     NAV — fully transparent across the site
   ───────────────────────────────────────────── */
-  #mmm-nav { background: transparent; transition: background .35s ease, backdrop-filter .35s ease, border-color .35s ease; border: 1px solid transparent; }
-  #mmm-nav.scrolled {
-    background: rgba(12,12,12,0.45);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border-color: rgba(255,255,255,0.08);
-  }
+  #mmm-nav { background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border: 1px solid transparent; }
 
   /* utility */
   .no-scroll { overflow: hidden; }
@@ -472,20 +466,20 @@
      APPROACH — original Stitch design, untouched.
      Static background image swapped for the 4K looping video.
      ════════════════════════════════════════════════════════════ -->
-<section id="approach" class="relative w-full min-h-[110vh] flex flex-col pt-24 overflow-hidden">
-  <!-- 4K looping video — letterboxed inside its own band so it is NOT cropped -->
+<section id="approach" class="relative w-full min-h-screen flex flex-col pt-24 overflow-hidden">
+  <!-- 4K looping video — uncropped, fits the whole frame -->
   <div class="absolute inset-0 z-0 bg-black">
     <video autoplay loop muted playsinline preload="auto"
            class="absolute inset-0 w-full h-full object-contain">
       <source src="assets/video_4k.mp4" type="video/mp4" />
     </video>
-    <!-- subtle vignette so glass text stays legible without cropping the frame -->
-    <div class="absolute inset-0"
-         style="background: radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.85) 100%);"></div>
+    <!-- light vignette so heading + cards stay readable; keeps the video visible -->
+    <div class="absolute inset-0 pointer-events-none"
+         style="background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.75) 100%);"></div>
   </div>
 
-  <div class="relative z-10 flex flex-col flex-1 w-full">
-    <!-- Header -->
+  <div class="relative z-10 flex flex-col flex-1 w-full min-h-screen">
+    <!-- Header at the top -->
     <div class="flex flex-col items-center mb-12">
       <h2 class="text-4xl lg:text-6xl font-bold uppercase tracking-tight text-center">
         OUR APPROACH IS
@@ -493,57 +487,23 @@
       </h2>
     </div>
 
-    <!-- Spacer so video is visible above the bar -->
-    <div class="flex-1 min-h-[20vh]"></div>
+    <!-- spacer so the video is visible between heading and cards -->
+    <div class="flex-1"></div>
 
-    <!-- COMBINED BAND: 3 cards + "we don't do marketing" strip live in the SAME container -->
-    <div class="relative w-full bg-black/55 backdrop-blur-md border-t border-purple-500/30 mt-8">
-      <!-- Cards — overlap the bar from above -->
-      <div class="max-w-[1600px] mx-auto px-6 lg:px-16 -mt-16 lg:-mt-20 mb-10">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
-            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Create Trendy Reels</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">Crafting viral-ready content that captures attention instantly and drives massive engagement across all social platforms.</p>
-          </div>
-          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
-            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">Unique &amp; Original Ideas</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
-          </div>
-          <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/40 hover:bg-black/55 transition-colors">
-            <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
-            <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
-          </div>
+    <!-- 3 cards anchored to the lower part of the video -->
+    <div class="max-w-[1600px] w-full mx-auto px-6 lg:px-16 pb-12 lg:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/45 hover:bg-black/60 transition-colors">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Create Trendy Reels</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">Crafting viral-ready content that captures attention instantly and drives massive engagement across all social platforms.</p>
         </div>
-      </div>
-
-      <!-- Marketing statement — pushed down to sit below the cards -->
-      <div class="max-w-[1440px] mx-auto px-6 lg:px-16 pb-14 pt-6">
-        <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-          <h4 class="text-xl lg:text-2xl font-bold uppercase tracking-tight text-center lg:text-left">
-            We don't do marketing by asking people to buy.
-          </h4>
-          <div class="flex flex-wrap justify-center lg:justify-end gap-6 lg:gap-10 text-gray-400">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-purple-400">block</span>
-              <span class="text-sm font-medium uppercase tracking-wider text-white">No Promotions</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-purple-400">money_off</span>
-              <span class="text-sm font-medium uppercase tracking-wider text-white">No Discounts</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-purple-400">front_hand</span>
-              <span class="text-sm font-medium uppercase tracking-wider text-white">No Forcing</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-purple-400">back_hand</span>
-              <span class="text-sm font-medium uppercase tracking-wider text-white">No Pushing</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-purple-400">bolt</span>
-              <span class="text-sm font-medium uppercase tracking-wider text-white">GenZ Approach</span>
-            </div>
-          </div>
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/45 hover:bg-black/60 transition-colors">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">Unique &amp; Original Ideas</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
+        </div>
+        <div class="liquid-glass rounded-2xl p-6 border border-purple-500/30 backdrop-blur-md bg-black/45 hover:bg-black/60 transition-colors">
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
+          <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
         </div>
       </div>
     </div>
@@ -951,18 +911,6 @@
 <script src="config.js"></script>
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
-
-  /* ───────── NAV scroll frost ───────── */
-  (function () {
-    const nav = document.getElementById('mmm-nav');
-    if (!nav) return;
-    const onScroll = () => {
-      if (window.scrollY > 40) nav.classList.add('scrolled');
-      else nav.classList.remove('scrolled');
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-  })();
 
   /* ───────── CALENDAR 30-DAY GRID ─────────
      Generates a 7×N grid (Mon-start) of 30 deliverables.

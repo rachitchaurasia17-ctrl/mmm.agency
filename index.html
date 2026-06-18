@@ -1393,9 +1393,12 @@
         label: 'Post-Production',
         name: 'Editing Approach',
         body: 'Hooks, sound design, color, captions — every frame tuned for retention and ranked for the algorithm.',
-        images: [
-          'assets/e3f20404-7ef1-4d73-ae76-9d1c260bbd56.jpg',
-          'assets/f4a18cfa-6009-4b31-8aac-050ed0360b3d.jpg'
+        videos: true,
+        clips: [
+          { src: 'assets/edit-1.mp4', poster: 'assets/edit-1.jpg' },
+          { src: 'assets/edit-2.mp4', poster: 'assets/edit-2.jpg' },
+          { src: 'assets/edit-3.mp4', poster: 'assets/edit-3.jpg' },
+          { src: 'assets/edit-4.mp4', poster: 'assets/edit-4.jpg' }
         ],
       },
     ];
@@ -1437,6 +1440,15 @@
               </a>
             `).join('')}
           </div>
+          ` : c.videos ? `
+          <div class="posting-gallery">
+            ${c.clips.map((v, n) => `
+              <a href="${v.src}" target="_blank" rel="noopener" class="posting-frame reveal-img" style="transition-delay:${(n % 2) * 90}ms">
+                <video class="posting-img" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" data-lazyvideo></video>
+                <span class="posting-open"><span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span></span>
+              </a>
+            `).join('')}
+          </div>
           ` : `
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-5">
             <div class="${c.images[2] ? 'md:col-span-2 flex flex-col' : 'md:col-span-5 grid grid-cols-1 md:grid-cols-2'} gap-3 sm:gap-5">
@@ -1471,6 +1483,25 @@
       revealEls.forEach((el) => io.observe(el));
     } else {
       revealEls.forEach((el) => el.classList.add('in'));
+    }
+
+    // Autoplay-in-view for the Editing Approach clips.
+    // preload="none" until visible → page load only pays for the poster JPGs.
+    const lazyVideos = wrap.querySelectorAll('video[data-lazyvideo]');
+    if ('IntersectionObserver' in window) {
+      const vio = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          const v = e.target;
+          if (e.isIntersecting) {
+            if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
+            const p = v.play();
+            if (p && p.catch) p.catch(() => {});
+          } else {
+            v.pause();
+          }
+        });
+      }, { threshold: 0.4 });
+      lazyVideos.forEach((v) => vio.observe(v));
     }
 
     // Scroll-driven scale

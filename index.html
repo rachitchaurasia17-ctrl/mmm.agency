@@ -2276,15 +2276,15 @@
 
     // ── Fallback: no GSAP, reduced motion, or mobile → native scrolling list ──
     if (!window.gsap || !window.ScrollTrigger || prefersReduced || isMobile) {
-      wrap.innerHTML = '<div class="mob-services-list" style="display:flex; flex-direction:column; gap:64px; padding: 0 16px;">' + CARDS.map((c, i) => `
+      wrap.innerHTML = '<div class="mob-services-list" style="display:flex; flex-direction:column; gap:48px; padding: 0 16px;">' + CARDS.map((c, i) => `
         <div class="mob-service-card">
-          <div class="mb-6">
+          <div class="mb-4">
             <div class="story-head-label" style="text-shadow:none; padding-left:0; color:#A855F7;">${c.num} · ${c.label}</div>
             <div class="story-head-name" style="font-size: clamp(2rem, 8vw, 3rem); text-shadow:none; filter:none; margin-bottom:12px;">${c.name}</div>
             <div class="story-head-body" style="text-shadow:none; margin:0; color:rgba(255,255,255,0.7);">${c.body}</div>
           </div>
           <div class="story-grid story-grid--${i}" style="position:relative; opacity:1; width:100%; height:auto; margin:0;">
-            ${tilesHTML(c, i).replace(/class="story-tile"/g, 'class="story-tile" style="opacity:1; transform:none;"')}
+            ${tilesHTML(c, i).replace(/class="story-tile"/g, 'class="story-tile" style="opacity:1; transform:none; aspect-ratio:4/5;"')}
           </div>
         </div>
       `).join('') + '</div>';

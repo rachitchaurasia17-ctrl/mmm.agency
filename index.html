@@ -709,9 +709,661 @@
 
   /* utility */
   .no-scroll { overflow: hidden; }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MOBILE-ONLY: desktop-hidden helpers
+     ═══════════════════════════════════════════════════════════════ */
+  .mobile-only { display: none !important; }
+  .desktop-only-el { }
+
+  /* ═══════════════════════════════════════════════════════════════
+     MOBILE EXPERIENCE — LEGENDARY REDESIGN
+     All rules scoped to max-width:768px — desktop is UNTOUCHED.
+     ═══════════════════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    .mobile-only { display: flex !important; }
+    .mobile-only-block { display: block !important; }
+    .desktop-only-el { display: none !important; }
+
+    /* ─── SCROLL PROGRESS BAR ─── */
+    .mob-scroll-progress {
+      position: fixed; top: 0; left: 0; z-index: 9999;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, #A855F7, #ec4899, #A855F7);
+      background-size: 200% 100%;
+      animation: mob-gradient-shift 3s linear infinite;
+      transition: width 0.15s linear;
+      box-shadow: 0 0 10px rgba(168,85,247,0.6), 0 0 20px rgba(168,85,247,0.3);
+    }
+    @keyframes mob-gradient-shift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 200% 50%; }
+    }
+
+    /* ─── MOBILE NAV — Smart Sticky Top Bar ─── */
+    #mmm-nav {
+      top: 0 !important; left: 0 !important; right: 0 !important;
+      transform: none !important;
+      width: 100% !important; max-width: 100% !important;
+      border-radius: 0 !important;
+      padding: 12px 16px !important;
+      background: rgba(12,12,12,0.85) !important;
+      backdrop-filter: blur(20px) saturate(180%) !important;
+      -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+      border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1) !important;
+    }
+    #mmm-nav.mob-nav-hidden {
+      transform: translateY(-100%) !important;
+    }
+    #mmm-nav .font-kanit { font-size: 1.5rem !important; }
+    #mmm-nav > a:last-child {
+      padding: 8px 16px !important;
+      font-size: 11px !important;
+    }
+
+    /* ─── HAMBURGER BUTTON ─── */
+    .mob-hamburger {
+      display: flex !important;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 44px; height: 44px;
+      cursor: pointer;
+      z-index: 200;
+      gap: 5px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mob-hamburger span {
+      display: block;
+      width: 24px; height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: transform 0.4s cubic-bezier(0.22,1,0.36,1),
+                  opacity 0.3s ease,
+                  width 0.3s ease;
+    }
+    .mob-hamburger.active span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .mob-hamburger.active span:nth-child(2) {
+      opacity: 0; width: 0;
+    }
+    .mob-hamburger.active span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ─── FULL-SCREEN MENU OVERLAY ─── */
+    .mob-menu-overlay {
+      position: fixed; inset: 0; z-index: 150;
+      background: rgba(6,6,6,0.97);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s cubic-bezier(0.22,1,0.36,1),
+                  visibility 0.5s;
+      overflow-y: auto;
+    }
+    .mob-menu-overlay.open {
+      opacity: 1; visibility: visible;
+    }
+    .mob-menu-overlay .mob-menu-item {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 800;
+      font-size: clamp(32px, 10vw, 52px);
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      color: rgba(255,255,255,0.25);
+      padding: 8px 0;
+      text-decoration: none;
+      transition: color 0.3s ease, transform 0.3s ease, letter-spacing 0.3s ease;
+      transform: translateY(30px);
+      opacity: 0;
+      display: block;
+      text-align: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mob-menu-overlay.open .mob-menu-item {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .mob-menu-overlay .mob-menu-item:nth-child(1) { transition-delay: 0.08s; }
+    .mob-menu-overlay .mob-menu-item:nth-child(2) { transition-delay: 0.14s; }
+    .mob-menu-overlay .mob-menu-item:nth-child(3) { transition-delay: 0.20s; }
+    .mob-menu-overlay .mob-menu-item:nth-child(4) { transition-delay: 0.26s; }
+    .mob-menu-overlay .mob-menu-item:nth-child(5) { transition-delay: 0.32s; }
+    .mob-menu-overlay .mob-menu-item:active,
+    .mob-menu-overlay .mob-menu-item:hover {
+      color: #fff;
+      letter-spacing: 0.04em;
+    }
+    .mob-menu-divider {
+      width: 60px; height: 2px; margin: 20px auto;
+      background: linear-gradient(90deg, transparent, #A855F7, transparent);
+      opacity: 0;
+      transition: opacity 0.5s ease 0.36s;
+    }
+    .mob-menu-overlay.open .mob-menu-divider { opacity: 1; }
+    .mob-menu-tagline {
+      font-family: 'Kanit', sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.5em;
+      text-transform: uppercase;
+      color: rgba(168,85,247,0.7);
+      padding-left: 0.5em;
+      opacity: 0;
+      transition: opacity 0.5s ease 0.42s;
+    }
+    .mob-menu-overlay.open .mob-menu-tagline { opacity: 1; }
+
+    /* ─── MOBILE HERO ─── */
+    #top {
+      height: 100svh !important;
+      min-height: 100svh;
+    }
+    #top > .relative.z-10 {
+      flex-direction: column !important;
+      justify-content: flex-end !important;
+      padding-bottom: 100px !important;
+      padding-top: 80px !important;
+    }
+    #top > .relative.z-10 > div:first-child {
+      width: 100% !important;
+      padding: 0 20px !important;
+    }
+    #top > .relative.z-10 > div:first-child h1 {
+      font-size: clamp(2.6rem, 12vw, 4.2rem) !important;
+      margin-bottom: 20px !important;
+    }
+    #top .flex.flex-wrap.gap-4 {
+      gap: 8px !important;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      flex-wrap: nowrap !important;
+      padding-bottom: 4px;
+    }
+    #top .flex.flex-wrap.gap-4::-webkit-scrollbar { display: none; }
+    #top .flex.flex-wrap.gap-4 > div {
+      padding: 10px 18px !important;
+      font-size: 13px !important;
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    /* Hero scroll indicator */
+    .mob-scroll-hint {
+      position: absolute;
+      bottom: 28px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: mob-scroll-bounce 2s ease-in-out infinite;
+    }
+    .mob-scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+      font-family: 'Kanit', sans-serif;
+      padding-left: 0.4em;
+    }
+    .mob-scroll-hint .mob-chevron {
+      width: 24px; height: 24px;
+      border-right: 2px solid rgba(168,85,247,0.7);
+      border-bottom: 2px solid rgba(168,85,247,0.7);
+      transform: rotate(45deg);
+      animation: mob-chevron-pulse 2s ease-in-out infinite;
+    }
+    @keyframes mob-scroll-bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(8px); }
+    }
+    @keyframes mob-chevron-pulse {
+      0%, 100% { opacity: 0.4; }
+      50% { opacity: 1; }
+    }
+
+    /* ─── MOBILE APPROACH SECTION ─── */
+    #approach {
+      min-height: auto !important;
+      padding-top: 80px !important;
+      padding-bottom: 20px !important;
+    }
+    #approach h2 {
+      font-size: clamp(1.6rem, 7vw, 2.2rem) !important;
+      margin-bottom: 16px !important;
+    }
+    #approach .grid.grid-cols-1 {
+      display: flex !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 12px !important;
+      padding: 0 16px 16px !important;
+      scrollbar-width: none;
+    }
+    #approach .grid.grid-cols-1::-webkit-scrollbar { display: none; }
+    #approach .approach-card {
+      min-width: 82vw !important;
+      scroll-snap-align: center;
+      flex-shrink: 0;
+      padding: 24px !important;
+      border-radius: 20px !important;
+      background: rgba(255,255,255,0.04) !important;
+      border: 1px solid rgba(168,85,247,0.2) !important;
+    }
+    #approach .approach-card h3 {
+      font-size: 1rem !important;
+    }
+    #approach .approach-card p {
+      font-size: 13px !important;
+      line-height: 1.6 !important;
+    }
+
+    /* Approach card scroll dots */
+    .mob-approach-dots {
+      justify-content: center;
+      gap: 8px;
+      padding: 16px 0 0;
+    }
+    .mob-approach-dots span {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      transition: all 0.3s ease;
+    }
+    .mob-approach-dots span.active {
+      background: #A855F7;
+      box-shadow: 0 0 12px rgba(168,85,247,0.6);
+      transform: scale(1.3);
+    }
+
+    /* ─── MOBILE SERVICES (WHAT WE OFFER) ─── */
+    #offer {
+      padding-top: 60px !important;
+      padding-bottom: 60px !important;
+      border-radius: 30px 30px 0 0 !important;
+      margin-top: -8px !important;
+    }
+    #offer h2 {
+      font-size: clamp(2.5rem, 12vw, 5rem) !important;
+      margin-bottom: 40px !important;
+    }
+
+    /* ─── MOBILE CALENDAR SECTION ─── */
+    #calendar .pt-28 {
+      padding-top: 60px !important;
+      padding-bottom: 60px !important;
+    }
+
+    /* Scoreboard — horizontal scroll */
+    #calendar .grid.grid-cols-2.lg\\:grid-cols-4 {
+      display: flex !important;
+      overflow-x: auto !important;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #calendar .grid.grid-cols-2.lg\\:grid-cols-4::-webkit-scrollbar { display: none; }
+    #calendar .grid.grid-cols-2.lg\\:grid-cols-4 > div {
+      min-width: 75vw !important;
+      scroll-snap-align: center;
+      flex-shrink: 0;
+      border-right: none !important;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    #calendar .grid.grid-cols-2.lg\\:grid-cols-4 > div:last-child {
+      border-bottom: none;
+    }
+
+    /* Calendar editorial title */
+    #calendar h2.font-kanit {
+      font-size: clamp(44px, 14vw, 80px) !important;
+    }
+
+    /* Calendar day grid — smaller tiles on mobile */
+    #cal-grid {
+      gap: 4px !important;
+    }
+    .cal-tile {
+      border-radius: 10px !important;
+    }
+    .cal-num {
+      font-size: 14px !important;
+    }
+
+    /* Strategy panel — full width on mobile */
+    #calendar .grid.lg\\:grid-cols-12 {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Price card */
+    #calendar .rounded-\\[40px\\] {
+      border-radius: 24px !important;
+    }
+
+    /* CTA strip */
+    #calendar .grid.lg\\:grid-cols-\\[1\\.4fr_1fr\\] {
+      grid-template-columns: 1fr !important;
+      gap: 20px !important;
+      padding: 24px !important;
+    }
+    #calendar .grid.lg\\:grid-cols-\\[1\\.4fr_1fr\\] h3 {
+      font-size: clamp(24px, 6vw, 36px) !important;
+    }
+
+    /* ─── MOBILE CONTACT SECTION ─── */
+    #contact {
+      padding-top: 60px !important;
+      padding-bottom: 100px !important;
+    }
+    #contact .grid.lg\\:grid-cols-2 {
+      grid-template-columns: 1fr !important;
+      gap: 24px !important;
+    }
+    #contact h2 {
+      font-size: clamp(36px, 10vw, 56px) !important;
+    }
+    #contact .text-right {
+      text-align: left !important;
+    }
+    #contact a.font-kanit {
+      font-size: 1.2rem !important;
+      word-break: break-all;
+    }
+
+    /* ─── FLOATING CTA BUTTONS ─── */
+    .mob-floating-cta {
+      position: fixed;
+      bottom: 24px; right: 16px;
+      z-index: 90;
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 32px rgba(168,85,247,0.5), 0 2px 8px rgba(0,0,0,0.3);
+      background: linear-gradient(135deg, #A855F7, #7c3aed);
+      color: #fff;
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease;
+      -webkit-tap-highlight-color: transparent;
+      animation: mob-cta-entrance 0.8s cubic-bezier(0.22,1,0.36,1) 2s both;
+    }
+    .mob-floating-cta:active {
+      transform: scale(0.92);
+    }
+    .mob-floating-cta .material-symbols-outlined {
+      font-size: 26px;
+    }
+    @keyframes mob-cta-entrance {
+      from { transform: translateY(100px) scale(0); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+    /* CTA pulse ring */
+    .mob-floating-cta::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 2px solid rgba(168,85,247,0.4);
+      animation: mob-cta-ping 2.5s cubic-bezier(0,0,0.2,1) infinite;
+    }
+    @keyframes mob-cta-ping {
+      0% { transform: scale(1); opacity: 0.6; }
+      75%, 100% { transform: scale(1.5); opacity: 0; }
+    }
+
+    /* WhatsApp button */
+    .mob-whatsapp-btn {
+      position: fixed;
+      bottom: 24px; left: 16px;
+      z-index: 90;
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: #25D366;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.45), 0 2px 8px rgba(0,0,0,0.25);
+      transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
+      -webkit-tap-highlight-color: transparent;
+      animation: mob-cta-entrance 0.8s cubic-bezier(0.22,1,0.36,1) 2.3s both;
+      text-decoration: none;
+    }
+    .mob-whatsapp-btn:active {
+      transform: scale(0.92);
+    }
+    .mob-whatsapp-btn svg {
+      width: 26px; height: 26px;
+      fill: #fff;
+    }
+
+    /* ─── TOUCH RIPPLE EFFECT ─── */
+    .mob-ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(168,85,247,0.25);
+      transform: scale(0);
+      animation: mob-ripple-anim 0.6s cubic-bezier(0,0,0.2,1);
+      pointer-events: none;
+    }
+    @keyframes mob-ripple-anim {
+      to { transform: scale(4); opacity: 0; }
+    }
+
+    /* ─── SECTION REVEAL ANIMATIONS ─── */
+    .mob-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.22,1,0.36,1),
+                  transform 0.8s cubic-bezier(0.22,1,0.36,1);
+    }
+    .mob-reveal.mob-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .mob-reveal-delay-1 { transition-delay: 0.1s; }
+    .mob-reveal-delay-2 { transition-delay: 0.2s; }
+    .mob-reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ─── MOBILE CHATBOT ADJUSTMENTS ─── */
+    #mmm-chat {
+      right: auto !important;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 88px !important;
+    }
+    #mmm-chat-toggle {
+      display: none !important;
+    }
+    #mmm-chat-panel {
+      width: 92vw !important;
+      height: 70vh !important;
+      max-height: 520px;
+      bottom: 0 !important;
+      right: auto !important;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 20px 20px 0 0 !important;
+    }
+
+    /* ─── MOBILE INTRO OPTIMIZATIONS ─── */
+    .intro-tunnel {
+      /* Faster intro on mobile */
+    }
+    .t-row {
+      font-size: clamp(80px, 22vmin, 180px) !important;
+    }
+    .intro-logo {
+      font-size: clamp(60px, 20vw, 140px) !important;
+    }
+    .intro-sub {
+      font-size: 10px !important;
+      letter-spacing: 0.35em !important;
+    }
+
+    /* ─── PERFORMANCE HELPERS ─── */
+    #offer,
+    #calendar,
+    #contact {
+      content-visibility: auto;
+      contain-intrinsic-size: auto 800px;
+    }
+
+    /* Reduce heavy blur on mobile */
+    .liquid-glass,
+    .liquid-glass-strong {
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
+    }
+
+    /* ─── APPROACH STORY MOBILE OVERRIDES ─── */
+    .story-pin {
+      touch-action: pan-y !important;
+    }
+    .story-grid {
+      width: 92vw !important;
+      height: 68vh !important;
+    }
+    .story-head-name {
+      font-size: clamp(1.5rem, 6.5vw, 2.5rem) !important;
+    }
+    .story-head-body {
+      font-size: 12px !important;
+      max-width: 300px !important;
+    }
+    .story-counter {
+      font-size: 9px !important;
+    }
+
+    /* ─── SCOREBOARD SWIPE INDICATOR ─── */
+    .mob-swipe-hint {
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 0;
+      font-family: 'Kanit', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .mob-swipe-hint .material-symbols-outlined {
+      font-size: 14px;
+      animation: mob-swipe-arrow 1.5s ease-in-out infinite;
+    }
+    @keyframes mob-swipe-arrow {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(6px); }
+    }
+
+    /* ─── MOBILE BOTTOM SAFE AREA ─── */
+    body {
+      padding-bottom: env(safe-area-inset-bottom, 0) !important;
+    }
+
+    /* ─── STAGGER ANIMATION FOR HERO TEXT ─── */
+    .mob-hero-word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: mob-word-reveal 0.7s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    @keyframes mob-word-reveal {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── PREMIUM GLASS CARD HOVER (TAP) ─── */
+    .approach-card:active {
+      transform: scale(0.97) !important;
+      transition-duration: 0.15s !important;
+    }
+
+    /* ─── SECTION DIVIDERS ─── */
+    .mob-section-divider {
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168,85,247,0.3), transparent);
+      margin: 0 auto;
+    }
+
+    /* ─── CALENDAR INCLUSIONS LIST ON MOBILE ─── */
+    #calendar .rounded-\\[40px\\].border.border-white\\/10.bg-black\\/40 {
+      border-radius: 20px !important;
+      padding: 20px !important;
+    }
+
+    /* ─── MOBILE VIDEO BG OPTIMIZATION ─── */
+    .video-bg-container video {
+      object-position: center center;
+    }
+    #approach video {
+      object-fit: cover !important;
+    }
+
+    /* ─── EDITORIAL SIDE RAIL HIDDEN ON MOBILE ─── */
+    #calendar .hidden.lg\\:flex {
+      display: none !important;
+    }
+
+    /* ─── WEEKDAY HEADER MOBILE SIZE ─── */
+    #cal-grid + .mt-6 p { font-size: 9px !important; }
+
+    /* ─── MARQUEE MOBILE ─── */
+    .marquee-track span {
+      font-size: 12px !important;
+      padding: 8px 14px !important;
+    }
+
+    /* ─── SMOOTH SECTION TRANSITIONS ─── */
+    section {
+      will-change: auto;
+    }
+
+    /* ─── MOBILE FORM OPTIMIZATIONS ─── */
+    input, textarea, select {
+      font-size: 16px !important; /* Prevents iOS zoom */
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
+     VERY SMALL SCREENS (320-360px)
+     ═══════════════════════════════════════════════════════════════ */
+  @media (max-width: 360px) {
+    #top > .relative.z-10 > div:first-child h1 {
+      font-size: 2.2rem !important;
+    }
+    #approach .approach-card {
+      min-width: 88vw !important;
+      padding: 20px !important;
+    }
+    .mob-floating-cta {
+      width: 50px; height: 50px;
+      bottom: 20px; right: 12px;
+    }
+    .mob-whatsapp-btn {
+      width: 46px; height: 46px;
+      bottom: 20px; left: 12px;
+    }
+    .mob-menu-overlay .mob-menu-item {
+      font-size: clamp(28px, 9vw, 42px);
+    }
+    #calendar .grid.grid-cols-2.lg\\:grid-cols-4 > div {
+      min-width: 85vw !important;
+    }
+  }
 </style>
 </head>
 <body class="font-display antialiased">
+<div class="mob-scroll-progress mobile-only" id="mob-progress"></div>
 
 <!-- ════════════════════════════════════════════════════════════
      INTRO TUNNEL (rebranded MMM)
@@ -746,7 +1398,23 @@
     <a href="#approach" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Process</a>
     <a href="#contact" class="font-bold text-white/90 mmm-nav-text hover:text-white transition-colors">Contact</a>
   </div>
-  <a href="#calendar" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-mmm-ink transition-all active:scale-95 shadow-[0_8px_30px_rgba(0,0,0,0.4)]">Get Started</a>
+  <a href="#calendar" class="bg-white text-black px-6 py-2.5 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-mmm-ink transition-all active:scale-95 shadow-[0_8px_30px_rgba(0,0,0,0.4)] desktop-only-el">Get Started</a>
+  
+  <!-- Mobile Hamburger -->
+  <div class="mob-hamburger mobile-only" id="mob-menu-btn">
+    <span></span><span></span><span></span>
+  </div>
+
+  <!-- Mobile Full Screen Menu Overlay -->
+  <div class="mob-menu-overlay mobile-only" id="mob-menu">
+    <a href="#top" class="mob-menu-item">Home</a>
+    <a href="#offer" class="mob-menu-item">Services</a>
+    <a href="#calendar" class="mob-menu-item">Case Studies</a>
+    <a href="#approach" class="mob-menu-item">Process</a>
+    <a href="#contact" class="mob-menu-item">Contact</a>
+    <div class="mob-menu-divider"></div>
+    <div class="mob-menu-tagline">More Reach · More Sales · More Money</div>
+  </div>
 </nav>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -779,6 +1447,12 @@
         <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Sales</div>
         <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Money</div>
       </div>
+    </div>
+    
+    <!-- Mobile Hero Scroll Hint -->
+    <div class="mob-scroll-hint mobile-only">
+      <span>Scroll</span>
+      <div class="mob-chevron"></div>
     </div>
 
     <!-- Right Panel (48%, desktop only) -->
@@ -856,6 +1530,13 @@
           <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
           <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
         </div>
+      </div>
+      
+      <!-- Mobile Scroll Dots -->
+      <div class="mob-approach-dots mobile-only" id="mob-approach-dots">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
       </div>
     </div>
   </div>
@@ -1009,6 +1690,12 @@
           </div>
           <p class="text-white/55 text-sm">Scheduled, posted, optimized — by us.</p>
         </div>
+      </div>
+      
+      <!-- Mobile Swipe Hint -->
+      <div class="mob-swipe-hint mobile-only">
+        <span class="material-symbols-outlined">arrow_forward</span>
+        <span>Swipe to see more</span>
       </div>
     </div>
 
@@ -1746,6 +2433,150 @@ Keep responses tight (under 120 words), action-oriented, and on-brand. If asked 
       }
     });
   })();
+    });
+  })();
+</script>
+
+<!-- Mobile Floating CTAs -->
+<a href="https://wa.me/yourwhatsappnumber" target="_blank" class="mob-whatsapp-btn mobile-only">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.031 21.5c-1.614 0-3.197-.42-4.593-1.218l-.33-.19-3.411.895.912-3.324-.208-.332C3.606 15.934 3.167 14.34 3.167 12.69 3.167 7.794 7.147 3.81 12.043 3.81c4.896 0 8.876 3.984 8.876 8.88 0 4.896-3.98 8.81-8.888 8.81zm0-16.142C7.999 5.358 4.717 8.644 4.717 12.69c0 1.306.338 2.583.982 3.714l1.107 1.94-.658 2.4 2.457-.643 1.896.963c1.096.556 2.308.847 3.53.847 4.043 0 7.337-3.284 7.337-7.33 0-4.047-3.294-7.33-7.337-7.33zM16.89 15.197c-.244-.122-1.442-.71-1.664-.792-.222-.082-.384-.122-.546.122-.162.244-.632.792-.774.954-.142.162-.284.183-.528.06-1.458-.72-2.483-1.282-3.42-2.905-.142-.244-.015-.376.107-.498.11-.11.244-.284.366-.426.122-.142.162-.244.244-.406.082-.162.041-.305-.02-.426-.062-.122-.546-1.317-.748-1.804-.197-.476-.397-.412-.546-.42l-.466-.008c-.162 0-.426.06-.65.305-.224.244-.852.832-.852 2.028 0 1.196.872 2.353.994 2.515.122.162 1.714 2.617 4.152 3.668 1.636.706 2.298.766 3.125.642.923-.138 2.338-.954 2.662-1.875.324-.92.324-1.712.227-1.875-.097-.162-.361-.244-.605-.366z"/></svg>
+</a>
+<a href="#contact" class="mob-floating-cta mobile-only">
+  <span class="material-symbols-outlined">mail</span>
+</a>
+
+<!-- Mobile JS Interactions -->
+<script>
+  if (window.innerWidth <= 768) {
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      /* --- Hamburger Menu --- */
+      const menuBtn = document.getElementById('mob-menu-btn');
+      const menuOverlay = document.getElementById('mob-menu');
+      const navBar = document.getElementById('mmm-nav');
+      let menuOpen = false;
+
+      menuBtn.addEventListener('click', () => {
+        menuOpen = !menuOpen;
+        menuBtn.classList.toggle('active');
+        menuOverlay.classList.toggle('open');
+        document.body.style.overflow = menuOpen ? 'hidden' : '';
+      });
+
+      // Close menu when clicking a link
+      menuOverlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          menuOpen = false;
+          menuBtn.classList.remove('active');
+          menuOverlay.classList.remove('open');
+          document.body.style.overflow = '';
+        });
+      });
+
+      /* --- Smart Scroll Nav & Progress Bar --- */
+      let lastScroll = 0;
+      const progress = document.getElementById('mob-progress');
+
+      window.addEventListener('scroll', () => {
+        const currentScroll = window.pageYOffset;
+        
+        // Progress bar
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+        const scrollPercent = (currentScroll / totalHeight) * 100;
+        progress.style.width = scrollPercent + '%';
+
+        // Hide/Show Nav
+        if (currentScroll > lastScroll && currentScroll > 100 && !menuOpen) {
+          navBar.classList.add('mob-nav-hidden'); // Scroll down -> hide
+        } else {
+          navBar.classList.remove('mob-nav-hidden'); // Scroll up -> show
+        }
+        lastScroll = currentScroll;
+      }, { passive: true });
+
+      /* --- Touch Ripple Effect --- */
+      function createRipple(event) {
+        const button = event.currentTarget;
+        const circle = document.createElement('span');
+        const diameter = Math.max(button.clientWidth, button.clientHeight);
+        const radius = diameter / 2;
+
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - button.getBoundingClientRect().left - radius}px`;
+        circle.style.top = `${event.clientY - button.getBoundingClientRect().top - radius}px`;
+        circle.classList.add('mob-ripple');
+
+        const ripple = button.getElementsByClassName('mob-ripple')[0];
+        if (ripple) {
+          ripple.remove();
+        }
+
+        button.appendChild(circle);
+      }
+      
+      document.querySelectorAll('a, button, .approach-card, .cal-tile').forEach(el => {
+        el.style.position = el.style.position === 'absolute' || el.style.position === 'fixed' ? el.style.position : 'relative';
+        el.style.overflow = 'hidden';
+        el.addEventListener('pointerdown', createRipple);
+      });
+
+      /* --- Section Reveal Animations --- */
+      const revealElements = document.querySelectorAll('section h2, .approach-card, .rounded-\\\\[40px\\\\]');
+      revealElements.forEach((el, index) => {
+        el.classList.add('mob-reveal');
+        if (index % 2 === 0) el.classList.add('mob-reveal-delay-1');
+      });
+
+      const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('mob-visible');
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      revealElements.forEach(el => revealObserver.observe(el));
+      
+      /* --- Hero Text Stagger --- */
+      const heroH1 = document.querySelector('#top h1');
+      if(heroH1) {
+        const text = heroH1.innerHTML;
+        heroH1.innerHTML = '';
+        const parts = text.split('<br>');
+        
+        parts.forEach((part, i) => {
+          const words = part.split(' ');
+          words.forEach((word, j) => {
+            if(word.trim() !== '') {
+               const span = document.createElement('span');
+               span.innerHTML = word + '&nbsp;';
+               span.className = 'mob-hero-word';
+               span.style.animationDelay = \`\${0.1 * (i * words.length + j)}s\`;
+               heroH1.appendChild(span);
+            }
+          });
+          if(i < parts.length - 1) heroH1.appendChild(document.createElement('br'));
+        });
+      }
+
+      /* --- Approach Scroll Dots --- */
+      const approachScroll = document.querySelector('#approach .grid.grid-cols-1');
+      const approachDots = document.querySelectorAll('#mob-approach-dots span');
+      if (approachScroll && approachDots.length > 0) {
+        approachScroll.addEventListener('scroll', () => {
+          const scrollLeft = approachScroll.scrollLeft;
+          const width = approachScroll.clientWidth;
+          const index = Math.round(scrollLeft / width);
+          
+          approachDots.forEach((dot, i) => {
+            if (i === index) dot.classList.add('active');
+            else dot.classList.remove('active');
+          });
+        }, { passive: true });
+      }
+    });
+  }
 </script>
 
 </body>

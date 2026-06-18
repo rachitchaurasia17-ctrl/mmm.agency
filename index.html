@@ -443,9 +443,13 @@
     border-radius: 999px;
   }
 
-  /* no-JS / reduced-motion fallback: show first grid statically */
-  .no-gsap .story-pin { height: auto; min-height: 100vh; }
-  .no-gsap .story-grid { position: relative; opacity: 1; margin: 24px auto; }
+  /* no-JS / reduced-motion / mobile fallback: show grids statically stacked */
+  .no-gsap .story-pin { height: auto; min-height: auto; padding-bottom: 40px; }
+  .no-gsap .story-grids { position: relative; display: flex; flex-direction: column; gap: 40px; padding-top: 40px; }
+  .no-gsap .story-grid { position: relative; opacity: 1; margin: 0 auto; height: auto; }
+  .no-gsap .story-head, .no-gsap .story-head-item { position: relative; top: auto; opacity: 1; }
+  .no-gsap .story-head-item { margin-bottom: 24px; padding-top: 24px; }
+  .no-gsap .story-rail, .no-gsap .story-counter { display: none; }
 
   /* ─────────────────────────────────────────────
      CONTENT CALENDAR — redesigned
@@ -2231,6 +2235,37 @@
 
     const railHTML = `<div class="story-rail">${CARDS.map((_, i) => `<span data-rail="${i}"><i></i></span>`).join('')}</div>`;
 
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.innerWidth <= 768;
+
+    // ── Fallback: no GSAP, reduced motion, or mobile → native scrolling list ──
+    if (!window.gsap || !window.ScrollTrigger || prefersReduced || isMobile) {
+      wrap.innerHTML = '<div class="mob-services-list" style="display:flex; flex-direction:column; gap:64px; padding: 0 16px;">' + CARDS.map((c, i) => `
+        <div class="mob-service-card">
+          <div class="mb-6">
+            <div class="story-head-label" style="text-shadow:none; padding-left:0; color:#A855F7;">${c.num} · ${c.label}</div>
+            <div class="story-head-name" style="font-size: clamp(2rem, 8vw, 3rem); text-shadow:none; filter:none; margin-bottom:12px;">${c.name}</div>
+            <div class="story-head-body" style="text-shadow:none; margin:0; color:rgba(255,255,255,0.7);">${c.body}</div>
+          </div>
+          <div class="story-grid story-grid--${i}" style="position:relative; opacity:1; width:100%; height:auto; margin:0;">
+            ${tilesHTML(c, i).replace(/class="story-tile"/g, 'class="story-tile" style="opacity:1; transform:none;"')}
+          </div>
+        </div>
+      `).join('') + '</div>';
+      
+      // Auto-play videos inline
+      wrap.querySelectorAll('video').forEach(v => {
+        v.preload = 'auto';
+        v.setAttribute('playsinline', '');
+        v.muted = true;
+        v.loop = true;
+        const pr = v.play();
+        if (pr && pr.catch) pr.catch(() => {});
+      });
+      return;
+    }
+
+    // ── DESKTOP GSAP INITIALIZATION ──
     wrap.innerHTML = `
       <div class="story-pin">
         <div class="story-stage">
@@ -2250,25 +2285,13 @@
     const stage = wrap.querySelector('.story-stage');
     const curEl = wrap.querySelector('[data-cur]');
     const cnameEl = wrap.querySelector('[data-cname]');
-    // videos grouped by stage so only the active stage's clips ever play
+    
     const videosByStage = grids.map((g) => Array.from(g.querySelectorAll('video[data-storyvideo]')));
     const playStage = (i) => videosByStage[i].forEach((v) => {
       if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
       const pr = v.play(); if (pr && pr.catch) pr.catch(() => {});
     });
     const pauseAllVideos = () => videosByStage.forEach((arr) => arr.forEach((v) => v.pause()));
-
-    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    // ── Fallback: no GSAP or reduced motion → static stacked grids ──
-    if (!window.gsap || !window.ScrollTrigger || prefersReduced) {
-      wrap.classList.add('no-gsap');
-      grids.forEach((g) => { g.style.opacity = 1; g.style.transform = 'none'; g.style.filter = 'none'; });
-      heads.forEach((h) => { h.style.position = 'relative'; h.style.opacity = 1; });
-      wrap.querySelectorAll('.story-tile').forEach((t) => { t.style.opacity = 1; });
-      videosByStage.forEach((_, i) => playStage(i));
-      return;
-    }
 
     gsap.registerPlugin(ScrollTrigger);
 

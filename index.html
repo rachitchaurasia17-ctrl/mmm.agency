@@ -1586,28 +1586,28 @@
     gsap.registerPlugin(ScrollTrigger);
 
     // initial states
-    gsap.set(grids, { opacity: 0, scale: 0.92, filter: 'blur(4px)' });
-    gsap.set(heads, { opacity: 0, y: 26 });
-    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 36, scale: 0.97 });
+    gsap.set(grids, { opacity: 0, scale: 0.82, filter: 'blur(6px)' });
+    gsap.set(heads, { opacity: 0, y: 30 });
+    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 40, scale: 0.94 });
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
-    const END = () => '+=' + Math.round((window.innerHeight || 800) * 9);
+    const END = () => '+=' + Math.round((window.innerHeight || 800) * 5.5);
     let lastActive = -1;
 
     const tl = gsap.timeline({
-      defaults: { ease: 'power1.inOut' },
+      defaults: { ease: 'power2.inOut' },
       scrollTrigger: {
         trigger: '.story-pin',
         start: 'top top',
         end: END,
-        scrub: 1.8,
+        scrub: 1.2,
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
           const d = tl.duration() || 1;
-          const b1 = 14 / d, b2 = 28 / d;
+          const b1 = 10 / d, b2 = 20 / d;
           const segs = [[0, b1], [b1, b2], [b2, 1]];
           rails.forEach((bar, i) => {
             const s = segs[i][0], e = segs[i][1];
@@ -1626,27 +1626,31 @@
       }
     });
 
-    // reveal a stage's grid + heading + staggered tiles, then a slow "alive" drift
+    // reveal: scale up from small → 1 → slow drift to 1.18 (prominent enlargement)
     function revealStage(i, pos) {
-      tl.to(heads[i], { opacity: 1, y: 0, duration: 4, ease: 'power2.out' }, pos)
+      tl.fromTo(heads[i],
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 3, ease: 'power2.out' }, pos)
         .fromTo(grids[i],
-          { opacity: 0, scale: 0.92, filter: 'blur(4px)' },
-          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 5, ease: 'power2.out' }, pos)
-        .to(tilesOf(i), { opacity: 1, y: 0, scale: 1, duration: 5, stagger: 0.35, ease: 'power2.out' }, pos + 0.5)
-        .to(grids[i], { scale: 1.04, duration: 8, ease: 'none' }, pos + 5);
+          { opacity: 0, scale: 0.82, filter: 'blur(6px)' },
+          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 3.5, ease: 'power2.out' }, pos)
+        .fromTo(tilesOf(i),
+          { opacity: 0, y: 40, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 3.5, stagger: 0.3, ease: 'power2.out' }, pos + 0.3)
+        .to(grids[i], { scale: 1.18, duration: 6, ease: 'none' }, pos + 3.5);
     }
-    // morph a stage out: scale up, blur, fade — overlaps the next reveal
+    // exit: scale up further + blur + fade (prominent zoom-out feel)
     function exitStage(i, pos) {
-      tl.to(heads[i], { opacity: 0, y: -20, duration: 4, ease: 'power1.inOut' }, pos)
-        .to(grids[i], { opacity: 0, scale: 1.12, filter: 'blur(6px)', duration: 5, ease: 'power1.inOut' }, pos);
+      tl.to(heads[i], { opacity: 0, y: -24, duration: 3, ease: 'power2.inOut' }, pos)
+        .to(grids[i], { opacity: 0, scale: 1.35, filter: 'blur(8px)', duration: 3.5, ease: 'power2.inOut' }, pos);
     }
 
     revealStage(0, 0);
-    exitStage(0, 13);
-    revealStage(1, 14);
-    exitStage(1, 27);
-    revealStage(2, 28);
-    tl.to({}, { duration: 8 }, 40); // tail hold on the editing stage
+    exitStage(0, 9);
+    revealStage(1, 10);
+    exitStage(1, 19);
+    revealStage(2, 20);
+    tl.to({}, { duration: 5 }, 29); // tail hold on the editing stage
 
     // pointer parallax (desktop only) — grids drift against the cursor, glow follows
     const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;

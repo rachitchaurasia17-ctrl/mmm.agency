@@ -1591,7 +1591,7 @@
     gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 40, scale: 0.94 });
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
-    const END = () => '+=' + Math.round((window.innerHeight || 800) * 5.5);
+    const END = () => '+=' + Math.round((window.innerHeight || 800) * 4);
     let lastActive = -1;
 
     const tl = gsap.timeline({

@@ -289,6 +289,49 @@
   }
 
   /* ─────────────────────────────────────────────
+     POSTING APPROACH — full-size feed gallery
+     Horizontal scroll inside the card, photos reveal on scroll.
+  ───────────────────────────────────────────── */
+  .posting-gallery {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(215,226,234,.25) transparent;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+  .posting-gallery::-webkit-scrollbar { height: 7px; }
+  .posting-gallery::-webkit-scrollbar-track { background: transparent; }
+  .posting-gallery::-webkit-scrollbar-thumb { background: rgba(215,226,234,.22); border-radius: 999px; }
+  .posting-gallery::-webkit-scrollbar-thumb:hover { background: rgba(215,226,234,.4); }
+  .posting-frame {
+    flex: 0 0 auto;
+    height: clamp(340px, 56vh, 620px);
+    border-radius: 28px;
+    overflow: hidden;
+    background: #0a0a0a;
+    border: 1px solid rgba(215,226,234,.12);
+    box-shadow: 0 22px 60px rgba(0,0,0,.55);
+    transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+  }
+  .posting-frame:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.18);
+  }
+  .posting-img { height: 100%; width: auto; display: block; }
+  @media (min-width:640px){ .posting-frame { border-radius: 36px; } }
+
+  /* scroll reveal — photos slide + fade in as the card scrolls into view */
+  .reveal-img {
+    opacity: 0;
+    transform: translateY(48px) scale(.97);
+    transition: opacity .85s cubic-bezier(.22,1,.36,1),
+                transform .85s cubic-bezier(.22,1,.36,1);
+  }
+  .reveal-img.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-img { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* ─────────────────────────────────────────────
      CONTENT CALENDAR — redesigned
   ───────────────────────────────────────────── */
   .calendar-grid {
@@ -1310,10 +1353,13 @@
         label: 'Social',
         name: 'Posting Approach',
         body: 'A monthly content engine built around your brand voice — every post engineered for the first three seconds.',
+        gallery: true,
         images: [
-          'assets/45b42bcc-8fcd-463e-a8e8-81e73762ae06.jpg',
-          'assets/64c46f62-0fdf-4fdb-ab25-dec66b67374d.jpg',
-          'assets/89953b7e-bb97-4aba-a23d-e7c0272348f6.jpg'
+          'assets/posting-1.webp',
+          'assets/posting-2.webp',
+          'assets/posting-3.webp',
+          'assets/posting-4.webp',
+          'assets/posting-5.webp'
         ],
       },
       {
@@ -1366,7 +1412,16 @@
             </a>
           </div>
 
-          <!-- image grid -->
+          <!-- image area: full-size reveal gallery for Posting Approach, grid for the rest -->
+          ${c.gallery ? `
+          <div class="posting-gallery flex gap-4 sm:gap-6 overflow-x-auto pb-3 -mx-1 px-1">
+            ${c.images.map((src, n) => `
+              <figure class="posting-frame reveal-img" style="transition-delay:${n * 90}ms">
+                <img src="${src}" loading="lazy" alt="" class="posting-img" />
+              </figure>
+            `).join('')}
+          </div>
+          ` : `
           <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-5">
             <div class="${c.images[2] ? 'md:col-span-2 flex flex-col' : 'md:col-span-5 grid grid-cols-1 md:grid-cols-2'} gap-3 sm:gap-5">
               <img src="${c.images[0]}" loading="lazy" alt=""
@@ -1384,9 +1439,23 @@
             </div>
             ` : ''}
           </div>
+          `}
         </div>
       </div>
     `).join('');
+
+    // Scroll-reveal for the Posting Approach gallery — photos appear as the card scrolls in
+    const revealEls = wrap.querySelectorAll('.reveal-img');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+      revealEls.forEach((el) => io.observe(el));
+    } else {
+      revealEls.forEach((el) => el.classList.add('in'));
+    }
 
     // Scroll-driven scale
     const wrapRect = () => wrap.getBoundingClientRect();

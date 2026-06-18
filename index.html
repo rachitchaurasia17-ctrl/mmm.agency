@@ -351,8 +351,8 @@
   }
   .story-grid--1 {
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-areas: "a a b b" "a a c c";
+    grid-template-rows: 1fr;
+    grid-template-areas: "a b c d";
   }
   .story-grid--2 {
     grid-template-columns: repeat(4, 1fr);
@@ -369,7 +369,7 @@
     .story-grid--1 {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
-      grid-template-areas: "a a" "b c";
+      grid-template-areas: "a b" "c d";
     }
     .story-grid--2 {
       grid-template-columns: repeat(2, 1fr);
@@ -1464,10 +1464,12 @@
         label: 'Production',
         name: 'Video Approach',
         body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
-        images: [
-          'assets/aa3bdb0b-e53a-4b2b-ae42-596d99ba28aa.jpg',
-          'assets/b5eb435c-778a-4b60-b814-68b37a05ca42.jpg',
-          'assets/cdcbc8a7-7fe8-4517-9769-ee069724e976.jpg'
+        videos: true,
+        clips: [
+          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg' },
+          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg' },
+          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg' },
+          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg' }
         ],
       },
       {
@@ -1492,7 +1494,7 @@
     // grid-area slot per stage (matches .story-grid--N template-areas in CSS)
     const AREAS = [
       ['a', 'b', 'c', 'd', 'e'],
-      ['a', 'b', 'c'],
+      ['a', 'b', 'c', 'd'],
       ['a', 'b', 'c', 'd']
     ];
 
@@ -1542,13 +1544,13 @@
     const stage = wrap.querySelector('.story-stage');
     const curEl = wrap.querySelector('[data-cur]');
     const cnameEl = wrap.querySelector('[data-cname]');
-    const storyVideos = Array.from(wrap.querySelectorAll('video[data-storyvideo]'));
-
-    const playStoryVideos = () => storyVideos.forEach((v) => {
+    // videos grouped by stage so only the active stage's clips ever play
+    const videosByStage = grids.map((g) => Array.from(g.querySelectorAll('video[data-storyvideo]')));
+    const playStage = (i) => videosByStage[i].forEach((v) => {
       if (v.preload === 'none') { v.preload = 'auto'; v.load(); }
       const pr = v.play(); if (pr && pr.catch) pr.catch(() => {});
     });
-    const pauseStoryVideos = () => storyVideos.forEach((v) => v.pause());
+    const pauseAllVideos = () => videosByStage.forEach((arr) => arr.forEach((v) => v.pause()));
 
     const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1558,7 +1560,7 @@
       grids.forEach((g) => { g.style.opacity = 1; g.style.transform = 'none'; g.style.filter = 'none'; });
       heads.forEach((h) => { h.style.position = 'relative'; h.style.opacity = 1; });
       wrap.querySelectorAll('.story-tile').forEach((t) => { t.style.opacity = 1; });
-      playStoryVideos();
+      videosByStage.forEach((_, i) => playStage(i));
       return;
     }
 
@@ -1571,7 +1573,7 @@
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
     const END = () => '+=' + Math.round((window.innerHeight || 800) * 7);
-    let videosOn = false;
+    let lastActive = -1;
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.out' },
@@ -1595,8 +1597,11 @@
           const active = p < b1 ? 0 : (p < b2 ? 1 : 2);
           curEl.textContent = String(active + 1).padStart(2, '0');
           cnameEl.textContent = CARDS[active].name.replace(' Approach', '');
-          if (active === 2) { if (!videosOn) { videosOn = true; playStoryVideos(); } }
-          else { if (videosOn) { videosOn = false; pauseStoryVideos(); } }
+          if (active !== lastActive) {
+            lastActive = active;
+            pauseAllVideos();
+            if (videosByStage[active].length) playStage(active);
+          }
         }
       }
     });

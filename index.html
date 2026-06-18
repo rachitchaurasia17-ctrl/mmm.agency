@@ -1536,8 +1536,8 @@
      Static background image swapped for the 4K looping video.
      ════════════════════════════════════════════════════════════ -->
 <section id="approach" class="relative w-full min-h-screen flex flex-col pt-24 overflow-hidden">
-  <!-- 4K looping video — uncropped, fits the whole frame -->
-  <div class="absolute inset-0 z-0 bg-black">
+  <!-- 4K looping video (desktop) — uncropped, fits the whole frame -->
+  <div class="absolute inset-0 z-0 bg-black desktop-only-el">
     <video autoplay loop muted playsinline preload="auto"
            class="absolute inset-0 w-full h-full object-contain">
       <source src="assets/video_4k.mp4" type="video/mp4" />
@@ -1545,6 +1545,17 @@
     <!-- light vignette so heading + cards stay readable; keeps the video visible -->
     <div class="absolute inset-0 pointer-events-none"
          style="background: linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.05) 25%, rgba(0,0,0,0.05) 60%, rgba(0,0,0,0.75) 100%);"></div>
+  </div>
+
+  <!-- Portrait looping video (mobile) — vertical, fills the frame, light to load -->
+  <div class="absolute inset-0 z-0 bg-black mobile-only">
+    <video autoplay loop muted playsinline preload="auto" poster="assets/mobile_approach.jpg"
+           class="absolute inset-0 w-full h-full object-cover">
+      <source src="assets/mobile_approach.mp4" type="video/mp4" />
+    </video>
+    <!-- vignette tuned for the portrait frame: dark top for the heading, dark bottom for the cards -->
+    <div class="absolute inset-0 pointer-events-none"
+         style="background: linear-gradient(180deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.12) 26%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.88) 100%);"></div>
   </div>
 
   <div class="relative z-10 flex flex-col flex-1 w-full min-h-screen">
@@ -2947,13 +2958,6 @@ Keep responses tight (under 120 words), action-oriented, and on-brand. If asked 
   })();
 </script>
 
-<!-- Mobile Floating CTAs -->
-<a href="https://wa.me/yourwhatsappnumber" target="_blank" class="mob-whatsapp-btn mobile-only">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.031 21.5c-1.614 0-3.197-.42-4.593-1.218l-.33-.19-3.411.895.912-3.324-.208-.332C3.606 15.934 3.167 14.34 3.167 12.69 3.167 7.794 7.147 3.81 12.043 3.81c4.896 0 8.876 3.984 8.876 8.88 0 4.896-3.98 8.81-8.888 8.81zm0-16.142C7.999 5.358 4.717 8.644 4.717 12.69c0 1.306.338 2.583.982 3.714l1.107 1.94-.658 2.4 2.457-.643 1.896.963c1.096.556 2.308.847 3.53.847 4.043 0 7.337-3.284 7.337-7.33 0-4.047-3.294-7.33-7.337-7.33zM16.89 15.197c-.244-.122-1.442-.71-1.664-.792-.222-.082-.384-.122-.546.122-.162.244-.632.792-.774.954-.142.162-.284.183-.528.06-1.458-.72-2.483-1.282-3.42-2.905-.142-.244-.015-.376.107-.498.11-.11.244-.284.366-.426.122-.142.162-.244.244-.406.082-.162.041-.305-.02-.426-.062-.122-.546-1.317-.748-1.804-.197-.476-.397-.412-.546-.42l-.466-.008c-.162 0-.426.06-.65.305-.224.244-.852.832-.852 2.028 0 1.196.872 2.353.994 2.515.122.162 1.714 2.617 4.152 3.668 1.636.706 2.298.766 3.125.642.923-.138 2.338-.954 2.662-1.875.324-.92.324-1.712.227-1.875-.097-.162-.361-.244-.605-.366z"/></svg>
-</a>
-<a href="#contact" class="mob-floating-cta mobile-only">
-  <span class="material-symbols-outlined">mail</span>
-</a>
 
 <!-- Mobile JS Interactions -->
 <script>

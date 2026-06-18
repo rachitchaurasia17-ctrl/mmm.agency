@@ -363,13 +363,13 @@
   .story-grid.is-live { pointer-events: auto; }
   .story-grid--0 {
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1.4fr 1fr 1fr;
-    grid-template-areas: "a a a a" "b b c c" "d d e e";
+    grid-template-rows: 1fr;
+    grid-template-areas: "a b c d";
   }
   .story-grid--1 {
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr;
-    grid-template-areas: "a b c d";
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-areas: "a a b c" "a a d e";
   }
   .story-grid--2 {
     grid-template-columns: repeat(4, 1fr);
@@ -380,13 +380,13 @@
     .story-grid { width: 94vw; height: 74vh; }
     .story-grid--0 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: 1.2fr 1fr 1fr;
-      grid-template-areas: "a a" "b c" "d e";
+      grid-template-rows: repeat(2, 1fr);
+      grid-template-areas: "a b" "c d";
     }
     .story-grid--1 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      grid-template-areas: "a b" "c d";
+      grid-template-rows: repeat(3, 1fr);
+      grid-template-areas: "a a" "b c" "d e";
     }
     .story-grid--2 {
       grid-template-columns: repeat(2, 1fr);
@@ -1464,6 +1464,19 @@
     const CARDS = [
       {
         num: '01',
+        label: 'Production',
+        name: 'Video Approach',
+        body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
+        videos: true,
+        clips: [
+          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/?igsh=MWdrZHFleHV6Mmlncw==' },
+          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/?igsh=enp4NjRvMjk0OGNk' },
+          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/?igsh=eXZlcnNleDZpOXp2' },
+          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/?igsh=MW5oOHY2aWV5b3FoZg==' }
+        ],
+      },
+      {
+        num: '02',
         label: 'Social',
         name: 'Posting Approach',
         body: 'A monthly content engine built around your brand voice — every post engineered for the first three seconds.',
@@ -1474,19 +1487,6 @@
           'assets/posting-3.webp',
           'assets/posting-4.webp',
           'assets/posting-5.webp'
-        ],
-      },
-      {
-        num: '02',
-        label: 'Production',
-        name: 'Video Approach',
-        body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
-        videos: true,
-        clips: [
-          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/?igsh=MWdrZHFleHV6Mmlncw==' },
-          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/?igsh=enp4NjRvMjk0OGNk' },
-          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/?igsh=eXZlcnNleDZpOXp2' },
-          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/?igsh=MW5oOHY2aWV5b3FoZg==' }
         ],
       },
       {
@@ -1510,8 +1510,8 @@
 
     // grid-area slot per stage (matches .story-grid--N template-areas in CSS)
     const AREAS = [
-      ['a', 'b', 'c', 'd', 'e'],
       ['a', 'b', 'c', 'd'],
+      ['a', 'b', 'c', 'd', 'e'],
       ['a', 'b', 'c', 'd']
     ];
 
@@ -1586,28 +1586,28 @@
     gsap.registerPlugin(ScrollTrigger);
 
     // initial states
-    gsap.set(grids, { opacity: 0, scale: 0.86, filter: 'blur(6px)' });
-    gsap.set(heads, { opacity: 0, y: 34 });
-    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 52, scale: 0.96 });
+    gsap.set(grids, { opacity: 0, scale: 0.92, filter: 'blur(4px)' });
+    gsap.set(heads, { opacity: 0, y: 26 });
+    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 36, scale: 0.97 });
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
-    const END = () => '+=' + Math.round((window.innerHeight || 800) * 7);
+    const END = () => '+=' + Math.round((window.innerHeight || 800) * 9);
     let lastActive = -1;
 
     const tl = gsap.timeline({
-      defaults: { ease: 'power2.out' },
+      defaults: { ease: 'power1.inOut' },
       scrollTrigger: {
         trigger: '.story-pin',
         start: 'top top',
         end: END,
-        scrub: 1,
+        scrub: 1.8,
         pin: true,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
           const d = tl.duration() || 1;
-          const b1 = 11.6 / d, b2 = 23.6 / d;
+          const b1 = 14 / d, b2 = 28 / d;
           const segs = [[0, b1], [b1, b2], [b2, 1]];
           rails.forEach((bar, i) => {
             const s = segs[i][0], e = segs[i][1];
@@ -1628,25 +1628,25 @@
 
     // reveal a stage's grid + heading + staggered tiles, then a slow "alive" drift
     function revealStage(i, pos) {
-      tl.to(heads[i], { opacity: 1, y: 0, duration: 3 }, pos)
+      tl.to(heads[i], { opacity: 1, y: 0, duration: 4, ease: 'power2.out' }, pos)
         .fromTo(grids[i],
-          { opacity: 0, scale: 0.86, filter: 'blur(6px)' },
-          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 4, ease: 'power2.out' }, pos)
-        .to(tilesOf(i), { opacity: 1, y: 0, scale: 1, duration: 4, stagger: 0.45, ease: 'power3.out' }, pos + 0.4)
-        .to(grids[i], { scale: 1.07, duration: 7, ease: 'none' }, pos + 4);
+          { opacity: 0, scale: 0.92, filter: 'blur(4px)' },
+          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 5, ease: 'power2.out' }, pos)
+        .to(tilesOf(i), { opacity: 1, y: 0, scale: 1, duration: 5, stagger: 0.35, ease: 'power2.out' }, pos + 0.5)
+        .to(grids[i], { scale: 1.04, duration: 8, ease: 'none' }, pos + 5);
     }
     // morph a stage out: scale up, blur, fade — overlaps the next reveal
     function exitStage(i, pos) {
-      tl.to(heads[i], { opacity: 0, y: -30, duration: 3, ease: 'power2.in' }, pos)
-        .to(grids[i], { opacity: 0, scale: 1.22, filter: 'blur(9px)', duration: 4, ease: 'power2.in' }, pos);
+      tl.to(heads[i], { opacity: 0, y: -20, duration: 4, ease: 'power1.inOut' }, pos)
+        .to(grids[i], { opacity: 0, scale: 1.12, filter: 'blur(6px)', duration: 5, ease: 'power1.inOut' }, pos);
     }
 
     revealStage(0, 0);
-    exitStage(0, 11);
-    revealStage(1, 11.6);
-    exitStage(1, 23);
-    revealStage(2, 23.6);
-    tl.to({}, { duration: 6 }, 35); // tail hold on the editing stage
+    exitStage(0, 13);
+    revealStage(1, 14);
+    exitStage(1, 27);
+    revealStage(2, 28);
+    tl.to({}, { duration: 8 }, 40); // tail hold on the editing stage
 
     // pointer parallax (desktop only) — grids drift against the cursor, glow follows
     const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;

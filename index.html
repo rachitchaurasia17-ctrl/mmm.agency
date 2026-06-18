@@ -244,6 +244,20 @@
   }
 
   /* ─────────────────────────────────────────────
+     HERO TEXT STYLES (Refactored for mobile contrast)
+  ───────────────────────────────────────────── */
+  .hero-title {
+    font-size: clamp(3rem, 6.2vw, 6.4rem);
+    font-weight: 600;
+    letter-spacing: -0.045em;
+    line-height: 0.95;
+    background: linear-gradient(180deg, #ffffff 0%, #e8ecf0 55%, #8b9098 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 12px 30px rgba(0,0,0,.45));
+  }
+
+  /* ─────────────────────────────────────────────
      VIDEO BACKGROUND
   ───────────────────────────────────────────── */
   .video-bg-container{
@@ -880,9 +894,21 @@
       width: 100% !important;
       padding: 0 20px !important;
     }
-    #top > .relative.z-10 > div:first-child h1 {
+    .hero-title {
       font-size: clamp(2.6rem, 12vw, 4.2rem) !important;
       margin-bottom: 20px !important;
+      background: none !important;
+      color: #ffffff !important;
+      -webkit-text-fill-color: #ffffff !important;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.9), 0 2px 8px rgba(0,0,0,0.8), 0 0 4px #000000 !important;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.8)) !important;
+    }
+    .hero-pill {
+      background: rgba(0,0,0,0.6) !important;
+      backdrop-filter: blur(12px) !important;
+      border: 1px solid rgba(255,255,255,0.2) !important;
+      color: #ffffff !important;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.8) !important;
     }
     #top .flex.flex-wrap.gap-4 {
       gap: 8px !important;
@@ -1425,31 +1451,32 @@
      HERO — original Stitch design, untouched
      ════════════════════════════════════════════════════════════ -->
 <section id="top" class="relative w-full h-screen">
-  <div class="video-bg-container">
-    <video autoplay loop muted playsinline>
+  <!-- Desktop Video Background -->
+  <div class="video-bg-container desktop-only-el">
+    <video autoplay loop muted playsinline class="w-full h-full object-cover">
       <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4" type="video/mp4" />
     </video>
     <div class="absolute inset-0 bg-black/30"></div>
   </div>
 
+  <!-- Mobile Video Background (GIF) -->
+  <div class="video-bg-container mobile-only absolute inset-0 z-0 overflow-hidden">
+    <img src="mobile%20video.gif" alt="Mobile Hero Background" class="w-full h-full object-cover" />
+    <!-- Light overlay to ensure contrasting dark text works well, or dark overlay for light text. 
+         Using a subtle dark overlay, but we will make the text highly contrasting. -->
+    <div class="absolute inset-0 bg-black/20"></div>
+  </div>
+
   <div class="relative z-10 flex w-full h-full max-w-[1440px] mx-auto">
     <!-- Left Panel (52%) -->
     <div class="flex flex-col justify-center h-full w-full lg:w-[52%] px-6 lg:px-16 pb-20 lg:py-0 pt-8">
-      <h1 class="font-kanit mb-8 uppercase"
-          style="font-size: clamp(3rem, 6.2vw, 6.4rem);
-                 font-weight: 600;
-                 letter-spacing: -0.045em;
-                 line-height: 0.95;
-                 background: linear-gradient(180deg, #ffffff 0%, #e8ecf0 55%, #8b9098 100%);
-                 -webkit-background-clip: text; background-clip: text;
-                 -webkit-text-fill-color: transparent;
-                 filter: drop-shadow(0 12px 30px rgba(0,0,0,.45));">
+      <h1 class="hero-title font-kanit mb-8 uppercase">
         The Next Era<br/>Starts Here
       </h1>
       <div class="flex flex-wrap gap-4">
-        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Reach</div>
-        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Sales</div>
-        <div class="liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Money</div>
+        <div class="hero-pill liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Reach</div>
+        <div class="hero-pill liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Sales</div>
+        <div class="hero-pill liquid-glass-strong rounded-full px-8 py-4 text-lg font-medium uppercase tracking-widest">More Money</div>
       </div>
     </div>
     

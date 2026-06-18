@@ -383,9 +383,9 @@
     grid-template-areas: "a b c d";
   }
   .story-grid--1 {
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-areas: "a a b c" "a a d e";
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-areas: "a a b" "a a c" "d e f";
   }
   .story-grid--2 {
     grid-template-columns: repeat(4, 1fr);
@@ -401,8 +401,8 @@
     }
     .story-grid--1 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(3, 1fr);
-      grid-template-areas: "a a" "b c" "d e";
+      grid-template-rows: repeat(4, 1fr);
+      grid-template-areas: "a a" "b c" "d e" "f f";
     }
     .story-grid--2 {
       grid-template-columns: repeat(2, 1fr);
@@ -2212,7 +2212,8 @@
           'assets/posting-2.webp',
           'assets/posting-3.webp',
           'assets/posting-4.webp',
-          'assets/posting-5.webp'
+          'assets/posting-5.webp',
+          'assets/ps-1.jpg'
         ],
       },
       {
@@ -2237,7 +2238,7 @@
     // grid-area slot per stage (matches .story-grid--N template-areas in CSS)
     const AREAS = [
       ['a', 'b', 'c', 'd'],
-      ['a', 'b', 'c', 'd', 'e'],
+      ['a', 'b', 'c', 'd', 'e', 'f'],
       ['a', 'b', 'c', 'd']
     ];
 

@@ -289,35 +289,50 @@
   }
 
   /* ─────────────────────────────────────────────
-     POSTING APPROACH — full-size feed gallery
-     Horizontal scroll inside the card, photos reveal on scroll.
+     POSTING APPROACH — large feed gallery
+     2-up vertical grid, scrolls downward inside the card,
+     photos reveal on scroll, click opens full image in a new tab.
   ───────────────────────────────────────────── */
   .posting-gallery {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(215,226,234,.25) transparent;
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
-  .posting-gallery::-webkit-scrollbar { height: 7px; }
-  .posting-gallery::-webkit-scrollbar-track { background: transparent; }
-  .posting-gallery::-webkit-scrollbar-thumb { background: rgba(215,226,234,.22); border-radius: 999px; }
-  .posting-gallery::-webkit-scrollbar-thumb:hover { background: rgba(215,226,234,.4); }
+  @media (min-width:768px){
+    .posting-gallery { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+  }
   .posting-frame {
-    flex: 0 0 auto;
-    height: clamp(340px, 56vh, 620px);
+    position: relative;
+    display: block;
+    width: 100%;
     border-radius: 28px;
     overflow: hidden;
     background: #0a0a0a;
     border: 1px solid rgba(215,226,234,.12);
     box-shadow: 0 22px 60px rgba(0,0,0,.55);
     transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+    cursor: pointer;
   }
   .posting-frame:hover {
     transform: translateY(-4px);
-    box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.18);
+    box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.22);
   }
-  .posting-img { height: 100%; width: auto; display: block; }
+  .posting-img { width: 100%; height: auto; display: block; }
   @media (min-width:640px){ .posting-frame { border-radius: 36px; } }
+  /* open-in-new-tab affordance */
+  .posting-open {
+    position: absolute; top: 16px; right: 16px;
+    width: 44px; height: 44px; border-radius: 999px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(12,12,12,.55);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,.2);
+    color: #fff;
+    opacity: 0; transform: scale(.82);
+    transition: opacity .3s ease, transform .3s ease;
+    pointer-events: none;
+  }
+  .posting-frame:hover .posting-open { opacity: 1; transform: scale(1); }
 
   /* scroll reveal — photos slide + fade in as the card scrolls into view */
   .reveal-img {
@@ -1414,11 +1429,12 @@
 
           <!-- image area: full-size reveal gallery for Posting Approach, grid for the rest -->
           ${c.gallery ? `
-          <div class="posting-gallery flex gap-4 sm:gap-6 overflow-x-auto pb-3 -mx-1 px-1">
+          <div class="posting-gallery">
             ${c.images.map((src, n) => `
-              <figure class="posting-frame reveal-img" style="transition-delay:${n * 90}ms">
+              <a href="${src}" target="_blank" rel="noopener" class="posting-frame reveal-img" style="transition-delay:${(n % 2) * 90}ms">
                 <img src="${src}" loading="lazy" alt="" class="posting-img" />
-              </figure>
+                <span class="posting-open"><span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span></span>
+              </a>
             `).join('')}
           </div>
           ` : `

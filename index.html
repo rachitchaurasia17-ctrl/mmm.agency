@@ -277,6 +277,17 @@
     background: #000;
   }
   .story-stage { position: relative; width: 100%; height: 100%; }
+  /* contrast scrims so headings/footers read over bright grids */
+  .story-stage::before {
+    content: ''; position: absolute; left: 0; right: 0; top: 0;
+    height: 40%; z-index: 3; pointer-events: none;
+    background: linear-gradient(180deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.42) 42%, rgba(0,0,0,0) 100%);
+  }
+  .story-stage::after {
+    content: ''; position: absolute; left: 0; right: 0; bottom: 0;
+    height: 26%; z-index: 3; pointer-events: none;
+    background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0) 100%);
+  }
   .story-glow {
     position: absolute; left: 50%; top: 50%;
     width: 78vmax; height: 78vmax;
@@ -301,26 +312,32 @@
     opacity: 0; will-change: transform, opacity;
   }
   .story-head-label {
-    font-family: 'Kanit', sans-serif; font-weight: 600;
+    font-family: 'Kanit', sans-serif; font-weight: 700;
     text-transform: uppercase; letter-spacing: .5em;
     font-size: clamp(10px, 1vw, 13px);
-    color: #A855F7; margin-bottom: 10px; padding-left: .5em;
+    color: #c79bff; margin-bottom: 10px; padding-left: .5em;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.9);
   }
   .story-head-name {
     font-family: 'Kanit', sans-serif; font-weight: 800;
     text-transform: uppercase; letter-spacing: -0.03em;
     line-height: .95;
     font-size: clamp(2rem, 6vw, 5.5rem);
-    background: linear-gradient(180deg, #ffffff 0%, #cdd3da 60%, #8b9097 100%);
+    background: linear-gradient(180deg, #ffffff 0%, #eef1f4 55%, #c2c8cf 100%);
     -webkit-background-clip: text; background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 10px 30px rgba(168,85,247,0.25));
+    /* dark drop-shadow works on gradient text where text-shadow can't */
+    filter:
+      drop-shadow(0 2px 10px rgba(0,0,0,0.9))
+      drop-shadow(0 6px 26px rgba(0,0,0,0.7))
+      drop-shadow(0 10px 30px rgba(168,85,247,0.3));
   }
   .story-head-body {
     margin: 14px auto 0; max-width: 540px;
-    font-family: 'Poppins', sans-serif; font-weight: 400;
+    font-family: 'Poppins', sans-serif; font-weight: 500;
     font-size: clamp(12px, 1.1vw, 15px);
-    line-height: 1.6; color: rgba(255,255,255,0.6);
+    line-height: 1.6; color: rgba(255,255,255,0.92);
+    text-shadow: 0 2px 12px rgba(0,0,0,0.95), 0 1px 3px rgba(0,0,0,0.9);
   }
   .story-counter {
     position: absolute; left: 0; right: 0; bottom: clamp(20px, 5vh, 48px);
@@ -1466,10 +1483,10 @@
         body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
         videos: true,
         clips: [
-          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg' },
-          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg' },
-          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg' },
-          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg' }
+          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/' },
+          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/' },
+          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/' },
+          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/' }
         ],
       },
       {
@@ -1499,11 +1516,13 @@
     ];
 
     const mediaOf = (c) => c.clips
-      ? c.clips.map((v) => ({ type: 'video', src: v.src, poster: v.poster }))
+      ? c.clips.map((v) => ({ type: 'video', src: v.src, poster: v.poster, link: v.link }))
       : c.images.map((src) => ({ type: 'image', src }));
 
+    // Click target: reels open their Instagram post (with sound); everything
+    // else opens the full-res file in a new tab.
     const tilesHTML = (c, idx) => mediaOf(c).map((m, n) => `
-      <a href="${m.src}" target="_blank" rel="noopener" class="story-tile" data-tile style="grid-area:${AREAS[idx][n] || 'auto'}">
+      <a href="${m.link || m.src}" target="_blank" rel="noopener" class="story-tile" data-tile style="grid-area:${AREAS[idx][n] || 'auto'}">
         ${m.type === 'video'
           ? `<video src="${m.src}" poster="${m.poster}" muted loop playsinline preload="none" data-storyvideo></video>`
           : `<img src="${m.src}" loading="lazy" alt="" />`}

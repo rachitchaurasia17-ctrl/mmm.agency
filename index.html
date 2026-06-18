@@ -261,66 +261,92 @@
   }
 
   /* ─────────────────────────────────────────────
-     STICKY STACKING CARDS
+     APPROACH SCENES — sequential pinned scroll
+     Each section pins full-screen and pans through its own
+     enlarged media as you scroll, then hands off to the next.
   ───────────────────────────────────────────── */
-  .stack-wrap { position: relative; }
-  .stack-card-outer {
-    position: sticky;
-    height: 120vh;
-    /* top is set inline per-card to create the offset stack */
-    display: flex; align-items: flex-start; justify-content: center;
+  .scenes { position: relative; }
+  .scene { position: relative; }
+  .scene-pin {
+    position: sticky; top: 0;
+    height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
   }
-  .stack-card {
+  .scene-card {
     width: 100%;
-    max-height: calc(100vh - 90px);
-    overflow-y: auto;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    border-radius: 60px;
+    max-width: 1440px;
+    height: calc(100vh - 36px);
+    margin: 0 auto;
+    border-radius: 48px;
     border: 2px solid #D7E2EA;
     background: #0C0C0C;
-    transform-origin: top center;
-    will-change: transform;
     box-shadow: 0 30px 80px rgba(0,0,0,.5);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    padding: clamp(16px, 2.4vw, 38px);
   }
-  .stack-card::-webkit-scrollbar { display: none; }
   @media (max-width: 768px){
-    .stack-card { border-radius: 40px; }
+    .scene-card { border-radius: 30px; height: calc(100vh - 16px); }
   }
 
-  /* ─────────────────────────────────────────────
-     POSTING APPROACH — large feed gallery
-     2-up vertical grid, scrolls downward inside the card,
-     photos reveal on scroll, click opens full image in a new tab.
-  ───────────────────────────────────────────── */
-  .posting-gallery {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
+  .scene-head { flex: 0 0 auto; }
+  .scene-progress {
+    flex: 0 0 auto;
+    height: 3px; width: 100%;
+    margin-top: clamp(8px, 1.4vh, 16px);
+    border-radius: 999px;
+    background: rgba(215,226,234,0.12);
+    overflow: hidden;
   }
-  @media (min-width:768px){
-    .posting-gallery { grid-template-columns: 1fr 1fr; gap: 1.75rem; }
+  .scene-progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #A855F7, #d8b4fe);
+    border-radius: 999px;
+    transition: width .12s linear;
   }
-  .posting-frame {
+  .scene-viewport {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: hidden;
+    margin-top: clamp(10px, 1.8vh, 22px);
+  }
+  .scene-track {
+    position: absolute; left: 0; top: 0;
+    width: 100%;
+    will-change: transform;
+    display: flex; flex-direction: column;
+  }
+  .scene-item {
+    flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    width: 100%;
+  }
+  .scene-media {
     position: relative;
     display: block;
-    width: 100%;
     border-radius: 28px;
     overflow: hidden;
     background: #0a0a0a;
     border: 1px solid rgba(215,226,234,.12);
-    box-shadow: 0 22px 60px rgba(0,0,0,.55);
-    transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55);
     cursor: pointer;
+    transition: transform .45s cubic-bezier(.22,1,.36,1), box-shadow .45s ease;
   }
-  .posting-frame:hover {
+  .scene-media:hover {
     transform: translateY(-4px);
-    box-shadow: 0 30px 70px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.22);
+    box-shadow: 0 32px 72px rgba(0,0,0,.6), 0 0 0 1px rgba(168,85,247,.22);
   }
-  .posting-img { width: 100%; height: auto; display: block; }
-  @media (min-width:640px){ .posting-frame { border-radius: 36px; } }
+  .scene-media img, .scene-media video {
+    display: block;
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+  }
+  @media (min-width:640px){ .scene-media { border-radius: 34px; } }
   /* open-in-new-tab affordance */
-  .posting-open {
+  .scene-open {
     position: absolute; top: 16px; right: 16px;
     width: 44px; height: 44px; border-radius: 999px;
     display: flex; align-items: center; justify-content: center;
@@ -331,20 +357,9 @@
     opacity: 0; transform: scale(.82);
     transition: opacity .3s ease, transform .3s ease;
     pointer-events: none;
+    z-index: 2;
   }
-  .posting-frame:hover .posting-open { opacity: 1; transform: scale(1); }
-
-  /* scroll reveal — photos slide + fade in as the card scrolls into view */
-  .reveal-img {
-    opacity: 0;
-    transform: translateY(48px) scale(.97);
-    transition: opacity .85s cubic-bezier(.22,1,.36,1),
-                transform .85s cubic-bezier(.22,1,.36,1);
-  }
-  .reveal-img.in { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal-img { opacity: 1; transform: none; transition: none; }
-  }
+  .scene-media:hover .scene-open { opacity: 1; transform: scale(1); }
 
   /* ─────────────────────────────────────────────
      CONTENT CALENDAR — redesigned
@@ -775,7 +790,7 @@
       What We Offer
     </h2>
 
-    <div id="stack" class="stack-wrap" data-total="3"></div>
+    <div id="stack" class="scenes"></div>
   </div>
 </section>
 
@@ -1404,86 +1419,56 @@
     ];
 
     const wrap = document.getElementById('stack');
-    const total = CARDS.length;
-    const OFFSET_BASE = 24; // px from top
-    const OFFSET_STEP = 28; // px per card
+    wrap.className = 'scenes';
 
-    wrap.innerHTML = CARDS.map((c, i) => `
-      <div class="stack-card-outer" style="top: ${OFFSET_BASE + i * OFFSET_STEP}px" data-index="${i}">
-        <div class="stack-card p-4 sm:p-6 md:p-10" data-card>
-          <!-- top row -->
-          <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8 md:mb-10">
-            <div class="flex items-center gap-5 sm:gap-7">
-              <span class="font-kanit font-black text-mmm-ink"
-                    style="font-size: clamp(3rem, 10vw, 140px); line-height:.9;">(${c.num})</span>
-              <div>
-                <p class="font-kanit text-mmm-ink/60 uppercase tracking-[0.4em] text-xs sm:text-sm font-semibold mb-2">${c.label}</p>
-                <h3 class="font-kanit font-medium uppercase text-mmm-ink leading-[1.05] tracking-tight"
-                    style="font-size: clamp(1.4rem, 3vw, 2.4rem);">${c.name}</h3>
-                <p class="hidden md:block mt-3 max-w-xl text-white/55 text-sm normal-case font-display">${c.body}</p>
+    // Build the enlarged media items for a scene (images or videos).
+    const mediaItems = (c) => {
+      const list = c.clips
+        ? c.clips.map((v) => ({ type: 'video', src: v.src, poster: v.poster }))
+        : c.images.map((src) => ({ type: 'image', src }));
+      return list.map((m) => `
+        <div class="scene-item" data-item>
+          <a href="${m.src}" target="_blank" rel="noopener" class="scene-media">
+            ${m.type === 'video'
+              ? `<video src="${m.src}" poster="${m.poster}" muted loop playsinline preload="none" data-lazyvideo></video>`
+              : `<img src="${m.src}" loading="lazy" alt="" />`}
+            <span class="scene-open"><span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span></span>
+          </a>
+        </div>
+      `).join('');
+    };
+
+    wrap.innerHTML = CARDS.map((c) => `
+      <section class="scene" data-scene>
+        <div class="scene-pin">
+          <div class="scene-card">
+            <div class="scene-head flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div class="flex items-center gap-4 sm:gap-6">
+                <span class="font-kanit font-black text-mmm-ink"
+                      style="font-size: clamp(2.4rem, 7vw, 96px); line-height:.9;">(${c.num})</span>
+                <div>
+                  <p class="font-kanit text-mmm-ink/60 uppercase tracking-[0.4em] text-xs sm:text-sm font-semibold mb-1.5">${c.label}</p>
+                  <h3 class="font-kanit font-medium uppercase text-mmm-ink leading-[1.05] tracking-tight"
+                      style="font-size: clamp(1.3rem, 2.6vw, 2.1rem);">${c.name}</h3>
+                  <p class="hidden md:block mt-2 max-w-xl text-white/55 text-sm normal-case font-display">${c.body}</p>
+                </div>
+              </div>
+              <a href="#contact"
+                 class="shrink-0 inline-flex items-center gap-2 rounded-full border-2 border-mmm-ink text-mmm-ink font-medium uppercase tracking-widest px-6 sm:px-9 py-2.5 sm:py-3 hover:bg-mmm-ink/10 transition-colors text-sm">
+                Learn More
+                <span class="material-symbols-outlined text-base">arrow_outward</span>
+              </a>
+            </div>
+            <div class="scene-progress"><div class="scene-progress-bar" data-bar></div></div>
+            <div class="scene-viewport">
+              <div class="scene-track" data-track>
+                ${mediaItems(c)}
               </div>
             </div>
-            <a href="#contact"
-               class="shrink-0 inline-flex items-center gap-2 rounded-full border-2 border-mmm-ink text-mmm-ink font-medium uppercase tracking-widest px-7 sm:px-10 py-3 sm:py-3.5 hover:bg-mmm-ink/10 transition-colors">
-              Learn More
-              <span class="material-symbols-outlined text-base">arrow_outward</span>
-            </a>
           </div>
-
-          <!-- image area: full-size reveal gallery for Posting Approach, grid for the rest -->
-          ${c.gallery ? `
-          <div class="posting-gallery">
-            ${c.images.map((src, n) => `
-              <a href="${src}" target="_blank" rel="noopener" class="posting-frame reveal-img" style="transition-delay:${(n % 2) * 90}ms">
-                <img src="${src}" loading="lazy" alt="" class="posting-img" />
-                <span class="posting-open"><span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span></span>
-              </a>
-            `).join('')}
-          </div>
-          ` : c.videos ? `
-          <div class="posting-gallery">
-            ${c.clips.map((v, n) => `
-              <a href="${v.src}" target="_blank" rel="noopener" class="posting-frame reveal-img" style="transition-delay:${(n % 2) * 90}ms">
-                <video class="posting-img" src="${v.src}" poster="${v.poster}" muted loop playsinline preload="none" data-lazyvideo></video>
-                <span class="posting-open"><span class="material-symbols-outlined" style="font-size:20px;">open_in_new</span></span>
-              </a>
-            `).join('')}
-          </div>
-          ` : `
-          <div class="grid grid-cols-1 md:grid-cols-5 gap-3 sm:gap-5">
-            <div class="${c.images[2] ? 'md:col-span-2 flex flex-col' : 'md:col-span-5 grid grid-cols-1 md:grid-cols-2'} gap-3 sm:gap-5">
-              <img src="${c.images[0]}" loading="lazy" alt=""
-                   class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
-                   style="${c.images[2] ? 'height: clamp(130px, 16vw, 230px);' : 'min-height: clamp(290px, 38vw, 580px); height: 100%;'}" />
-              <img src="${c.images[1]}" loading="lazy" alt=""
-                   class="w-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
-                   style="${c.images[2] ? 'height: clamp(160px, 22vw, 340px);' : 'min-height: clamp(290px, 38vw, 580px); height: 100%;'}" />
-            </div>
-            ${c.images[2] ? `
-            <div class="md:col-span-3">
-              <img src="${c.images[2]}" loading="lazy" alt=""
-                   class="w-full h-full object-cover rounded-[28px] sm:rounded-[40px] md:rounded-[50px]"
-                   style="min-height: clamp(290px, 38vw, 580px);" />
-            </div>
-            ` : ''}
-          </div>
-          `}
         </div>
-      </div>
+      </section>
     `).join('');
-
-    // Scroll-reveal for the Posting Approach gallery — photos appear as the card scrolls in
-    const revealEls = wrap.querySelectorAll('.reveal-img');
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-        });
-      }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
-      revealEls.forEach((el) => io.observe(el));
-    } else {
-      revealEls.forEach((el) => el.classList.add('in'));
-    }
 
     // Autoplay-in-view for the Editing Approach clips.
     // preload="none" until visible → page load only pays for the poster JPGs.
@@ -1504,29 +1489,59 @@
       lazyVideos.forEach((v) => vio.observe(v));
     }
 
-    // Scroll-driven scale
-    const wrapRect = () => wrap.getBoundingClientRect();
-    const cardEls = Array.from(wrap.querySelectorAll('[data-card]'));
+    // ── Sequential pinned-scene engine ──
+    // Each scene pins full-screen and pans its media track top-to-bottom as you
+    // scroll, then releases so the next scene pins. SCROLL_FACTOR tunes how much
+    // page scroll one screen of media costs (lower = snappier).
+    const scenes = Array.from(wrap.querySelectorAll('[data-scene]'));
+    const SCROLL_FACTOR = 0.72;
+
+    let layoutTries = 0;
+    function layout() {
+      const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+      const firstVp = scenes[0] && scenes[0].querySelector('.scene-viewport');
+      // Don't commit zero heights if the viewport hasn't been sized yet
+      // (early call, fonts loading, background tab) — retry on the next frame.
+      if ((!vh || !firstVp || firstVp.clientHeight < 40) && layoutTries < 60) {
+        layoutTries++;
+        requestAnimationFrame(layout);
+        return;
+      }
+      layoutTries = 0;
+      scenes.forEach((scene) => {
+        const viewport = scene.querySelector('.scene-viewport');
+        const items = Array.from(scene.querySelectorAll('[data-item]'));
+        const vpH = viewport.clientHeight;
+        items.forEach((it) => {
+          it.style.height = vpH + 'px';
+          const m = it.querySelector('.scene-media');
+          if (m) m.style.height = Math.round(vpH * 0.94) + 'px';
+        });
+        const pan = Math.max(0, items.length * vpH - vpH);
+        scene.dataset.pan = pan;
+        scene.style.height = Math.round(vh + pan * SCROLL_FACTOR) + 'px';
+      });
+      update();
+    }
 
     function update() {
-      const r = wrap.getBoundingClientRect();
       const vh = window.innerHeight;
-      // progress: 0 when wrap top hits viewport top, 1 when wrap bottom hits viewport bottom
-      const dist = (wrap.offsetHeight - vh);
-      const scrolled = Math.min(Math.max(-r.top, 0), dist);
-      const progress = dist > 0 ? scrolled / dist : 0;
-
-      cardEls.forEach((el, i) => {
-        const targetScale = 1 - (total - 1 - i) * 0.03;
-        const rangeStart = i * (1 / total);
-        const rangeEnd = 1;
-        let p = (progress - rangeStart) / (rangeEnd - rangeStart);
+      scenes.forEach((scene) => {
+        const track = scene.querySelector('[data-track]');
+        const bar = scene.querySelector('[data-bar]');
+        const pan = parseFloat(scene.dataset.pan || '0');
+        const rect = scene.getBoundingClientRect();
+        const denom = (scene.offsetHeight - vh) || 1;
+        let p = (-rect.top) / denom;
         p = Math.min(Math.max(p, 0), 1);
-        const scale = 1 + (targetScale - 1) * p;
-        el.style.transform = `scale(${scale.toFixed(4)})`;
+        track.style.transform = `translate3d(0, ${(-p * pan).toFixed(2)}px, 0)`;
+        if (bar) bar.style.width = (p * 100).toFixed(1) + '%';
       });
     }
-    update();
+
+    layout();
+    // Re-measure once everything (fonts, first images) has settled.
+    window.addEventListener('load', layout);
 
     let ticking = false;
     window.addEventListener('scroll', () => {
@@ -1535,7 +1550,12 @@
         ticking = true;
       }
     }, { passive: true });
-    window.addEventListener('resize', update);
+
+    let resizeT;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(layout, 120);
+    });
   })();
 
   /* ───────── GROQ CHATBOT ─────────

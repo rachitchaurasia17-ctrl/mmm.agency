@@ -979,32 +979,37 @@
       font-size: clamp(1.6rem, 7vw, 2.2rem) !important;
       margin-bottom: 16px !important;
     }
+    /* Mobile: drop the glass cards + body copy — show only the 3 headings,
+       stacked one below the other and anchored low so they clear the face. */
     #approach .grid.grid-cols-1 {
       display: flex !important;
-      overflow-x: auto !important;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-      gap: 12px !important;
-      padding: 0 16px 16px !important;
-      scrollbar-width: none;
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      gap: 14px !important;
+      overflow: visible !important;
+      padding: 0 26px 6px !important;
     }
-    #approach .grid.grid-cols-1::-webkit-scrollbar { display: none; }
     #approach .approach-card {
-      min-width: 82vw !important;
-      scroll-snap-align: center;
-      flex-shrink: 0;
-      padding: 24px !important;
-      border-radius: 20px !important;
-      background: rgba(255,255,255,0.04) !important;
-      border: 1px solid rgba(168,85,247,0.2) !important;
+      min-width: 0 !important;
+      width: 100% !important;
+      flex-shrink: 1 !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      box-shadow: none !important;
     }
+    #approach .approach-card::before,
+    #approach .approach-card::after { content: none !important; display: none !important; }
+    #approach .approach-card p { display: none !important; }
     #approach .approach-card h3 {
-      font-size: 1rem !important;
+      margin: 0 !important;
+      font-size: 1.35rem !important;
+      line-height: 1.15 !important;
+      letter-spacing: 0.01em;
+      text-shadow: 0 2px 14px rgba(0,0,0,0.95), 0 1px 4px rgba(0,0,0,0.95);
     }
-    #approach .approach-card p {
-      font-size: 13px !important;
-      line-height: 1.6 !important;
-    }
+    #mob-approach-dots { display: none !important; }
 
     /* Approach card scroll dots */
     .mob-approach-dots {
@@ -1380,9 +1385,10 @@
       font-size: 2.2rem !important;
     }
     #approach .approach-card {
-      min-width: 88vw !important;
-      padding: 20px !important;
+      min-width: 0 !important;
+      padding: 0 !important;
     }
+    #approach .approach-card h3 { font-size: 1.2rem !important; }
     .mob-floating-cta {
       width: 50px; height: 50px;
       bottom: 20px; right: 12px;

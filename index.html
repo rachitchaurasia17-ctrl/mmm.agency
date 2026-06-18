@@ -1904,19 +1904,19 @@
           <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase mb-3">Final word</p>
           <h3 class="font-kanit font-black uppercase leading-[0.9] tracking-tight"
               style="font-size: clamp(32px, 4.5vw, 60px);">
-            We handle <span class="italic font-serif font-normal normal-case text-pink-300">everything.</span><br/>
-            You handle <span class="italic font-serif font-normal normal-case text-mmm-purple">the wins.</span>
+            <div style="overflow:hidden; display:block;"><span class="cta-word block">We handle <span class="italic font-serif font-normal normal-case text-pink-300">everything.</span></span></div>
+            <div style="overflow:hidden; display:block; margin-top: 8px;"><span class="cta-word block">You handle <span class="italic font-serif font-normal normal-case text-mmm-purple">the wins.</span></span></div>
           </h3>
           <p class="mt-4 text-white/55 max-w-lg text-sm sm:text-base">Strategy, production, posting, analytics, iteration. One operating system. Zero churn cycles.</p>
         </div>
         <div class="flex flex-col gap-3">
-          <a href="#contact" class="group inline-flex items-center justify-between bg-white text-black font-semibold px-6 py-4 rounded-full hover:bg-mmm-ink transition-colors">
-            <span class="uppercase tracking-widest text-sm">Book a Strategy Call</span>
-            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_outward</span>
+          <a href="#contact" class="magnetic-btn group inline-flex items-center justify-between bg-white text-black font-semibold px-6 py-4 rounded-full hover:bg-mmm-ink transition-colors">
+            <span class="uppercase tracking-widest text-sm pointer-events-none">Book a Strategy Call</span>
+            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1 pointer-events-none">arrow_outward</span>
           </a>
-          <a href="#offer" class="group inline-flex items-center justify-between border border-white/25 px-6 py-4 rounded-full hover:bg-white/5 transition-colors">
-            <span class="uppercase tracking-widest text-sm">See the work</span>
-            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1">arrow_outward</span>
+          <a href="#offer" class="magnetic-btn group inline-flex items-center justify-between border border-white/25 px-6 py-4 rounded-full hover:bg-white/5 transition-colors">
+            <span class="uppercase tracking-widest text-sm pointer-events-none">See the work</span>
+            <span class="material-symbols-outlined transition-transform group-hover:translate-x-1 pointer-events-none">arrow_outward</span>
           </a>
           <p class="font-mono text-[10px] tracking-[0.4em] text-white/40 uppercase pt-1 text-center">More reach · More sales · More money</p>
         </div>
@@ -1936,11 +1936,15 @@
       <div>
         <p class="font-kanit uppercase tracking-[0.45em] text-xs text-mmm-purple mb-5">— 05 / Let's Talk</p>
         <h2 class="font-kanit font-black uppercase text-[clamp(40px,7vw,96px)] leading-[0.9] tracking-tight">
-          Build the<br/>Next Era.
+          <div style="overflow:hidden; display:block;"><span class="footer-word block pb-2">Build the</span></div>
+          <div style="overflow:hidden; display:block;"><span class="footer-word block pb-2">Next Era.</span></div>
         </h2>
       </div>
       <div class="text-right">
-        <a href="mailto:hello@mmm.agency" class="font-kanit text-2xl sm:text-3xl underline decoration-mmm-purple decoration-2 underline-offset-8 hover:text-mmm-ink">hello@mmm.agency</a>
+        <a href="mailto:hello@mmm.agency" class="magnetic-btn relative inline-block font-kanit text-2xl sm:text-3xl hover:text-mmm-purple transition-colors duration-300 group">
+          hello@mmm.agency
+          <span class="absolute -bottom-2 left-0 w-full h-[2px] bg-mmm-purple scale-x-0 origin-right transition-transform duration-500 ease-[cubic-bezier(0.86,0,0.07,1)] group-hover:scale-x-100 group-hover:origin-left"></span>
+        </a>
         <p class="mt-5 text-white/50 text-sm uppercase tracking-widest">More Reach · More Sales · More Money</p>
       </div>
     </div>
@@ -2414,6 +2418,143 @@
     // keep ScrollTrigger measurements correct after media / fonts settle
     window.addEventListener('load', () => ScrollTrigger.refresh());
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => ScrollTrigger.refresh());
+  })();
+
+  /* ───────── LOWER SECTIONS AWWWARDS ANIMATIONS ─────────
+     Applied strictly to sections BELOW the Content Calendar grid.
+  ───────────────────────────────── */
+  (function () {
+    if (!window.gsap || !window.ScrollTrigger) return;
+    const isMobile = window.innerWidth <= 768;
+
+    // 1. Operating System Card (3D Showcase Reveal & Tilt)
+    const osCard = document.querySelector('.lg\\:col-span-5 .rounded-\\[40px\\]');
+    if (osCard) {
+      if (!isMobile) {
+        gsap.from(osCard, {
+          scrollTrigger: {
+            trigger: osCard,
+            start: 'top 85%',
+          },
+          y: 60,
+          rotationX: 10,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          clearProps: 'transform' // clean up for hover effects
+        });
+
+        // Vanilla 3D Tilt Hover effect
+        osCard.addEventListener('mousemove', (e) => {
+          const rect = osCard.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          
+          const rotateX = ((y - centerY) / centerY) * -5;
+          const rotateY = ((x - centerX) / centerX) * 5;
+          
+          gsap.to(osCard, {
+            rotationX: rotateX,
+            rotationY: rotateY,
+            transformPerspective: 1000,
+            ease: 'power1.out',
+            duration: 0.4,
+            overwrite: 'auto'
+          });
+        });
+
+        osCard.addEventListener('mouseleave', () => {
+          gsap.to(osCard, {
+            rotationX: 0,
+            rotationY: 0,
+            ease: 'power3.out',
+            duration: 0.8,
+            overwrite: 'auto'
+          });
+        });
+      } else {
+        // Mobile fallback fade
+        gsap.from(osCard, {
+          scrollTrigger: { trigger: osCard, start: 'top 90%' },
+          y: 30, opacity: 0, duration: 0.8
+        });
+      }
+    }
+
+    // 2. Benefits Checklist (Progressive Storytelling)
+    const listItems = document.querySelectorAll('.space-y-3\\.5 li');
+    if (listItems.length) {
+      gsap.from(listItems, {
+        scrollTrigger: {
+          trigger: listItems[0].parentElement,
+          start: 'top 85%',
+        },
+        x: -20,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 0.8,
+        ease: 'back.out(1.2)'
+      });
+    }
+
+    // 3. CTA Section ("We handle everything")
+    const ctaWords = document.querySelectorAll('.cta-word');
+    if (ctaWords.length) {
+      gsap.from(ctaWords, {
+        scrollTrigger: {
+          trigger: ctaWords[0].closest('h3'),
+          start: 'top 85%',
+        },
+        yPercent: 100,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: 'power4.out'
+      });
+    }
+
+    // Magnetic Buttons
+    if (!isMobile) {
+      const magneticBtns = document.querySelectorAll('.magnetic-btn');
+      magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+          const rect = btn.getBoundingClientRect();
+          const x = e.clientX - rect.left - rect.width / 2;
+          const y = e.clientY - rect.top - rect.height / 2;
+          
+          gsap.to(btn, {
+            x: x * 0.3,
+            y: y * 0.3,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        });
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)', overwrite: 'auto' });
+        });
+      });
+    }
+
+    // 4. Footer Experience ("Build the Next Era")
+    const footerWords = document.querySelectorAll('.footer-word');
+    if (footerWords.length) {
+      gsap.from(footerWords, {
+        scrollTrigger: {
+          trigger: '#contact',
+          start: 'top 80%',
+        },
+        yPercent: 120,
+        rotationZ: 3,
+        opacity: 0,
+        duration: 1.2,
+        stagger: 0.15,
+        ease: 'power4.out',
+        transformOrigin: 'left bottom'
+      });
+    }
   })();
 
   /* ───────── GROQ CHATBOT ─────────

@@ -363,8 +363,8 @@
   .story-grid.is-live { pointer-events: auto; }
   .story-grid--0 {
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-areas: "a a b c" "a a d e";
+    grid-template-rows: 1.4fr 1fr 1fr;
+    grid-template-areas: "a a a a" "b b c c" "d d e e";
   }
   .story-grid--1 {
     grid-template-columns: repeat(4, 1fr);
@@ -380,7 +380,7 @@
     .story-grid { width: 94vw; height: 74vh; }
     .story-grid--0 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+      grid-template-rows: 1.2fr 1fr 1fr;
       grid-template-areas: "a a" "b c" "d e";
     }
     .story-grid--1 {
@@ -1483,10 +1483,10 @@
         body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
         videos: true,
         clips: [
-          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/' },
-          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/' },
-          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/' },
-          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/' }
+          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/?igsh=MWdrZHFleHV6Mmlncw==' },
+          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/?igsh=enp4NjRvMjk0OGNk' },
+          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/?igsh=eXZlcnNleDZpOXp2' },
+          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/?igsh=MW5oOHY2aWV5b3FoZg==' }
         ],
       },
       {
@@ -1618,6 +1618,7 @@
           cnameEl.textContent = CARDS[active].name.replace(' Approach', '');
           if (active !== lastActive) {
             lastActive = active;
+            grids.forEach((g, gi) => gi === active ? g.classList.add('is-live') : g.classList.remove('is-live'));
             pauseAllVideos();
             if (videosByStage[active].length) playStage(active);
           }

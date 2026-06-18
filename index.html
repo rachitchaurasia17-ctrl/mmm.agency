@@ -1585,17 +1585,17 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    // initial states
-    gsap.set(grids, { opacity: 0, scale: 0.82, filter: 'blur(6px)' });
-    gsap.set(heads, { opacity: 0, y: 30 });
-    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 40, scale: 0.94 });
+    // initial states — NO filter:blur (it kills scroll perf by forcing re-rasterization)
+    gsap.set(grids, { opacity: 0, scale: 0.82, force3d: true });
+    gsap.set(heads, { opacity: 0, y: 30, force3d: true });
+    gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 30, scale: 0.96, force3d: true });
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
     const END = () => '+=' + Math.round((window.innerHeight || 800) * 4);
     let lastActive = -1;
 
     const tl = gsap.timeline({
-      defaults: { ease: 'power2.inOut' },
+      defaults: { ease: 'power2.inOut', force3d: true },
       scrollTrigger: {
         trigger: '.story-pin',
         start: 'top top',
@@ -1627,22 +1627,23 @@
     });
 
     // reveal: scale up from small → 1 → slow drift to 1.18 (prominent enlargement)
+    // GPU-only props: transform (scale, y) + opacity — no filter
     function revealStage(i, pos) {
       tl.fromTo(heads[i],
           { opacity: 0, y: 30 },
           { opacity: 1, y: 0, duration: 3, ease: 'power2.out' }, pos)
         .fromTo(grids[i],
-          { opacity: 0, scale: 0.82, filter: 'blur(6px)' },
-          { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 3.5, ease: 'power2.out' }, pos)
+          { opacity: 0, scale: 0.82 },
+          { opacity: 1, scale: 1, duration: 3.5, ease: 'power2.out' }, pos)
         .fromTo(tilesOf(i),
-          { opacity: 0, y: 40, scale: 0.94 },
-          { opacity: 1, y: 0, scale: 1, duration: 3.5, stagger: 0.3, ease: 'power2.out' }, pos + 0.3)
+          { opacity: 0, y: 30, scale: 0.96 },
+          { opacity: 1, y: 0, scale: 1, duration: 3, stagger: 0.2, ease: 'power2.out' }, pos + 0.3)
         .to(grids[i], { scale: 1.18, duration: 6, ease: 'none' }, pos + 3.5);
     }
-    // exit: scale up further + blur + fade (prominent zoom-out feel)
+    // exit: scale up further + fade (prominent zoom-out feel, no blur)
     function exitStage(i, pos) {
       tl.to(heads[i], { opacity: 0, y: -24, duration: 3, ease: 'power2.inOut' }, pos)
-        .to(grids[i], { opacity: 0, scale: 1.35, filter: 'blur(8px)', duration: 3.5, ease: 'power2.inOut' }, pos);
+        .to(grids[i], { opacity: 0, scale: 1.35, duration: 3.5, ease: 'power2.inOut' }, pos);
     }
 
     revealStage(0, 0);

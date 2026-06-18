@@ -1476,6 +1476,10 @@
     <div class="absolute inset-0 bg-black/20"></div>
   </div>
 
+  <!-- Ambient cursor-reactive particle field (desktop) — sits above the video, below the text -->
+  <canvas id="hero-particles" class="desktop-only-el absolute inset-0 z-[5] pointer-events-none"
+          style="mix-blend-mode: screen;"></canvas>
+
   <div class="relative z-10 flex w-full h-full max-w-[1440px] mx-auto">
     <!-- Left Panel (52%) -->
     <div class="flex flex-col justify-center h-full w-full lg:w-[52%] px-6 lg:px-16 pb-20 lg:py-0 pt-8 mob-hero-content">
@@ -2165,6 +2169,115 @@
       if (!target) return;
       e.preventDefault();
       lenis.scrollTo(target, { duration: 1.2 });
+    });
+  })();
+
+  /* ───────── HERO PARTICLE FIELD — ambient + cursor-reactive ─────────
+     A single GPU-light canvas: drifting "digital dust" + constellation links,
+     with the cursor acting as an energy source that pushes and brightens
+     nearby particles. Desktop only; pauses when the hero leaves the viewport.
+  ───────────────────────────────── */
+  (function () {
+    const canvas = document.getElementById('hero-particles');
+    const hero = document.getElementById('top');
+    if (!canvas || !hero) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touch  = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (reduce || touch) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let particles = [];
+    const mouse = { x: -9999, y: -9999, active: false };
+    const PALETTE = ['168,85,247', '216,180,254', '255,255,255'];
+    const LINK = 120, PUSH = 110;
+
+    function build() {
+      const count = Math.min(110, Math.round((W * H) / 16000));
+      particles = [];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.25, vy: (Math.random() - 0.5) * 0.25,
+          r: Math.random() * 1.6 + 0.6,
+          c: PALETTE[(Math.random() * PALETTE.length) | 0],
+          a: Math.random() * 0.4 + 0.25
+        });
+      }
+    }
+    function resize() {
+      const r = hero.getBoundingClientRect();
+      W = r.width; H = r.height;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      const r = hero.getBoundingClientRect();
+      if (e.clientY >= r.top && e.clientY <= r.bottom) {
+        mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; mouse.active = true;
+      } else { mouse.active = false; }
+    }, { passive: true });
+    window.addEventListener('blur', () => { mouse.active = false; });
+
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+        if (mouse.active) {
+          const dx = p.x - mouse.x, dy = p.y - mouse.y, d2 = dx * dx + dy * dy;
+          if (d2 < PUSH * PUSH) {
+            const d = Math.sqrt(d2) || 1, f = (PUSH - d) / PUSH;
+            p.x += (dx / d) * f * 1.6; p.y += (dy / d) * f * 1.6;
+          }
+        }
+        for (let j = i + 1; j < particles.length; j++) {
+          const q = particles[j];
+          const dx = p.x - q.x, dy = p.y - q.y, d2 = dx * dx + dy * dy;
+          if (d2 < LINK * LINK) {
+            const al = (1 - Math.sqrt(d2) / LINK) * 0.16;
+            ctx.strokeStyle = 'rgba(168,85,247,' + al.toFixed(3) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
+          }
+        }
+      }
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        let a = p.a;
+        if (mouse.active) {
+          const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.sqrt(dx * dx + dy * dy);
+          if (d < PUSH) a = Math.min(1, a + (1 - d / PUSH) * 0.6);
+        }
+        ctx.fillStyle = 'rgba(' + p.c + ',' + a.toFixed(3) + ')';
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
+      }
+    }
+
+    let raf = 0, running = false;
+    function loop() { frame(); raf = requestAnimationFrame(loop); }
+    function startLoop() { if (!running) { running = true; loop(); } }
+    function stopLoop() { running = false; cancelAnimationFrame(raf); }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver((es) => {
+        es.forEach((e) => e.isIntersecting ? startLoop() : stopLoop());
+      }, { threshold: 0 }).observe(hero);
+    } else { startLoop(); }
+
+    resize();
+    let rt;
+    window.addEventListener('resize', () => {
+      clearTimeout(rt);
+      rt = setTimeout(() => { dpr = Math.min(window.devicePixelRatio || 1, 2); resize(); }, 150);
     });
   })();
 

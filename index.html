@@ -1750,6 +1750,8 @@
       <div class="lg:col-span-7 relative rounded-[32px] border border-white/10 bg-gradient-to-b from-white/[0.03] to-transparent backdrop-blur-md p-5 sm:p-7 overflow-hidden">
         <!-- inner top sheen -->
         <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"></div>
+        <!-- living-machine network overlay (scroll-reactive connections + content pulses) -->
+        <canvas id="cal-network" class="pointer-events-none absolute inset-0 z-[3]" style="mix-blend-mode: screen;"></canvas>
         <div class="flex items-center justify-between mb-7 flex-wrap gap-3">
           <div>
             <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase">Your Month, Engineered</p>
@@ -2122,6 +2124,147 @@
       if (cur) cur.classList.add('cal-tile-active');
       shineIdx++;
     }, 900);
+  })();
+
+  /* ───────── CALENDAR "LIVING MACHINE" — schedule becomes a network ─────────
+     A canvas overlaid on the 31-day grid. Each Reel/Post day is a node; as you
+     scroll into the section the connections assemble (sequence + nearest links),
+     and glowing pulses travel the network — content moving between dates. The
+     viewer reads the agency process as a living system, not a static grid.
+  ───────────────────────────────── */
+  (function () {
+    const canvas = document.getElementById('cal-network');
+    const grid = document.getElementById('cal-grid');
+    if (!canvas || !grid) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const host = canvas.parentElement;
+
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let W = 0, H = 0;
+    let nodes = [], edges = [], pulses = [];
+    let build = 0;
+    const COL = { R: '168,85,247', P: '236,72,153' };
+    const colorOf = (k) => (k === 'P' ? COL.P : COL.R);
+
+    function spawnPulse(idx) {
+      if (!edges.length) return { e: null };
+      const e = edges[idx != null ? idx : (Math.random() * edges.length) | 0];
+      return { e, fwd: Math.random() < 0.5, t: Math.random() * 0.3, speed: 0.004 + Math.random() * 0.006 };
+    }
+    function edgesFrom(nodeIdx) {
+      const out = [];
+      for (let i = 0; i < edges.length; i++) if (edges[i].a === nodeIdx || edges[i].b === nodeIdx) out.push(i);
+      return out;
+    }
+
+    function measure() {
+      const hr = host.getBoundingClientRect();
+      W = hr.width; H = hr.height;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const tiles = Array.from(grid.querySelectorAll('.cal-tile'))
+        .filter((t) => t.dataset.kind === 'R' || t.dataset.kind === 'P');
+      nodes = tiles.map((t) => {
+        const r = t.getBoundingClientRect();
+        return { x: r.left - hr.left + r.width / 2, y: r.top - hr.top + r.height / 2, kind: t.dataset.kind };
+      });
+
+      edges = [];
+      const key = new Set();
+      const add = (a, b) => { if (a === b) return; const k = a < b ? a + '-' + b : b + '-' + a; if (key.has(k)) return; key.add(k); edges.push({ a, b }); };
+      for (let i = 0; i < nodes.length - 1; i++) add(i, i + 1);          // schedule sequence
+      for (let i = 0; i < nodes.length; i++) {                          // nearest-neighbor mesh
+        let best = -1, bd = 1e9;
+        for (let j = 0; j < nodes.length; j++) {
+          if (j === i || j === i - 1 || j === i + 1) continue;
+          const dx = nodes[i].x - nodes[j].x, dy = nodes[i].y - nodes[j].y, d = dx * dx + dy * dy;
+          if (d < bd) { bd = d; best = j; }
+        }
+        if (best >= 0) add(i, best);
+      }
+
+      const n = Math.min(14, Math.max(6, Math.round(edges.length / 4)));
+      pulses = [];
+      for (let i = 0; i < n; i++) pulses.push(spawnPulse());
+    }
+
+    function frame() {
+      raf = requestAnimationFrame(frame);
+      ctx.clearRect(0, 0, W, H);
+      if (!nodes.length) return;
+      const shown = build;
+
+      for (let i = 0; i < edges.length; i++) {
+        const thr = i / edges.length;
+        if (shown <= thr) continue;
+        const ea = Math.min(1, (shown - thr) * 4) * 0.22;
+        const a = nodes[edges[i].a], b = nodes[edges[i].b];
+        ctx.strokeStyle = 'rgba(168,85,247,' + ea.toFixed(3) + ')';
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+      }
+      for (let i = 0; i < nodes.length; i++) {
+        const thr = (i / nodes.length) * 0.8;
+        if (shown <= thr) continue;
+        const p = nodes[i], c = colorOf(p.kind);
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, 9);
+        g.addColorStop(0, 'rgba(' + c + ',0.85)'); g.addColorStop(1, 'rgba(' + c + ',0)');
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x, p.y, 9, 0, 6.283); ctx.fill();
+        ctx.fillStyle = 'rgba(' + c + ',0.95)'; ctx.beginPath(); ctx.arc(p.x, p.y, 1.7, 0, 6.283); ctx.fill();
+      }
+      if (shown > 0.15) {
+        for (let i = 0; i < pulses.length; i++) {
+          const pu = pulses[i];
+          if (!pu.e) { pulses[i] = spawnPulse(); continue; }
+          pu.t += pu.speed;
+          if (pu.t >= 1) {
+            const arrive = pu.fwd ? pu.e.b : pu.e.a;
+            const opts = edgesFrom(arrive);
+            if (opts.length) { pu.e = edges[opts[(Math.random() * opts.length) | 0]]; pu.fwd = (pu.e.a === arrive); pu.t = 0; }
+            else { pulses[i] = spawnPulse(); continue; }
+          }
+          const a = pu.fwd ? nodes[pu.e.a] : nodes[pu.e.b];
+          const b = pu.fwd ? nodes[pu.e.b] : nodes[pu.e.a];
+          const x = a.x + (b.x - a.x) * pu.t, y = a.y + (b.y - a.y) * pu.t;
+          const c = colorOf(a.kind);
+          const g = ctx.createRadialGradient(x, y, 0, x, y, 6);
+          g.addColorStop(0, 'rgba(' + c + ',0.95)'); g.addColorStop(1, 'rgba(' + c + ',0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, 6, 0, 6.283); ctx.fill();
+        }
+      }
+    }
+
+    let raf = 0, running = false;
+    const start = () => { if (!running) { running = true; frame(); } };
+    const stop = () => { running = false; cancelAnimationFrame(raf); };
+
+    function initScroll() {
+      if (window.gsap && window.ScrollTrigger) {
+        ScrollTrigger.create({
+          trigger: '#calendar', start: 'top 75%', end: 'center 45%', scrub: true,
+          onUpdate: (self) => { build = self.progress; }
+        });
+      } else {
+        const io = new IntersectionObserver((es) => {
+          es.forEach((e) => { if (e.isIntersecting) { build = 1; io.disconnect(); } });
+        }, { threshold: 0.25 });
+        io.observe(document.getElementById('calendar'));
+      }
+    }
+
+    new IntersectionObserver((es) => {
+      es.forEach((e) => e.isIntersecting ? start() : stop());
+    }, { threshold: 0 }).observe(host);
+
+    function boot() { measure(); initScroll(); if (window.ScrollTrigger) ScrollTrigger.refresh(); }
+    if (document.readyState === 'complete') boot(); else window.addEventListener('load', boot);
+    let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(measure, 150); });
   })();
 
   /* ───────── LENIS — global inertial smooth scroll, synced to GSAP ─────────

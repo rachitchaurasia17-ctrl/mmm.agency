@@ -20,6 +20,8 @@
 <!-- GSAP + ScrollTrigger for the Approach storytelling sequence -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<!-- Lenis — inertial smooth scroll (Locomotive/Active Theory-grade feel), synced to GSAP -->
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
   tailwind.config = {
     darkMode: 'class',
@@ -56,8 +58,14 @@
   }
   ::selection { background: rgba(168,85,247,.35); color: #fff; }
 
-  /* Smooth scroll for in-page anchors */
+  /* Smooth scroll for in-page anchors (native fallback when Lenis is off) */
   html { scroll-behavior: smooth; }
+  /* Lenis — disable native smooth-scroll while Lenis drives momentum */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
+  .lenis.lenis-smooth iframe { pointer-events: none; }
 
   /* ─────────────────────────────────────────────
      GLASS
@@ -2110,6 +2118,54 @@
       if (cur) cur.classList.add('cal-tile-active');
       shineIdx++;
     }, 900);
+  })();
+
+  /* ───────── LENIS — global inertial smooth scroll, synced to GSAP ─────────
+     This is the smoothness backbone: it virtualizes the wheel into eased
+     momentum and feeds every scroll frame to ScrollTrigger, so the pinned
+     "What We Offer" timeline (and all scrub animations) glide instead of step.
+  ───────────────────────────────── */
+  (function () {
+    if (typeof window.Lenis === 'undefined' || !window.gsap) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const touch  = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+    if (reduce || touch) return; // keep native momentum on touch; respect reduced-motion
+
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo-out
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      lerp: 0.1,
+    });
+    window.__lenis = lenis;
+
+    // drive Lenis from GSAP's ticker and keep ScrollTrigger in lockstep
+    lenis.on('scroll', () => { if (window.ScrollTrigger) ScrollTrigger.update(); });
+    gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+    gsap.ticker.lagSmoothing(0);
+
+    // hold momentum until the intro tunnel releases the page
+    lenis.stop();
+    (function gate() {
+      if (document.body.classList.contains('no-scroll') || document.getElementById('intro')) {
+        requestAnimationFrame(gate);
+      } else {
+        lenis.start();
+      }
+    })();
+
+    // route in-page anchor links through Lenis for smooth, eased jumps
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href');
+      if (!id || id.length < 2) return;
+      const target = document.querySelector(id);
+      if (!target) return;
+      e.preventDefault();
+      lenis.scrollTo(target, { duration: 1.2 });
+    });
   })();
 
   /* ───────── INTRO TUNNEL (CSS-driven, JS orchestrates only) ─────────

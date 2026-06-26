@@ -6,8 +6,6 @@
 <title>MMM — A Different Kind of Marketing Agency</title>
 <meta name="description" content="MMM is a Gen-Z marketing agency. We don't push, promote or discount. We make trends. More reach. More sales. More money." />
 
-<link rel="preload" href="mobile_video.gif" as="image" />
-
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -385,17 +383,13 @@
     transform: translate3d(0,0,0);
   }
   .story-grid.is-live { pointer-events: auto; }
+  /* stage 0 = Posting (6 images), stage 1 = Editing (4 videos) */
   .story-grid--0 {
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: 1fr;
-    grid-template-areas: "a b c d";
-  }
-  .story-grid--1 {
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     grid-template-areas: "a a b" "a a c" "d e f";
   }
-  .story-grid--2 {
+  .story-grid--1 {
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: 1fr;
     grid-template-areas: "a b c d";
@@ -404,15 +398,10 @@
     .story-grid { width: 94vw; height: 74vh; }
     .story-grid--0 {
       grid-template-columns: repeat(2, 1fr);
-      grid-template-rows: repeat(2, 1fr);
-      grid-template-areas: "a b" "c d";
-    }
-    .story-grid--1 {
-      grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(4, 1fr);
       grid-template-areas: "a a" "b c" "d e" "f f";
     }
-    .story-grid--2 {
+    .story-grid--1 {
       grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
       grid-template-areas: "a b" "c d";
@@ -1476,7 +1465,8 @@
   <!-- Mobile Video Background (GIF) -->
   <div class="video-bg-container mobile-only absolute inset-0 z-0 overflow-hidden">
     <!-- Using data-src so JS can start the GIF exactly when the tunnel finishes -->
-    <img id="mob-hero-gif" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-src="mobile_video.gif" alt="Mobile Hero Background" class="w-full h-full object-cover" />
+    <video id="mob-hero-vid" data-src="assets/hero_mobile.mp4" muted loop playsinline preload="none"
+           poster="assets/hero_mobile.jpg" class="w-full h-full object-cover"></video>
     <!-- Light overlay to ensure contrasting dark text works well, or dark overlay for light text. 
          Using a subtle dark overlay, but we will make the text highly contrasting. -->
     <div class="absolute inset-0 bg-black/20"></div>
@@ -1588,7 +1578,7 @@
           <p class="text-gray-300 text-sm leading-relaxed">Moving beyond templates to deliver bespoke creative strategies that set your brand apart from the noise.</p>
         </div>
         <div class="approach-card group rounded-2xl p-7 transition-all duration-300">
-          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Don't Follow Trends</h3>
+          <h3 class="font-bold uppercase tracking-wider mb-3 text-lg">We Set The Trends</h3>
           <p class="text-gray-300 text-sm leading-relaxed">We create trends. We don't just chase what's popular; we build sustainable brand equity that outlasts the current viral cycle.</p>
         </div>
       </div>
@@ -1681,7 +1671,7 @@
         </span>
       </h2>
       <p class="lg:col-span-3 text-white/55 text-sm sm:text-base leading-relaxed border-l border-mmm-purple/40 pl-5">
-        Thirty deliverables. One ruthless system. Engineered for compounding reach — month after month, until the algorithm knows your name.
+        Twenty-eight deliverables. One ruthless system. Engineered for compounding reach — month after month, until the algorithm knows your name.
       </p>
     </div>
 
@@ -1692,9 +1682,9 @@
       <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-mmm-purple/60 to-transparent"></div>
 
       <div class="relative grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10 bg-black/40 backdrop-blur-md">
-        <!-- 15 Reels -->
+        <!-- 8 Reels -->
         <div class="p-7 sm:p-10 relative overflow-hidden group">
-          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">15</span>
+          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">8</span>
           <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
             <span class="material-symbols-outlined text-sm">movie</span>Reels
           </div>
@@ -1702,14 +1692,14 @@
                style="font-size: clamp(72px, 8vw, 132px);
                       background: linear-gradient(180deg,#ffffff 0%,#A855F7 100%);
                       -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
-            15
+            8
           </div>
           <p class="text-white/55 text-sm">Trend-led, cinema-cut, hook-first.</p>
         </div>
 
-        <!-- 15 Posts -->
+        <!-- 20 Posts -->
         <div class="p-7 sm:p-10 relative overflow-hidden group">
-          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">15</span>
+          <span class="absolute -top-6 -right-6 text-[180px] sm:text-[220px] leading-none font-kanit font-black text-white/[0.04] select-none">20</span>
           <div class="flex items-center gap-2 text-mmm-purple uppercase tracking-[0.3em] text-[10px] font-mono">
             <span class="material-symbols-outlined text-sm">grid_view</span>Posts
           </div>
@@ -1717,7 +1707,7 @@
                style="font-size: clamp(72px, 8vw, 132px);
                       background: linear-gradient(180deg,#ffffff 0%,#ec4899 100%);
                       -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
-            15
+            20
           </div>
           <p class="text-white/55 text-sm">Carousels, statics, story drops.</p>
         </div>
@@ -1772,7 +1762,7 @@
         <div class="flex items-center justify-between mb-7 flex-wrap gap-3">
           <div>
             <p class="font-mono text-[10px] tracking-[0.4em] text-mmm-purple uppercase">Your Month, Engineered</p>
-            <h3 class="font-kanit font-black uppercase text-2xl sm:text-3xl tracking-tight mt-1.5">31 Days · 30 Deliverables</h3>
+            <h3 class="font-kanit font-black uppercase text-2xl sm:text-3xl tracking-tight mt-1.5">31 Days · 28 Deliverables</h3>
           </div>
           <div class="flex items-center gap-4 text-[11px] uppercase tracking-[0.18em] text-white/65 font-mono">
             <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-mmm-purple" style="box-shadow:0 0 8px rgba(168,85,247,0.7);"></span>Reel</span>
@@ -1791,7 +1781,7 @@
 
         <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between flex-wrap gap-3">
           <p class="text-xs text-white/45 font-mono uppercase tracking-widest">
-            <span class="text-mmm-purple">●</span> 15 Reels &nbsp; · &nbsp; <span class="text-pink-400">●</span> 15 Posts &nbsp; · &nbsp; Auto-scheduled
+            <span class="text-mmm-purple">●</span> 8 Reels &nbsp; · &nbsp; <span class="text-pink-400">●</span> 20 Posts &nbsp; · &nbsp; Auto-scheduled
           </p>
           <p class="text-xs text-white/40">Hover any tile →</p>
         </div>
@@ -2026,7 +2016,7 @@
   document.getElementById('year').textContent = new Date().getFullYear();
 
   /* ───────── CALENDAR 30-DAY GRID ─────────
-     Generates a 7×N grid (Mon-start) of 30 deliverables.
+     Generates a 7×N grid (Mon-start) of 28 deliverables.
      Pattern: reel, post, reel, post... distributed across the month,
      with strategic Sunday "rest" tiles for cadence.
   ───────────────────────────────── */
@@ -2034,15 +2024,15 @@
     const grid = document.getElementById('cal-grid');
     if (!grid) return;
 
-    // 31-day plan: 15 reels (R) + 15 posts (P) + 1 rest (-) + 4 trailing empty (.)
+    // 31-day plan: 8 reels (R) + 20 posts (P) + 3 rest (-) + 4 trailing empty (.)
     // 5 weeks × 7 = 35 tiles total. Trailing cells are blank (no label, no icon).
     const PLAN = [
       // Mon Tue Wed Thu Fri Sat Sun
-      'R','P','R','P','R','P','-',   // Week 1 — days 1-7  (rest on Sunday)
-      'R','P','R','P','R','P','R',   // Week 2 — days 8-14
-      'P','R','P','R','P','R','P',   // Week 3 — days 15-21
-      'R','P','R','P','R','P','R',   // Week 4 — days 22-28
-      'P','R','P','.','.','.','.',   // Week 5 — days 29-31 + 4 blank trailing
+      'P','R','P','P','P','P','-',   // Week 1 — days 1-7  (rest on Sunday)
+      'P','P','R','P','P','P','-',   // Week 2 — days 8-14 (rest on Sunday)
+      'P','R','P','R','R','P','P',   // Week 3 — days 15-21
+      'P','P','R','P','P','P','-',   // Week 4 — days 22-28 (rest on Sunday)
+      'R','P','R','.','.','.','.',   // Week 5 — days 29-31 + 4 blank trailing
     ];
 
     const ICONS = {
@@ -2478,10 +2468,14 @@
       intro.classList.remove('intro-flying');
       intro.classList.add('intro-reveal');
       
-      // Start the mobile GIF exactly as the tunnel ends so it plays from the beginning
-      const mobGif = document.getElementById('mob-hero-gif');
-      if (mobGif && mobGif.dataset.src) {
-        mobGif.src = mobGif.dataset.src;
+      // Start the mobile hero video exactly as the tunnel ends — deferred load so
+      // the heavy file never competes with the tunnel flight (keeps it smooth).
+      const mobVid = document.getElementById('mob-hero-vid');
+      if (mobVid && mobVid.dataset.src && !mobVid.getAttribute('src')) {
+        mobVid.setAttribute('src', mobVid.dataset.src);
+        mobVid.load();
+        const pr = mobVid.play();
+        if (pr && pr.catch) pr.catch(() => {});
       }
       
       setTimeout(teardown, REVEAL_HOLD);
@@ -2523,19 +2517,6 @@
     const CARDS = [
       {
         num: '01',
-        label: 'Production',
-        name: 'Video Approach',
-        body: 'Cinematic, scroll-stopping reels shot with a production crew that thinks like editors and writes like creators.',
-        videos: true,
-        clips: [
-          { src: 'assets/video-1.mp4', poster: 'assets/video-1.jpg', link: 'https://www.instagram.com/reel/DXa5pOFiotS/?igsh=MWdrZHFleHV6Mmlncw==' },
-          { src: 'assets/video-2.mp4', poster: 'assets/video-2.jpg', link: 'https://www.instagram.com/reel/DUiZag7Ccxz/?igsh=enp4NjRvMjk0OGNk' },
-          { src: 'assets/video-3.mp4', poster: 'assets/video-3.jpg', link: 'https://www.instagram.com/reel/DWWRgOzEe7-/?igsh=eXZlcnNleDZpOXp2' },
-          { src: 'assets/video-4.mp4', poster: 'assets/video-4.jpg', link: 'https://www.instagram.com/reel/DXwCV7gIjLd/?igsh=MW5oOHY2aWV5b3FoZg==' }
-        ],
-      },
-      {
-        num: '02',
         label: 'Social',
         name: 'Posting Approach',
         body: 'A monthly content engine built around your brand voice — every post engineered for the first three seconds.',
@@ -2550,7 +2531,7 @@
         ],
       },
       {
-        num: '03',
+        num: '02',
         label: 'Post-Production',
         name: 'Editing Approach',
         body: 'Hooks, sound design, color, captions — every frame tuned for retention and ranked for the algorithm.',
@@ -2570,7 +2551,6 @@
 
     // grid-area slot per stage (matches .story-grid--N template-areas in CSS)
     const AREAS = [
-      ['a', 'b', 'c', 'd'],
       ['a', 'b', 'c', 'd', 'e', 'f'],
       ['a', 'b', 'c', 'd']
     ];
@@ -2642,7 +2622,7 @@
           <div class="story-grids">${gridsHTML}</div>
           <div class="story-head">${headsHTML}</div>
           ${railHTML}
-          <div class="story-counter"><b data-cur>01</b> / 03 &nbsp;·&nbsp; <span data-cname>Posting</span></div>
+          <div class="story-counter"><b data-cur>01</b> / 02 &nbsp;·&nbsp; <span data-cname>Posting</span></div>
         </div>
       </div>
     `;
@@ -2670,7 +2650,7 @@
     gsap.set(wrap.querySelectorAll('.story-tile'), { opacity: 0, y: 30, scale: 0.96, force3d: true });
 
     const tilesOf = (i) => grids[i].querySelectorAll('.story-tile');
-    const END = () => '+=' + Math.round((window.innerHeight || 800) * 4);
+    const END = () => '+=' + Math.round((window.innerHeight || 800) * 3);
     let lastActive = -1;
 
     const tl = gsap.timeline({
@@ -2686,13 +2666,13 @@
         onUpdate: (self) => {
           const p = self.progress;
           const d = tl.duration() || 1;
-          const b1 = 10 / d, b2 = 20 / d;
-          const segs = [[0, b1], [b1, b2], [b2, 1]];
+          const b1 = 10 / d;
+          const segs = [[0, b1], [b1, 1]];
           rails.forEach((bar, i) => {
             const s = segs[i][0], e = segs[i][1];
             bar.style.width = (Math.min(Math.max((p - s) / (e - s), 0), 1) * 100).toFixed(1) + '%';
           });
-          const active = p < b1 ? 0 : (p < b2 ? 1 : 2);
+          const active = p < b1 ? 0 : 1;
           curEl.textContent = String(active + 1).padStart(2, '0');
           cnameEl.textContent = CARDS[active].name.replace(' Approach', '');
           if (active !== lastActive) {
@@ -2728,9 +2708,7 @@
     revealStage(0, 0);
     exitStage(0, 9);
     revealStage(1, 10);
-    exitStage(1, 19);
-    revealStage(2, 20);
-    tl.to({}, { duration: 5 }, 29); // tail hold on the editing stage
+    tl.to({}, { duration: 5 }, 19); // tail hold on the editing stage
 
     // pointer parallax (desktop only) — grids drift against the cursor, glow follows
     const isTouch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
@@ -2895,7 +2873,7 @@
     const MODEL = 'llama-3.3-70b-versatile';
     const SYSTEM = `You are MMM Agency's AI strategist.
 MMM is a Gen-Z marketing agency. Tone: sharp, confident, founder-style. Never push, never discount.
-Core package: 15 reels + 15 posts per month, hashtags, scheduling, full management.
+Core package: 8 reels + 20 posts per month, hashtags, scheduling, full management.
 Principles: connect brands with the world; help customers discover them; craft their online presence.
 Keep responses tight (under 120 words), action-oriented, and on-brand. If asked for pricing specifics, say "let's get on a strategy call" and direct them to hello@mmm.agency.`;
 

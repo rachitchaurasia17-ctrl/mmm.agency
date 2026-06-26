@@ -504,27 +504,60 @@
     position: fixed; right: 20px; bottom: 20px; z-index: 90;
     font-family: 'Poppins', sans-serif;
   }
-  /* Floating WhatsApp button (bottom-left, clear of the AI chat toggle) */
+  /* ─── Premium floating WhatsApp button — site-wide, expands on hover ───
+     position:fixed !important so the mobile ripple script can't pin it. */
   #mmm-whatsapp {
-    position: fixed; left: 22px; bottom: 22px; z-index: 95;
-    width: 58px; height: 58px; border-radius: 999px;
-    display: flex; align-items: center; justify-content: center;
-    background: linear-gradient(135deg, #25D366, #128C7E);
-    box-shadow: 0 14px 40px rgba(37,211,102,.5), inset 0 0 0 1px rgba(255,255,255,.22);
-    color: #fff;
-    transition: transform .25s ease, box-shadow .25s ease;
-    animation: wa-pulse 2.6s ease-in-out infinite;
+    position: fixed !important;
+    left: 24px; bottom: 24px; z-index: 95;
+    display: flex; align-items: center; justify-content: flex-start;
+    height: 60px; width: 60px; padding: 0;
+    border-radius: 999px; overflow: hidden;
+    background: linear-gradient(135deg, #2bd66e 0%, #1ebe5d 48%, #0e8a73 100%);
+    color: #fff; white-space: nowrap; text-decoration: none;
+    box-shadow:
+      0 12px 34px rgba(16,140,110,.5),
+      0 2px 8px rgba(0,0,0,.32),
+      inset 0 1px 0 rgba(255,255,255,.32),
+      inset 0 -2px 6px rgba(0,0,0,.18);
+    transition: width .5s cubic-bezier(.22,1,.36,1),
+                box-shadow .35s ease, transform .35s ease;
+    -webkit-tap-highlight-color: transparent;
   }
-  #mmm-whatsapp:hover { transform: translateY(-3px) scale(1.07); box-shadow: 0 20px 52px rgba(37,211,102,.66); }
-  #mmm-whatsapp:active { transform: translateY(-1px) scale(1.02); }
-  #mmm-whatsapp svg { width: 31px; height: 31px; fill: #fff; }
-  @keyframes wa-pulse {
-    0%, 100% { box-shadow: 0 14px 40px rgba(37,211,102,.5), 0 0 0 0 rgba(37,211,102,.5); }
-    50%      { box-shadow: 0 14px 40px rgba(37,211,102,.5), 0 0 0 14px rgba(37,211,102,0); }
+  #mmm-whatsapp .wa-icon {
+    flex: 0 0 60px; width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #mmm-whatsapp svg { width: 30px; height: 30px; fill: #fff; filter: drop-shadow(0 1px 1px rgba(0,0,0,.25)); }
+  #mmm-whatsapp .wa-label {
+    opacity: 0; max-width: 0; padding-right: 0;
+    font-family: 'Poppins', sans-serif; font-weight: 600;
+    font-size: 14px; letter-spacing: .01em;
+    transition: opacity .3s ease, max-width .5s cubic-bezier(.22,1,.36,1), padding-right .5s ease;
+  }
+  /* soft outward halo — the "alive / hovering" pulse */
+  #mmm-whatsapp::after {
+    content: ''; position: absolute; inset: 0; border-radius: inherit;
+    pointer-events: none;
+    animation: wa-halo 2.6s ease-out infinite;
+  }
+  @keyframes wa-halo {
+    0%   { box-shadow: 0 0 0 0 rgba(43,214,110,.5); }
+    70%  { box-shadow: 0 0 0 16px rgba(43,214,110,0); }
+    100% { box-shadow: 0 0 0 0 rgba(43,214,110,0); }
+  }
+  #mmm-whatsapp:active { transform: scale(.96); }
+  /* expand into a pill only where real hover exists (desktop) */
+  @media (hover: hover) and (pointer: fine) {
+    #mmm-whatsapp:hover {
+      width: 196px;
+      box-shadow: 0 18px 46px rgba(16,140,110,.62), inset 0 1px 0 rgba(255,255,255,.4);
+    }
+    #mmm-whatsapp:hover .wa-label { opacity: 1; max-width: 150px; padding-right: 24px; }
   }
   @media (max-width: 768px) {
-    #mmm-whatsapp { width: 52px; height: 52px; left: 16px; bottom: 18px; }
-    #mmm-whatsapp svg { width: 28px; height: 28px; }
+    #mmm-whatsapp { height: 54px; width: 54px; left: 16px; bottom: 18px; }
+    #mmm-whatsapp .wa-icon { flex-basis: 54px; width: 54px; height: 54px; }
+    #mmm-whatsapp svg { width: 27px; height: 27px; }
   }
   #mmm-chat-toggle {
     width: 64px; height: 64px; border-radius: 999px;
@@ -1990,9 +2023,12 @@
 
 <!-- Floating WhatsApp button — opens a chat directly -->
 <a id="mmm-whatsapp" href="https://wa.me/919988868820" target="_blank" rel="noopener" aria-label="Chat with MMM on WhatsApp">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-    <path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.728-.979zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-  </svg>
+  <span class="wa-icon">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 001.51 5.26l-.999 3.648 3.728-.979zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+    </svg>
+  </span>
+  <span class="wa-label">Chat with us</span>
 </a>
 
 <!-- ════════════════════════════════════════════════════════════
@@ -3057,7 +3093,7 @@ Keep responses tight (under 120 words), action-oriented, and on-brand. If asked 
         button.appendChild(circle);
       }
       
-      document.querySelectorAll('a, button, .approach-card, .cal-tile').forEach(el => {
+      document.querySelectorAll('a:not(#mmm-whatsapp), button:not(#mmm-chat-toggle), .approach-card, .cal-tile').forEach(el => {
         el.style.position = el.style.position === 'absolute' || el.style.position === 'fixed' ? el.style.position : 'relative';
         el.style.overflow = 'hidden';
         el.addEventListener('pointerdown', createRipple);
